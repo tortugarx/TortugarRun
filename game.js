@@ -477,13 +477,12 @@
       X.fillStyle = "#ddd5bc";
       const n = Math.max(1, Math.floor(h.w / 12));
       for (let i = 0; i < n; i++) {
-        const base = h.y + 20,
-          top = base - 20 * h.progress;
-        X.beginPath();
-        X.moveTo(h.x + (i * h.w) / n, base);
-        X.lineTo(h.x + ((i + 0.5) * h.w) / n, top);
-        X.lineTo(h.x + ((i + 1) * h.w) / n, base);
-        X.fill();
+        const sx = Math.round(h.x + (i * h.w) / n);
+        const raised = Math.round(16 * h.progress);
+        X.fillRect(sx + 1, h.y + 16 - raised, 8, raised + 4);
+        X.fillStyle = "#f1ead0";
+        X.fillRect(sx + 3, h.y + 12 - raised, 4, 4);
+        X.fillStyle = "#ddd5bc";
       }
     } else if (h.type === "riser") {
       X.fillStyle = "#c75a50";
