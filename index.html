@@ -8,7 +8,7 @@
     />
     <meta name="theme-color" content="#071b22" />
     <title>Level Devil</title>
-    <link rel="stylesheet" href="style.css?v=10" />
+    <link rel="stylesheet" href="style.css?v=11" />
   </head>
   <body>
     <main class="shell">
@@ -21,10 +21,22 @@
           <button id="againBtn" class="primary">PLAY AGAIN</button>
         </div>
         <div id="levelScreen" class="overlay hidden">
-          <p class="eyebrow">LEVELS</p>
-          <h2>Choose a room</h2>
-          <div id="levelGrid" class="level-grid"></div>
-          <button id="closeLevelsBtn" class="secondary">BACK</button>
+          <div class="panel">
+            <p class="eyebrow">LEVELS</p>
+            <h2>Choose a room</h2>
+            <div id="levelGrid" class="level-grid"></div>
+            <button id="closeLevelsBtn" class="secondary">BACK</button>
+          </div>
+        </div>
+        <div id="deathScreen" class="overlay hidden">
+          <div class="panel death-panel">
+            <p class="eyebrow">TRY AGAIN</p>
+            <h2>Not this time.</h2>
+            <div class="death-actions">
+              <button id="deathRestartBtn" class="primary">RESTART</button>
+              <button id="deathLevelsBtn" class="secondary">LEVELS</button>
+            </div>
+          </div>
         </div>
         <div class="hud">
           <div><small>ROOM</small><strong id="levelLabel">01 / 30</strong></div>
@@ -50,6 +62,6 @@
         </nav>
       </section>
     </main>
-    <script src="game.js?v=10"></script>
+    <script src="game.js?v=11"></script>
   </body>
 </html>

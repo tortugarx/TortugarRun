@@ -258,7 +258,7 @@
     }
     const safeRanges = solid.filter((p) => p[1] === 485 && p[2] > 80);
     const haz = [];
-    const count = 2 + Math.floor(number / 2) + group;
+    const count = 1 + Math.ceil(number / 4) + (group > 0 ? 1 : 0);
     for (let i = 0; i < count; i++) {
       const floor = safeRanges[i % safeRanges.length];
       const min = floor[0] + (floor[0] === 0 ? 90 : 18);
@@ -278,6 +278,9 @@
     }
     const crumb = group === 0 && number >= 6 ? [[455, 448, 72, 16, 0.5]] : [];
     if (crumb.length) solid.push([455, 448, 72, 16]);
+    if (number % 3 === 0) solid.push([340, 105, 28, 245]);
+    if (number % 4 === 0) solid.push([590, 100, 150, 22]);
+    if (number % 5 === 0) solid.push([665, 120, 30, 225]);
     const walls = [];
     if (group === 1) {
       walls.push([145, 330, 18, 70, 105, 120]);
@@ -387,6 +390,7 @@
         progress: v[6] === "gate" ? 1 : 0,
         originX: v[0],
         open: false,
+        travel: 0,
       })),
       portals: l.portals.map((v) => ({
         ax: v[0],
@@ -414,7 +418,8 @@
       ),
     );
     terrain.forEach((p) => {
-      p.y = p.y >= 480 ? 400 : 365;
+      if (p.y >= 480) p.y = 400;
+      else if (p.y >= 430) p.y = 365;
       p.originX = p.x;
       p.originY = p.y;
     });
@@ -436,6 +441,10 @@
     pulse = 0;
     particles = [];
     state = "playing";
+    const colors = palette();
+    document.documentElement.style.setProperty("--level-light", colors[0]);
+    document.documentElement.style.setProperty("--level-mid", colors[2]);
+    document.documentElement.style.setProperty("--level-dark", colors[3]);
     UI.level.textContent = `${String(li + 1).padStart(2, "0")} / ${String(L.length).padStart(2, "0")}`;
     if (hint) toast(`${l.name} — ${l.hint}`, 3200);
   }
@@ -470,6 +479,7 @@
         li = i;
         UI.start?.classList.add("hidden");
         UI.win.classList.add("hidden");
+        $("#deathScreen").classList.add("hidden");
         $("#levelScreen").classList.add("hidden");
         reset();
       };
@@ -477,20 +487,23 @@
     });
   }
   function openLevels() {
-    levelReturnState = state === "playing" ? "playing" : "menu";
+    levelReturnState = state;
     state = "levelmenu";
     buildLevelGrid();
     $("#levelScreen").classList.remove("hidden");
   }
   function die() {
     if (state !== "playing") return;
-    state = "dead";
+    state = "dying";
     deaths++;
     UI.deaths.textContent = String(deaths).padStart(2, "0");
     shake = 17;
     burst(P.x + 12, P.y + 9, "#333", 12);
     beep(75, 0.24, "sawtooth");
-    setTimeout(() => reset(false), 520);
+    setTimeout(() => {
+      state = "deathmenu";
+      $("#deathScreen").classList.remove("hidden");
+    }, 780);
   }
   function finish() {
     if (state !== "playing") return;
@@ -579,10 +592,10 @@
     if (h.type === "spike") {
       const eased = h.progress * h.progress * (3 - 2 * h.progress);
       return {
-        x: h.x + h.w / 2 - 5,
-        y: h.y + 20 - 13 * eased,
-        w: 10,
-        h: 13 * eased,
+        x: h.x + h.w / 2 - 13,
+        y: h.y + 20 - 9 * eased,
+        w: 26,
+        h: 9 * eased,
       };
     }
     if (h.type === "riser")
@@ -614,11 +627,12 @@
       p.life -= dt * 1.7;
     });
     particles = particles.filter((p) => p.life > 0);
-    if (state !== "playing") return;
+    if (state !== "playing" && state !== "dying") return;
+    const alive = state === "playing";
     const l = L[li];
     P.px = P.x;
     P.py = P.y;
-    const target = (K.left ? -220 : 0) + (K.right ? 220 : 0);
+    const target = alive ? (K.left ? -220 : 0) + (K.right ? 220 : 0) : 0;
     const acceleration = P.ground ? 1500 : 850;
     const change = Math.max(
       -acceleration * dt,
@@ -628,7 +642,7 @@
     if (P.vx) P.face = Math.sign(P.vx);
     P.coyote = P.ground ? 0.105 : Math.max(0, P.coyote - dt);
     P.buffer = K.jump && !P.held ? 0.11 : Math.max(0, P.buffer - dt);
-    if (P.buffer > 0 && P.coyote > 0) {
+    if (alive && P.buffer > 0 && P.coyote > 0) {
       P.vy = -340;
       P.ground = 0;
       P.coyote = 0;
@@ -663,23 +677,23 @@
       if (w.kind === "gate" && w.open)
         w.progress = Math.max(0, w.progress - dt * 3);
       else if (w.active) w.progress = Math.min(1, w.progress + dt * 3);
-      const slide =
-        w.kind === "push" ? Math.max(0, (w.progress - 0.45) / 0.55) : 0;
-      w.x = w.originX + w.range * slide;
+      if (w.kind === "push" && w.progress >= 1)
+        w.travel = Math.min(w.range, w.travel + dt * 18);
+      w.x = w.originX + w.travel;
       const box = {
         x: w.x,
         y: 400 - w.h * w.progress,
         w: w.w,
         h: w.h * w.progress,
       };
-      if (w.progress > 0.05 && hit(P, box)) {
+      if (alive && w.progress > 0.05 && hit(P, box)) {
         if (P.x + P.w / 2 < box.x + box.w / 2) P.x = box.x - P.w;
         else P.x = box.x + box.w;
         if (w.kind === "push") P.vx = Math.max(P.vx, 120);
       }
     });
     R.buttons.forEach((b) => {
-      if (b.pressed || !hit(P, b)) return;
+      if (!alive || b.pressed || !hit(P, b)) return;
       b.pressed = true;
       if (b.action === "size") {
         const feet = P.y + P.h;
@@ -696,7 +710,7 @@
     });
     R.portals.forEach((p) => {
       p.cooldown = Math.max(0, p.cooldown - dt);
-      if (p.cooldown) return;
+      if (!alive || p.cooldown) return;
       const a = { x: p.ax - 9, y: p.ay, w: 18, h: 40 },
         b = { x: p.bx - 9, y: p.by, w: 18, h: 40 };
       if (hit(P, a)) {
@@ -712,7 +726,7 @@
     R.haz.forEach((h) => {
       if ((h.mode === "near" || h.mode === "hidden") && P.x > h.trigger)
         h.active = true;
-      if (h.active) h.progress = Math.min(1, h.progress + dt * 2.5);
+      if (h.active) h.progress = Math.min(1, h.progress + dt * 5.5);
       if (h.active && h.progress > 0.35 && hit(P, hbox(h))) die();
     });
     if (l.tide) {
@@ -757,16 +771,19 @@
       X.fillStyle = c[3];
       const shown = h.active ? h.progress : pulse > 0 ? 1 : 0;
       const eased = shown * shown * (3 - 2 * shown);
-      const raised = Math.round(13 * eased),
+      const raised = Math.round(9 * eased),
         center = Math.round(h.x + h.w / 2);
-      for (let row = 0; row < raised; row += 3) {
-        const width = Math.min(11, 3 + row * 0.65);
-        X.fillRect(
-          Math.round(center - width / 2),
-          h.y + 20 - raised + row,
-          Math.round(width),
-          Math.min(3, raised - row),
-        );
+      for (let spike = -1; spike <= 1; spike++) {
+        const cx = center + spike * 9;
+        for (let row = 0; row < raised; row += 3) {
+          const width = Math.min(8, 2 + row * 0.7);
+          X.fillRect(
+            Math.round(cx - width / 2),
+            h.y + 20 - raised + row,
+            Math.round(width),
+            Math.min(3, raised - row),
+          );
+        }
       }
     } else if (h.type === "riser") {
       X.fillStyle = c[3];
@@ -807,8 +824,7 @@
     X.fillStyle = c[3];
     X.fillRect(Math.round(w.x), Math.round(y), w.w, Math.round(h));
     X.fillStyle = c[2];
-    for (let yy = y + 6; yy < 400; yy += 12)
-      X.fillRect(Math.round(w.x) + 3, Math.round(yy), w.w - 6, 3);
+    X.fillRect(Math.round(w.x), Math.round(y), w.w, 2);
   }
   function drawPortal(p) {
     const c = palette();
@@ -817,11 +833,14 @@
       [p.bx, p.by],
     ]) {
       X.fillStyle = c[3];
-      X.fillRect(x - 9, y, 18, 40);
-      X.fillStyle = c[1];
-      X.fillRect(x - 5, y + 4, 10, 32);
+      X.fillRect(x - 12, y + 8, 24, 32);
+      X.fillRect(x - 8, y + 4, 16, 4);
+      X.fillRect(x - 4, y, 8, 4);
+      X.fillStyle = c[0];
+      X.fillRect(x - 7, y + 12, 14, 28);
+      X.fillRect(x - 4, y + 8, 8, 4);
       X.fillStyle = c[2];
-      X.fillRect(x - 2, y + 8, 4, 24);
+      X.fillRect(x - 2, y + 20, 4, 4);
     }
   }
   function drawButton(b) {
@@ -894,7 +913,7 @@
           X.lineTo(x, R.tide + Math.sin(x * 0.05 + clock * 5) * 4);
         X.stroke();
       }
-      if (P && state !== "dead") drawHero();
+      if (P && state === "playing") drawHero();
       particles.forEach((p) => {
         X.globalAlpha = p.life;
         X.fillStyle = p.color;
@@ -996,6 +1015,15 @@
   $("#closeLevelsBtn").onclick = () => {
     $("#levelScreen").classList.add("hidden");
     state = levelReturnState;
+    if (state === "deathmenu") $("#deathScreen").classList.remove("hidden");
+  };
+  $("#deathRestartBtn").onclick = () => {
+    $("#deathScreen").classList.add("hidden");
+    reset(false);
+  };
+  $("#deathLevelsBtn").onclick = () => {
+    $("#deathScreen").classList.add("hidden");
+    openLevels();
   };
   $("#againBtn").onclick = start;
   $("#restartBtn").onclick = () => {
