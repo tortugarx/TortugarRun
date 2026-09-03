@@ -27,6 +27,10 @@
     1,
     Number(localStorage.getItem("level-devil-unlocked")) || 1,
   );
+  if (new URLSearchParams(location.search).get("unlock") === "all") {
+    unlocked = 30;
+    localStorage.setItem("level-devil-unlocked", "30");
+  }
   let state = "menu",
     li = 0,
     deaths = 0,
@@ -269,10 +273,10 @@
         36,
         20,
         i % 3 === 1 ? "hidden" : "near",
-        x - 48,
+        x - (i % 3 === 0 ? 30 : 48),
       ]);
     }
-    const crumb = [];
+    const crumb = group === 0 && number >= 6 ? [[455, 448, 72, 16, 0.5]] : [];
     if (crumb.length) solid.push([455, 448, 72, 16]);
     const walls = [];
     if (group === 1) {
@@ -508,9 +512,6 @@
     if (state !== "playing" || energy < 40 || pulse) return;
     energy -= 40;
     pulse = 1;
-    R.haz.forEach((h) => {
-      if (h.mode === "hidden") h.active = true;
-    });
     beep(760, 0.12, "sine");
   }
   function toast(s, ms = 1600) {
@@ -575,13 +576,15 @@
     }
   }
   function hbox(h) {
-    if (h.type === "spike")
+    if (h.type === "spike") {
+      const eased = h.progress * h.progress * (3 - 2 * h.progress);
       return {
-        x: h.x + 4,
-        y: h.y + 18 * (1 - h.progress),
-        w: h.w - 8,
-        h: 2 + 18 * h.progress,
+        x: h.x + h.w / 2 - 5,
+        y: h.y + 20 - 13 * eased,
+        w: 10,
+        h: 13 * eased,
       };
+    }
     if (h.type === "riser")
       return {
         x: h.x,
@@ -707,8 +710,9 @@
       }
     });
     R.haz.forEach((h) => {
-      if (h.mode === "near" && P.x > h.trigger) h.active = true;
-      if (h.active) h.progress = Math.min(1, h.progress + dt * 3.2);
+      if ((h.mode === "near" || h.mode === "hidden") && P.x > h.trigger)
+        h.active = true;
+      if (h.active) h.progress = Math.min(1, h.progress + dt * 2.5);
       if (h.active && h.progress > 0.35 && hit(P, hbox(h))) die();
     });
     if (l.tide) {
@@ -749,22 +753,20 @@
         X.restore();
         return;
       }
-      X.globalAlpha = h.active ? 1 : Math.max(0.25, pulse);
+      X.globalAlpha = h.active ? 1 : Math.max(0.3, pulse);
       X.fillStyle = c[3];
-      const n = Math.max(1, Math.floor(h.w / 12));
-      for (let i = 0; i < n; i++) {
-        const sx = Math.round(h.x + (i * h.w) / n);
-        const raised = Math.round(16 * h.progress);
-        const center = sx + 6;
-        for (let row = 0; row < raised; row += 4) {
-          const width = Math.min(12, 3 + row * 0.55);
-          X.fillRect(
-            Math.round(center - width / 2),
-            h.y + 20 - raised + row,
-            Math.round(width),
-            Math.min(4, raised - row),
-          );
-        }
+      const shown = h.active ? h.progress : pulse > 0 ? 1 : 0;
+      const eased = shown * shown * (3 - 2 * shown);
+      const raised = Math.round(13 * eased),
+        center = Math.round(h.x + h.w / 2);
+      for (let row = 0; row < raised; row += 3) {
+        const width = Math.min(11, 3 + row * 0.65);
+        X.fillRect(
+          Math.round(center - width / 2),
+          h.y + 20 - raised + row,
+          Math.round(width),
+          Math.min(3, raised - row),
+        );
       }
     } else if (h.type === "riser") {
       X.fillStyle = c[3];

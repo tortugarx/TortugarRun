@@ -30,7 +30,10 @@ button {
   border: 2px solid #777;
   cursor: pointer;
   border-radius: 0;
-  box-shadow: 3px 3px 0 #000;
+  box-shadow:
+    3px 3px 0 #000,
+    inset -3px -3px 0 #0a0a0a,
+    inset 3px 3px 0 #444;
   font-weight: bold;
 }
 .shell {
@@ -162,10 +165,18 @@ canvas {
   grid-template-columns: repeat(5, 58px);
   gap: 8px;
   margin-bottom: 14px;
+  padding: 10px;
+  background: #101010;
+  border: 4px solid #444;
+  box-shadow: 6px 6px 0 #000;
 }
 .level-grid button {
   width: 58px;
   height: 52px;
+  box-shadow:
+    2px 2px 0 #000,
+    inset -2px -2px 0 #090909,
+    inset 2px 2px 0 #444;
   padding: 0;
 }
 .level-grid button:disabled {
@@ -226,18 +237,25 @@ kbd {
 .game-actions {
   position: absolute;
   z-index: 3;
-  top: 42px;
-  right: 14px;
+  top: 36px;
+  right: 10px;
   display: flex;
   gap: 5px;
+  padding: 5px;
+  background: #111;
+  border: 3px solid #555;
+  box-shadow: 4px 4px 0 #000;
 }
 .game-actions button {
-  width: 38px;
-  height: 34px;
+  width: 46px;
+  height: 42px;
   padding: 0;
   font-size: 15px;
   opacity: 0.8;
-  box-shadow: 2px 2px 0 #000;
+  box-shadow:
+    2px 2px 0 #000,
+    inset -3px -3px 0 #080808,
+    inset 3px 3px 0 #494949;
 }
 .touch-controls {
   display: none;
@@ -279,8 +297,8 @@ kbd {
     inset: 8px 9px auto;
   }
   .game-actions {
-    top: 30px;
-    right: 8px;
+    top: 27px;
+    right: 6px;
   }
 }
 @media (max-width: 400px) {
