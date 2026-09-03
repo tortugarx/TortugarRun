@@ -1,6 +1,6 @@
-# Riftstep
+# Moss & der falsche Pfad
 
-Ein eigenständiger HTML5-Canvas-Präzisions-Plattformer mit überraschenden Fallen und Fokus-Mechanik.
+Ein eigenständiger HTML5-Canvas-Präzisions-Plattformer über die kleine Schildkröte Moss. Mit handgemalter Dschungelwelt, Muschel-Impuls, überraschenden Fallen und sechs anspruchsvollen Leveln.
 
 ## Spielen
 
