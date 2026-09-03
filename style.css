@@ -156,13 +156,13 @@ canvas {
 }
 .level-grid {
   display: grid;
-  grid-template-columns: repeat(3, 76px);
-  gap: 10px;
+  grid-template-columns: repeat(5, 58px);
+  gap: 8px;
   margin-bottom: 14px;
 }
 .level-grid button {
-  width: 76px;
-  height: 58px;
+  width: 58px;
+  height: 52px;
   padding: 0;
 }
 .level-grid button:disabled {
@@ -175,6 +175,23 @@ canvas {
   margin-top: 2px;
   font-size: 7px;
   color: #777;
+}
+.group-tabs {
+  grid-column: 1/-1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin-bottom: 4px;
+}
+.group-tabs button {
+  width: auto;
+  height: 30px;
+  padding: 0 5px;
+  font-size: 8px;
+}
+.group-tabs button.active {
+  background: #eee;
+  color: #111;
 }
 kbd {
   display: inline-block;

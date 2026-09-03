@@ -42,7 +42,7 @@
     P,
     R,
     particles = [];
-  const L = [
+  const OLD_LEVELS = [
     {
       name: "Die erste Lüge",
       hint: "Rissige Bodenplatten verraten Fallen.",
@@ -212,6 +212,93 @@
       ],
     },
   ];
+  const GROUPS = ["STACHELN", "BEWEGUNG", "TRICKS"];
+  function makeLevel(group, number) {
+    const difficulty = group * 10 + number;
+    const gapA = group === 0 && number < 4 ? 0 : 28 + Math.min(22, number * 2);
+    const gapB = number < 2 ? 0 : 26 + Math.min(20, number * 2);
+    const a = 245,
+      b = 610;
+    const solid = gapA
+      ? [
+          [0, 485, a, 55],
+          [a + gapA, 485, b - a - gapA, 55],
+          [b + gapB, 485, 960 - b - gapB, 55],
+        ]
+      : [
+          [0, 485, b, 55],
+          [b + gapB, 485, 960 - b - gapB, 55],
+        ];
+    if (!gapB) solid.splice(0, solid.length, [0, 485, 960, 55]);
+    if (group >= 1) {
+      solid.push([
+        a - 12,
+        448,
+        72,
+        16,
+        {
+          axis: number % 2 ? "x" : "y",
+          range: 24 + number,
+          speed: 1.2 + number * 0.07,
+          trigger: 155,
+        },
+      ]);
+      if (number > 5)
+        solid.push([
+          b - 18,
+          448,
+          76,
+          16,
+          { axis: number % 2 ? "y" : "x", range: 28, speed: 1.5, trigger: 525 },
+        ]);
+    }
+    const safeRanges = solid.filter((p) => p[1] === 485 && p[2] > 80);
+    const haz = [];
+    const count = 2 + Math.floor(number / 2) + group;
+    for (let i = 0; i < count; i++) {
+      const floor = safeRanges[i % safeRanges.length];
+      const min = floor[0] + (floor[0] === 0 ? 90 : 18);
+      const max = floor[0] + floor[2] - 46;
+      const x = Math.round(
+        min + ((i * 83 + number * 37) % Math.max(1, max - min)),
+      );
+      haz.push([
+        "spike",
+        x,
+        465,
+        36,
+        20,
+        i % 3 === 1 ? "hidden" : "near",
+        x - 48,
+      ]);
+    }
+    const crumb =
+      group === 2 && number > 2
+        ? [[455, 448, 72, 16, 0.55 - Math.min(0.2, number * 0.02)]]
+        : [];
+    if (crumb.length) solid.push([455, 448, 72, 16]);
+    return {
+      group,
+      number,
+      name: `${GROUPS[group]} ${String(number).padStart(2, "0")}`,
+      hint:
+        group === 0
+          ? "Achte auf den Boden."
+          : group === 1
+            ? "Der Boden bleibt nicht stehen."
+            : "Bekannte Regeln. Neue Reihenfolge.",
+      spawn: [28, 447],
+      exit: [900, 415],
+      solid,
+      haz,
+      crumb,
+      fake: group === 2 && number === 7 ? [720, 425] : undefined,
+      tide: group === 2 && number === 10,
+    };
+  }
+  const L = GROUPS.flatMap((_, group) =>
+    Array.from({ length: 10 }, (_, i) => makeLevel(group, i + 1)),
+  );
   const hit = (a, b) =>
     a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
   function reset(hint = true) {
@@ -240,6 +327,8 @@
           w: v[2],
           h: v[3],
           id: "s" + i,
+          move: v[4] || null,
+          moveActive: false,
         })),
       crumb: l.crumb.map((v, i) => ({
         x: v[0],
@@ -287,6 +376,8 @@
     );
     terrain.forEach((p) => {
       if (p.y < 480) p.y = 430;
+      p.originX = p.x;
+      p.originY = p.y;
     });
     R.haz.forEach((h, i) => {
       if (carriers[i]) h.y = carriers[i].y - 20;
@@ -331,13 +422,24 @@
     reset();
     beep(260, 0.08, "triangle");
   }
-  function buildLevelGrid() {
+  function buildLevelGrid(selectedGroup = Math.floor(li / 10)) {
     const grid = $("#levelGrid");
     grid.textContent = "";
+    const tabs = document.createElement("div");
+    tabs.className = "group-tabs";
+    GROUPS.forEach((name, group) => {
+      const tab = document.createElement("button");
+      tab.textContent = name;
+      tab.className = group === selectedGroup ? "active" : "";
+      tab.onclick = () => buildLevelGrid(group);
+      tabs.appendChild(tab);
+    });
+    grid.appendChild(tabs);
     L.forEach((level, i) => {
+      if (level.group !== selectedGroup) return;
       const b = document.createElement("button");
       b.disabled = i + 1 > unlocked;
-      b.innerHTML = `${i + 1}<small>${b.disabled ? "GESPERRT" : "OFFEN"}</small>`;
+      b.innerHTML = `${level.number}<small>${b.disabled ? "GESPERRT" : "OFFEN"}</small>`;
       b.onclick = () => {
         li = i;
         UI.start?.classList.add("hidden");
@@ -413,8 +515,8 @@
       particles.push({
         x,
         y,
-        vx: (Math.random() - 0.5) * 280,
-        vy: (Math.random() - 0.85) * 250,
+        vx: Math.round((Math.random() - 0.5) * 14) * 20,
+        vy: Math.round((Math.random() - 0.85) * 12) * 20,
         life: 1,
         color,
       });
@@ -522,6 +624,14 @@
     R.crumb.forEach((c) => {
       if (c.armed) c.timer += dt;
       if (c.timer > c.delay) c.fall += 360 * dt;
+    });
+    R.solid.forEach((s) => {
+      if (!s.move) return;
+      if (P.x > s.move.trigger) s.moveActive = true;
+      if (!s.moveActive) return;
+      const amount = Math.sin(clock * s.move.speed) * s.move.range;
+      s.x = s.originX + (s.move.axis === "x" ? amount : 0);
+      s.y = s.originY + (s.move.axis === "y" ? amount : 0);
     });
     R.haz.forEach((h) => {
       if (h.mode === "near" && P.x > h.trigger) h.active = true;
@@ -670,9 +780,7 @@
       particles.forEach((p) => {
         X.globalAlpha = p.life;
         X.fillStyle = p.color;
-        X.beginPath();
-        X.arc(p.x, p.y, 3, 0, Math.PI * 2);
-        X.fill();
+        X.fillRect(Math.round(p.x / 4) * 4, Math.round(p.y / 4) * 4, 5, 5);
         X.globalAlpha = 1;
       });
       if (pulse) {
