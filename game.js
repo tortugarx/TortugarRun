@@ -22,7 +22,7 @@
     ["#e5e5d6", "#c2c19b", "#8b8956", "#48472b"],
     ["#e2ddea", "#b9acd0", "#806ba2", "#44375c"],
   ];
-  const palette = () => PAL[Math.min(li, PAL.length - 1)];
+  const palette = () => PAL[li % PAL.length];
   let unlocked = Math.max(
     1,
     Number(localStorage.getItem("level-devil-unlocked")) || 1,
@@ -37,12 +37,15 @@
     energy = 100,
     pulse = 0,
     shake = 0,
-    muted = false,
+    muted = localStorage.getItem("level-devil-sound") === "off",
+    autoRestart = localStorage.getItem("level-devil-auto-restart") === "on",
     last = 0,
     clock = 0,
     audio,
     toastTimer,
     levelReturnState = "menu",
+    settingsReturnState = "menu",
+    portalAnim = null,
     P,
     R,
     particles = [];
@@ -279,8 +282,38 @@
       [855, 365, 105, 175],
     ],
   ];
+  function terrainFor(group, number) {
+    const base = TERRAINS[number - 1].map((p) => [...p]);
+    if (group === 0) return base;
+    if (group === 1) {
+      return base
+        .map((p, i) => {
+          const mirrored = [W - p[0] - p[2], p[1], p[2], p[3]];
+          if (p[1] >= 340) {
+            const lift = ((number + i) % 3) * 10;
+            mirrored[1] -= lift;
+            mirrored[3] += lift;
+          }
+          return mirrored;
+        })
+        .sort((a, b) => a[0] - b[0]);
+    }
+    const shaped = base.map((p, i) => {
+      if (p[1] < 340) return [...p];
+      const shift = (((number * 2 + i) % 3) - 1) * 12;
+      return [p[0], p[1] + shift, p[2], p[3] - shift];
+    });
+    if (number % 2 === 0) {
+      const x = 300 + ((number * 47) % 290);
+      shaped.push([x, 120, 26, 205], [x, 120, 205, 18]);
+    } else {
+      const x = 420 + ((number * 31) % 230);
+      shaped.push([x - 170, 150, 196, 18], [x, 150, 26, 175]);
+    }
+    return shaped;
+  }
   function makeLevel(group, number) {
-    const solid = TERRAINS[number - 1].map((p) => [...p]);
+    const solid = terrainFor(group, number);
     const walkable = solid
       .filter((p) => p[1] >= 340)
       .sort((a, b) => a[0] - b[0]);
@@ -308,7 +341,8 @@
     const count = 1 + Math.ceil(number / 4) + (group > 0 ? 1 : 0);
     for (let i = 0; i < count; i++) {
       const floor = safeRanges[i % safeRanges.length];
-      const min = floor[0] + (floor[0] === 0 ? 90 : 18);
+      const inset = Math.min(floor[2] - 46, floor[0] === 0 ? 90 : 18);
+      const min = floor[0] + Math.max(8, inset);
       const max = floor[0] + floor[2] - 46;
       const x = Math.round(
         min + ((i * 83 + number * 37) % Math.max(1, max - min)),
@@ -351,17 +385,28 @@
         ]);
     }
     if (group === 2) walls.push([520, 330, 20, 70, Infinity, 0, "gate"]);
-    const portals =
-      group === 2
-        ? [
-            [
-              walkable[0][0] + walkable[0][2] - 55,
-              walkable[0][1] - 40,
-              walkable.at(-1)[0] + 45,
-              walkable.at(-1)[1] - 40,
-            ],
-          ]
-        : [];
+    const portals = [];
+    if (group === 2) {
+      const first = walkable[Math.min(1, walkable.length - 1)];
+      const last = walkable[Math.max(0, walkable.length - 2)];
+      const ceiling = number % 3 === 0;
+      const ax = first[0] + Math.min(55, first[2] - 35);
+      const bx = last[0] + Math.max(32, last[2] - 58);
+      portals.push([
+        ax,
+        ceiling ? first[1] - 86 : first[1] - 40,
+        ceiling ? "ceiling" : "floor",
+        bx,
+        last[1] - 40,
+        "floor",
+      ]);
+      const trapFloor = number % 2 ? last : first;
+      const trapX = Math.min(
+        trapFloor[0] + trapFloor[2] - 42,
+        (number % 2 ? bx : ax) + 26,
+      );
+      haz.push(["spike", trapX, trapFloor[1] - 20, 36, 20, "portal", Infinity]);
+    }
     const buttons =
       group === 2
         ? [
@@ -383,7 +428,7 @@
           ? "Watch the floor."
           : group === 1
             ? "Walls push. They do not kill."
-            : "Portals and buttons change the room.",
+            : "Portals lie. Watch where they throw you.",
       spawn: [28, walkable[0][1] - 38],
       exit: [
         walkable.at(-1)[0] + walkable.at(-1)[2] - 60,
@@ -483,8 +528,10 @@
       portals: l.portals.map((v) => ({
         ax: v[0],
         ay: v[1],
-        bx: v[2],
-        by: v[3],
+        ao: v[2],
+        bx: v[3],
+        by: v[4],
+        bo: v[5],
         cooldown: 0,
       })),
       buttons: l.buttons.map((v) => ({
@@ -519,6 +566,7 @@
     energy = 100;
     pulse = 0;
     particles = [];
+    portalAnim = null;
     state = "playing";
     const colors = palette();
     document.documentElement.style.setProperty("--level-light", colors[0]);
@@ -580,6 +628,10 @@
     burst(P.x + 12, P.y + 9, "#333", 12);
     beep(75, 0.24, "sawtooth");
     setTimeout(() => {
+      if (autoRestart) {
+        reset(false);
+        return;
+      }
       state = "deathmenu";
       $("#deathScreen").classList.remove("hidden");
     }, 780);
@@ -697,6 +749,23 @@
     }
     return { x: x - h.w, y: y - h.w, w: h.w * 2, h: h.w * 2 };
   }
+  function portalBox(x, y, orientation) {
+    return { x: x - 18, y, w: 36, h: orientation === "ceiling" ? 46 : 42 };
+  }
+  function beginTeleport(portal, fx, fy, fo, tx, ty, to) {
+    if (state !== "playing") return;
+    portalAnim = {
+      portal,
+      t: 0,
+      from: { x: fx, y: fy + 20, o: fo },
+      to: { x: tx, y: ty, o: to },
+      direction: tx >= fx ? 1 : -1,
+    };
+    state = "teleporting";
+    P.vx = 0;
+    P.vy = 0;
+    beep(430, 0.16, "square");
+  }
   function update(dt) {
     clock += dt;
     particles.forEach((p) => {
@@ -706,6 +775,26 @@
       p.life -= dt * 1.7;
     });
     particles = particles.filter((p) => p.life > 0);
+    if (state === "teleporting") {
+      portalAnim.t = Math.min(1, portalAnim.t + dt * 1.8);
+      if (portalAnim.t >= 1) {
+        P.x = portalAnim.to.x - P.w / 2;
+        P.y =
+          portalAnim.to.o === "ceiling"
+            ? portalAnim.to.y + 44
+            : portalAnim.to.y + 40 - P.h;
+        P.vx = portalAnim.direction * 90;
+        P.vy = 0;
+        R.haz
+          .filter((h) => h.mode === "portal" && Math.abs(h.x - P.x) < 90)
+          .forEach((h) => (h.active = true));
+        portalAnim.portal.cooldown = 0.85;
+        portalAnim = null;
+        state = "playing";
+        beep(120, 0.1, "square");
+      }
+      return;
+    }
     if (state !== "playing" && state !== "dying") return;
     const alive = state === "playing";
     const l = L[li];
@@ -790,16 +879,12 @@
     R.portals.forEach((p) => {
       p.cooldown = Math.max(0, p.cooldown - dt);
       if (!alive || p.cooldown) return;
-      const a = { x: p.ax - 9, y: p.ay, w: 18, h: 40 },
-        b = { x: p.bx - 9, y: p.by, w: 18, h: 40 };
+      const a = portalBox(p.ax, p.ay, p.ao),
+        b = portalBox(p.bx, p.by, p.bo);
       if (hit(P, a)) {
-        P.x = p.bx + 18;
-        P.y = p.by + 40 - P.h;
-        p.cooldown = 0.7;
+        beginTeleport(p, p.ax, p.ay, p.ao, p.bx, p.by, p.bo);
       } else if (hit(P, b)) {
-        P.x = p.ax + 18;
-        P.y = p.ay + 40 - P.h;
-        p.cooldown = 0.7;
+        beginTeleport(p, p.bx, p.by, p.bo, p.ax, p.ay, p.ao);
       }
     });
     R.haz.forEach((h) => {
@@ -906,20 +991,46 @@
     X.fillRect(Math.round(w.x), Math.round(y), w.w, 2);
   }
   function drawPortal(p) {
+    drawPortalEnd(p.ax, p.ay, p.ao, 0);
+    drawPortalEnd(p.bx, p.by, p.bo, 1.7);
+  }
+  function drawPortalEnd(x, y, orientation, phase) {
     const c = palette();
-    for (const [x, y] of [
-      [p.ax, p.ay],
-      [p.bx, p.by],
-    ]) {
-      X.fillStyle = c[3];
-      X.fillRect(x - 12, y + 8, 24, 32);
-      X.fillRect(x - 8, y + 4, 16, 4);
-      X.fillRect(x - 4, y, 8, 4);
-      X.fillStyle = c[0];
-      X.fillRect(x - 7, y + 12, 14, 28);
-      X.fillRect(x - 4, y + 8, 8, 4);
-      X.fillStyle = c[2];
-      X.fillRect(x - 2, y + 20, 4, 4);
+    X.save();
+    X.translate(Math.round(x), Math.round(y + 20));
+    if (orientation === "ceiling") X.rotate(Math.PI / 2);
+    const pulse = Math.floor(clock * 9 + phase) % 3;
+    X.fillStyle = c[3];
+    X.fillRect(-18, -20, 36, 40);
+    X.fillStyle = c[0];
+    X.fillRect(-13, -15, 26, 30);
+    X.fillStyle = c[2];
+    X.fillRect(-9 + pulse, -11 + pulse, 18 - pulse * 2, 22 - pulse * 2);
+    X.fillStyle = c[0];
+    X.fillRect(-5, -7, 10, 14);
+    X.fillStyle = c[1];
+    X.fillRect(-2, -2, 4, 4);
+    X.restore();
+  }
+  function drawTeleport() {
+    if (!portalAnim) return;
+    const c = palette();
+    for (let i = 0; i < 14; i++) {
+      const delay = i / 55;
+      const t = Math.max(0, Math.min(1, (portalAnim.t - delay) / 0.75));
+      const x = portalAnim.from.x + (portalAnim.to.x - portalAnim.from.x) * t;
+      const y =
+        portalAnim.from.y +
+        (portalAnim.to.y + 20 - portalAnim.from.y) * t +
+        Math.sin(t * Math.PI) * (-44 - (i % 3) * 7);
+      X.fillStyle = c[2 + (i % 2)];
+      const size = i % 3 === 0 ? 5 : 3;
+      X.fillRect(
+        Math.round((x + ((i % 5) - 2) * 4) / 3) * 3,
+        Math.round((y + (i % 4) * 3) / 3) * 3,
+        size,
+        size,
+      );
     }
   }
   function drawButton(b) {
@@ -979,6 +1090,7 @@
       R.haz.forEach(hazard);
       R.walls.forEach(drawWall);
       R.portals.forEach(drawPortal);
+      drawTeleport();
       R.buttons.forEach(drawButton);
       gate(R.exit[0], R.exit[1], 0);
       if (R.fake) gate(R.fake[0], R.fake[1], 1);
@@ -1085,7 +1197,18 @@
   });
   function toggle() {
     muted = !muted;
-    $("#soundBtn").textContent = muted ? "×" : "♪";
+    localStorage.setItem("level-devil-sound", muted ? "off" : "on");
+    updateSettings();
+  }
+  function updateSettings() {
+    $("#soundValue").textContent = muted ? "OFF" : "ON";
+    $("#autoRestartValue").textContent = autoRestart ? "ON" : "OFF";
+  }
+  function openSettings() {
+    settingsReturnState = state;
+    state = "settings";
+    updateSettings();
+    $("#settingsScreen").classList.remove("hidden");
   }
   if ($("#startBtn")) $("#startBtn").onclick = start;
   if ($("#levelsBtn")) $("#levelsBtn").onclick = openLevels;
@@ -1108,7 +1231,21 @@
   $("#restartBtn").onclick = () => {
     if (state !== "menu") reset(false);
   };
-  $("#soundBtn").onclick = toggle;
+  $("#settingsBtn").onclick = openSettings;
+  $("#closeSettingsBtn").onclick = () => {
+    $("#settingsScreen").classList.add("hidden");
+    state = settingsReturnState;
+  };
+  $("#soundSetting").onclick = toggle;
+  $("#autoRestartSetting").onclick = () => {
+    autoRestart = !autoRestart;
+    localStorage.setItem(
+      "level-devil-auto-restart",
+      autoRestart ? "on" : "off",
+    );
+    updateSettings();
+  };
+  updateSettings();
   start();
   requestAnimationFrame(loop);
 })();
