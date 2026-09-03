@@ -14,6 +14,19 @@
     toast: $("#toast"),
   };
   const K = { left: 0, right: 0, jump: 0 };
+  const PAL = [
+    ["#e3e7e4", "#adb8b1", "#68766d", "#202622"],
+    ["#e5e3dc", "#bbb3a2", "#786e5a", "#29251d"],
+    ["#e1e5e8", "#aab6c0", "#657583", "#20272d"],
+    ["#e7e1e4", "#beaab3", "#806572", "#2b2126"],
+    ["#e5e5dd", "#b9b99e", "#747455", "#25251c"],
+    ["#e1e2e8", "#abadc0", "#676a84", "#22232e"],
+  ];
+  const palette = () => PAL[Math.min(li, PAL.length - 1)];
+  let unlocked = Math.max(
+    1,
+    Number(localStorage.getItem("level-devil-unlocked")) || 1,
+  );
   let state = "menu",
     li = 0,
     deaths = 0,
@@ -25,6 +38,7 @@
     clock = 0,
     audio,
     toastTimer,
+    levelReturnState = "menu",
     P,
     R,
     particles = [];
@@ -59,22 +73,22 @@
       solid: [
         [0, 485, 145, 55],
         [205, 425, 75, 18],
-        [345, 350, 72, 18],
-        [485, 280, 72, 18],
-        [625, 215, 72, 18],
+        [345, 360, 72, 18],
+        [485, 295, 72, 18],
+        [625, 230, 72, 18],
         [770, 150, 190, 18],
       ],
       haz: [
         ["spike", 98, 465, 38, 20, "near", 65],
         ["riser", 228, 415, 28, 10, "near", 180],
         ["saw", 315, 312, 16, 58, "vertical"],
-        ["riser", 510, 270, 28, 10, "near", 450],
+        ["riser", 510, 285, 28, 10, "near", 450],
         ["saw", 735, 178, 17, 50, "horizontal"],
         ["spike", 818, 130, 42, 20, "hidden"],
       ],
       crumb: [
-        [345, 350, 72, 18, 0.48],
-        [625, 215, 72, 18, 0.44],
+        [345, 360, 72, 18, 0.48],
+        [625, 230, 72, 18, 0.44],
       ],
     },
     {
@@ -109,7 +123,7 @@
       name: "Zwei falsche Monde",
       hint: "Nicht jedes Tor ist ein Ausgang.",
       spawn: [30, 444],
-      exit: [882, 67],
+      exit: [882, 160],
       fake: [690, 322],
       solid: [
         [0, 485, 140, 55],
@@ -117,21 +131,21 @@
         [330, 360, 72, 18],
         [465, 300, 72, 18],
         [610, 360, 120, 18],
-        [770, 275, 76, 18],
-        [850, 140, 110, 18],
+        [770, 295, 76, 18],
+        [850, 230, 110, 18],
       ],
       haz: [
         ["spike", 92, 465, 38, 20, "hidden"],
         ["riser", 350, 350, 30, 10, "near", 290],
         ["spike", 642, 340, 40, 20, "near", 565],
         ["saw", 735, 235, 18, 62, "vertical"],
-        ["spike", 796, 255, 38, 20, "hidden"],
-        ["spike", 866, 120, 36, 20, "hidden"],
+        ["spike", 796, 275, 38, 20, "hidden"],
+        ["spike", 866, 210, 36, 20, "hidden"],
       ],
       crumb: [
         [195, 425, 72, 18, 0.4],
         [465, 300, 72, 18, 0.4],
-        [770, 275, 76, 18, 0.45],
+        [770, 295, 76, 18, 0.45],
       ],
     },
     {
@@ -168,32 +182,32 @@
       name: "Das Mondtor",
       hint: "Ein letzter Klang. Dann lauf.",
       spawn: [27, 444],
-      exit: [883, 68],
+      exit: [883, 180],
       tide: true,
       solid: [
         [0, 485, 110, 55],
         [155, 425, 62, 18],
-        [265, 345, 62, 18],
+        [265, 355, 62, 18],
         [375, 415, 62, 18],
-        [490, 325, 62, 18],
-        [605, 240, 62, 18],
+        [490, 345, 62, 18],
+        [605, 275, 62, 18],
         [720, 320, 62, 18],
-        [850, 140, 110, 18],
+        [850, 250, 110, 18],
       ],
       haz: [
         ["spike", 64, 465, 38, 20, "near", 48],
         ["saw", 240, 300, 16, 68, "vertical"],
         ["riser", 392, 405, 28, 10, "near", 350],
         ["saw", 570, 282, 18, 72, "horizontal"],
-        ["spike", 622, 220, 36, 20, "hidden"],
+        ["spike", 622, 255, 36, 20, "hidden"],
         ["riser", 740, 310, 25, 10, "near", 690],
-        ["spike", 866, 120, 36, 20, "hidden"],
+        ["spike", 866, 230, 36, 20, "hidden"],
       ],
       crumb: [
         [155, 425, 62, 18, 0.36],
-        [265, 345, 62, 18, 0.4],
-        [490, 325, 62, 18, 0.34],
-        [605, 240, 62, 18, 0.4],
+        [265, 355, 62, 18, 0.4],
+        [490, 345, 62, 18, 0.34],
+        [605, 275, 62, 18, 0.4],
         [720, 320, 62, 18, 0.36],
       ],
     },
@@ -212,6 +226,7 @@
       ground: 0,
       coyote: 0,
       held: 0,
+      buffer: 0,
       face: 1,
       px: 0,
       py: 0,
@@ -248,11 +263,27 @@
           active,
           progress: active ? 1 : 0,
           phase: i * 1.6,
+          speed: 1.5 + Math.random() * 2.3,
+          direction: Math.random() < 0.5 ? -1 : 1,
         };
       }),
       tide: H + 60,
       fakeLock: 0,
     };
+    R.haz.forEach((h) => {
+      if (h.type !== "spike") return;
+      const floor = [...R.solid, ...R.crumb].find(
+        (p) =>
+          Math.abs(p.y - (h.y + 20)) < 2 &&
+          h.x >= p.x &&
+          h.x + h.w <= p.x + p.w,
+      );
+      if (!floor) return;
+      const min = floor.x === 0 ? Math.max(floor.x + 8, P.x + 48) : floor.x + 8;
+      const max = floor.x + floor.w - h.w - 8;
+      if (max > min) h.x = Math.round(min + Math.random() * (max - min));
+      if (h.mode === "near") h.trigger = h.x - 45 - Math.random() * 28;
+    });
     energy = 100;
     pulse = 0;
     particles = [];
@@ -269,6 +300,29 @@
     reset();
     beep(260, 0.08, "triangle");
   }
+  function buildLevelGrid() {
+    const grid = $("#levelGrid");
+    grid.textContent = "";
+    L.forEach((level, i) => {
+      const b = document.createElement("button");
+      b.disabled = i + 1 > unlocked;
+      b.innerHTML = `${i + 1}<small>${b.disabled ? "GESPERRT" : "OFFEN"}</small>`;
+      b.onclick = () => {
+        li = i;
+        UI.start.classList.add("hidden");
+        UI.win.classList.add("hidden");
+        $("#levelScreen").classList.add("hidden");
+        reset();
+      };
+      grid.appendChild(b);
+    });
+  }
+  function openLevels() {
+    levelReturnState = state === "playing" ? "playing" : "menu";
+    state = "levelmenu";
+    buildLevelGrid();
+    $("#levelScreen").classList.remove("hidden");
+  }
   function die() {
     if (state !== "playing") return;
     state = "dead";
@@ -284,6 +338,8 @@
     state = "transition";
     burst(P.x + 12, P.y + 9, "#777", 16);
     beep(620, 0.12, "sine");
+    unlocked = Math.max(unlocked, Math.min(L.length, li + 2));
+    localStorage.setItem("level-devil-unlocked", unlocked);
     setTimeout(() => {
       if (++li === L.length) {
         state = "won";
@@ -380,11 +436,14 @@
       };
     let x = h.x,
       y = h.y;
-    if (h.mode === "vertical") y += Math.sin(clock * 2.7 + h.phase) * h.range;
-    if (h.mode === "horizontal") x += Math.sin(clock * 2.5 + h.phase) * h.range;
+    const wobble = Math.sin(clock * 0.43 + h.phase) * 0.7;
+    if (h.mode === "vertical")
+      y += Math.sin(clock * h.speed * h.direction + h.phase + wobble) * h.range;
+    if (h.mode === "horizontal")
+      x += Math.sin(clock * h.speed * h.direction + h.phase + wobble) * h.range;
     if (h.mode === "orbit") {
-      x += Math.cos(clock * 2.2) * 62;
-      y += Math.sin(clock * 2.2) * 42;
+      x += Math.cos(clock * h.speed * h.direction + h.phase + wobble) * 62;
+      y += Math.sin(clock * h.speed * h.direction + h.phase) * 42;
     }
     return { x: x - h.w, y: y - h.w, w: h.w * 2, h: h.w * 2 };
   }
@@ -401,18 +460,27 @@
     const l = L[li];
     P.px = P.x;
     P.py = P.y;
-    P.vx = (K.left ? -245 : 0) + (K.right ? 245 : 0);
+    const target = (K.left ? -220 : 0) + (K.right ? 220 : 0);
+    const acceleration = P.ground ? 1500 : 850;
+    const change = Math.max(
+      -acceleration * dt,
+      Math.min(acceleration * dt, target - P.vx),
+    );
+    P.vx += change;
     if (P.vx) P.face = Math.sign(P.vx);
     P.coyote = P.ground ? 0.105 : Math.max(0, P.coyote - dt);
-    if (K.jump && !P.held && P.coyote > 0) {
-      P.vy = -430;
+    P.buffer = K.jump && !P.held ? 0.11 : Math.max(0, P.buffer - dt);
+    if (P.buffer > 0 && P.coyote > 0) {
+      P.vy = -395;
       P.ground = 0;
       P.coyote = 0;
+      P.buffer = 0;
       P.held = 1;
       beep(300, 0.05);
     }
     if (!K.jump) P.held = 0;
-    P.vy = Math.min(780, P.vy + 1210 * dt);
+    if (!K.jump && P.vy < -120) P.vy += 900 * dt;
+    P.vy = Math.min(720, P.vy + 1100 * dt);
     P.x += P.vx * dt;
     resolveX();
     P.y += P.vy * dt;
@@ -450,20 +518,22 @@
     UI.meter.style.width = energy + "%";
   }
   function platform(r, crumb = false) {
-    X.fillStyle = crumb ? "#555" : "#222";
+    const c = palette();
+    X.fillStyle = crumb ? c[2] : c[3];
     X.beginPath();
     X.rect(r.x, r.y, r.w, r.h);
     X.fill();
-    X.fillStyle = crumb ? "#888" : "#555";
+    X.fillStyle = crumb ? c[1] : c[2];
     X.fillRect(r.x, r.y, r.w, 2);
   }
   function hazard(h) {
     X.save();
+    const c = palette();
     const b = hbox(h);
     if (h.type === "spike") {
-      X.fillStyle = "#555";
+      X.fillStyle = c[2];
       X.fillRect(h.x, h.y + 16, h.w, 4);
-      X.fillStyle = "#888";
+      X.fillStyle = c[1];
       for (let q = h.x + 5; q < h.x + h.w - 4; q += 10)
         X.fillRect(q, h.y + 17, 5, 2);
       if (!h.active && h.mode === "hidden" && !pulse) {
@@ -471,30 +541,30 @@
         return;
       }
       X.globalAlpha = h.active ? 1 : Math.max(0.25, pulse);
-      X.fillStyle = "#333";
+      X.fillStyle = c[3];
       const n = Math.max(1, Math.floor(h.w / 12));
       for (let i = 0; i < n; i++) {
         const sx = Math.round(h.x + (i * h.w) / n);
         const raised = Math.round(16 * h.progress);
         X.fillRect(sx + 1, h.y + 16 - raised, 8, raised + 4);
-        X.fillStyle = "#555";
+        X.fillStyle = c[2];
         X.fillRect(sx + 3, h.y + 12 - raised, 4, 4);
-        X.fillStyle = "#333";
+        X.fillStyle = c[3];
       }
     } else if (h.type === "riser") {
-      X.fillStyle = "#333";
+      X.fillStyle = c[3];
       X.fillRect(b.x, b.y, b.w, b.h);
-      X.fillStyle = "#777";
+      X.fillStyle = c[2];
       X.fillRect(b.x, b.y, b.w, 4);
     } else {
       X.translate(b.x + b.w / 2, b.y + b.h / 2);
       X.rotate(clock * 3);
-      X.fillStyle = "#444";
+      X.fillStyle = c[2];
       for (let i = 0; i < 10; i++) {
         X.rotate(Math.PI / 5);
         X.fillRect(h.w * 0.55, -2, h.w * 0.65, 4);
       }
-      X.fillStyle = "#222";
+      X.fillStyle = c[3];
       X.beginPath();
       X.arc(0, 0, h.w * 0.68, 0, Math.PI * 2);
       X.fill();
@@ -503,28 +573,30 @@
   }
   function gate(x, y, fake) {
     X.save();
+    const c = palette();
     X.translate(x + 23, y + 34);
-    X.fillStyle = fake ? "#777" : "#222";
+    X.fillStyle = fake ? c[2] : c[3];
     X.fillRect(-17, -31, 34, 62);
-    X.fillStyle = "#ddd";
+    X.fillStyle = c[0];
     X.fillRect(-11, -24, 22, 55);
-    X.fillStyle = fake ? "#555" : "#222";
+    X.fillStyle = fake ? c[2] : c[3];
     X.fillRect(5, 2, 3, 3);
     X.restore();
   }
   function drawHero() {
     X.save();
+    const c = palette();
     X.translate(Math.round(P.x + P.w / 2), Math.round(P.y + P.h / 2));
     if (P.face < 0) X.scale(-1, 1);
     const b = P.ground && Math.abs(P.vx) ? Math.round(Math.sin(clock * 16)) : 0;
-    X.fillStyle = "#26332a";
+    X.fillStyle = c[3];
     X.fillRect(-10, -6 + b, 15, 11);
-    X.fillStyle = "#78a85a";
+    X.fillStyle = c[2];
     X.fillRect(-8, -8 + b, 12, 4);
     X.fillRect(5, -4 + b, 7, 7);
     X.fillRect(-9, 5 + b, 4, 3);
     X.fillRect(2, 5 + b, 4, 3);
-    X.fillStyle = "#eee";
+    X.fillStyle = c[0];
     X.fillRect(10, -2 + b, 1, 1);
     X.restore();
   }
@@ -535,12 +607,13 @@
       shake *= 0.82;
     }
     X.imageSmoothingEnabled = false;
-    X.fillStyle = "#ddd";
+    const c = palette();
+    X.fillStyle = c[0];
     X.fillRect(0, 0, W, H);
-    X.fillStyle = "#ccc";
+    X.fillStyle = c[1];
     X.fillRect(90, 395, 120, 145);
     X.fillRect(735, 350, 150, 190);
-    X.fillStyle = "#bbb";
+    X.fillStyle = c[2];
     X.fillRect(786, 68, 28, 28);
     if (state !== "menu" && R) {
       const l = L[Math.min(li, L.length - 1)];
@@ -552,9 +625,9 @@
       gate(l.exit[0], l.exit[1], 0);
       if (l.fake) gate(l.fake[0], l.fake[1], 1);
       if (l.tide) {
-        X.fillStyle = "#555";
+        X.fillStyle = c[2];
         X.fillRect(0, R.tide, W, H - R.tide);
-        X.strokeStyle = "#222";
+        X.strokeStyle = c[3];
         X.lineWidth = 2;
         X.beginPath();
         for (let x = 0; x <= W; x += 12)
@@ -608,15 +681,24 @@
   addEventListener("keyup", (e) => {
     if (map[e.code]) K[map[e.code]] = 0;
   });
+  const activePointers = { left: new Set(), right: new Set(), jump: new Set() };
   document.querySelectorAll("[data-key]").forEach((b) => {
     const k = b.dataset.key,
       down = (e) => {
         e.preventDefault();
-        k === "focus" ? focus() : (K[k] = 1);
+        b.setPointerCapture?.(e.pointerId);
+        if (k === "focus") focus();
+        else {
+          activePointers[k].add(e.pointerId);
+          K[k] = 1;
+        }
       },
       up = (e) => {
         e.preventDefault();
-        if (k !== "focus") K[k] = 0;
+        if (k !== "focus") {
+          activePointers[k].delete(e.pointerId);
+          K[k] = activePointers[k].size ? 1 : 0;
+        }
       };
     b.addEventListener("pointerdown", down);
     b.addEventListener("pointerup", up);
@@ -627,6 +709,12 @@
     $("#soundBtn").textContent = muted ? "×" : "♪";
   }
   $("#startBtn").onclick = start;
+  $("#levelsBtn").onclick = openLevels;
+  $("#mapBtn").onclick = openLevels;
+  $("#closeLevelsBtn").onclick = () => {
+    $("#levelScreen").classList.add("hidden");
+    state = levelReturnState;
+  };
   $("#againBtn").onclick = start;
   $("#restartBtn").onclick = () => {
     if (state !== "menu") reset(false);
