@@ -217,46 +217,93 @@
     },
   ];
   const GROUPS = ["SPIKES", "MOVING WALLS", "PORTALS"];
+  const TERRAINS = [
+    [
+      [0, 400, 430, 140],
+      [470, 400, 490, 140],
+    ],
+    [
+      [0, 400, 250, 140],
+      [305, 400, 275, 140],
+      [635, 400, 325, 140],
+    ],
+    [
+      [0, 400, 195, 140],
+      [245, 380, 190, 160],
+      [490, 400, 180, 140],
+      [725, 375, 235, 165],
+    ],
+    [
+      [0, 400, 960, 140],
+      [250, 105, 30, 245],
+      [505, 90, 30, 260],
+      [760, 120, 30, 230],
+    ],
+    [
+      [0, 400, 175, 140],
+      [225, 385, 160, 155],
+      [435, 365, 150, 175],
+      [635, 385, 155, 155],
+      [840, 400, 120, 140],
+    ],
+    [
+      [0, 400, 275, 140],
+      [335, 400, 275, 140],
+      [670, 400, 290, 140],
+      [300, 285, 340, 18],
+    ],
+    [
+      [0, 360, 180, 180],
+      [230, 375, 175, 165],
+      [455, 390, 170, 150],
+      [675, 400, 285, 140],
+    ],
+    [
+      [0, 400, 215, 140],
+      [265, 390, 180, 150],
+      [495, 375, 180, 165],
+      [725, 360, 235, 180],
+    ],
+    [
+      [0, 400, 235, 140],
+      [290, 400, 165, 140],
+      [510, 385, 170, 155],
+      [735, 400, 225, 140],
+      [330, 285, 310, 18],
+    ],
+    [
+      [0, 385, 160, 155],
+      [210, 400, 190, 140],
+      [455, 370, 175, 170],
+      [685, 395, 120, 145],
+      [855, 365, 105, 175],
+    ],
+  ];
   function makeLevel(group, number) {
-    const difficulty = group * 10 + number;
-    const gapA = group === 0 && number < 4 ? 0 : 28 + Math.min(22, number * 2);
-    const gapB = number < 2 ? 0 : 26 + Math.min(20, number * 2);
-    const a = 245,
-      b = 610;
-    const solid = gapA
-      ? [
-          [0, 485, a, 55],
-          [a + gapA, 485, b - a - gapA, 55],
-          [b + gapB, 485, 960 - b - gapB, 55],
-        ]
-      : [
-          [0, 485, b, 55],
-          [b + gapB, 485, 960 - b - gapB, 55],
-        ];
-    if (!gapB) solid.splice(0, solid.length, [0, 485, 960, 55]);
+    const solid = TERRAINS[number - 1].map((p) => [...p]);
+    const walkable = solid
+      .filter((p) => p[1] >= 340)
+      .sort((a, b) => a[0] - b[0]);
+    const gaps = walkable
+      .slice(0, -1)
+      .map((p, i) => ({ start: p[0] + p[2], end: walkable[i + 1][0] }))
+      .filter((g) => g.end - g.start > 12);
     if (group === 1) {
+      const gap = gaps[0] || { start: 430, end: 470 };
       solid.push([
-        a - 12,
-        448,
-        72,
+        gap.start - 8,
+        365,
+        Math.max(55, gap.end - gap.start + 16),
         16,
         {
           axis: number % 2 ? "x" : "y",
-          range: 24 + number,
-          speed: 1.2 + number * 0.07,
-          trigger: 155,
+          range: 18 + number,
+          speed: 0.8 + number * 0.04,
+          trigger: Math.max(80, gap.start - 120),
         },
       ]);
-      if (number > 5)
-        solid.push([
-          b - 18,
-          448,
-          76,
-          16,
-          { axis: number % 2 ? "y" : "x", range: 28, speed: 1.5, trigger: 525 },
-        ]);
     }
-    const safeRanges = solid.filter((p) => p[1] === 485 && p[2] > 80);
+    const safeRanges = walkable.filter((p) => p[2] > 80);
     const haz = [];
     const count = 1 + Math.ceil(number / 4) + (group > 0 ? 1 : 0);
     for (let i = 0; i < count; i++) {
@@ -269,27 +316,64 @@
       haz.push([
         "spike",
         x,
-        465,
+        floor[1] - 20,
         36,
         20,
         i % 3 === 1 ? "hidden" : "near",
         x - (i % 3 === 0 ? 30 : 48),
       ]);
     }
-    const crumb = group === 0 && number >= 6 ? [[455, 448, 72, 16, 0.5]] : [];
-    if (crumb.length) solid.push([455, 448, 72, 16]);
-    if (number % 3 === 0) solid.push([340, 105, 28, 245]);
-    if (number % 4 === 0) solid.push([590, 100, 150, 22]);
-    if (number % 5 === 0) solid.push([665, 120, 30, 225]);
+    const crumb =
+      group === 0 && number >= 6
+        ? [[walkable[1][0] + 25, walkable[1][1] - 18, 72, 16, 0.5]]
+        : [];
+    if (crumb.length)
+      solid.push([crumb[0][0], crumb[0][1], crumb[0][2], crumb[0][3]]);
     const walls = [];
     if (group === 1) {
-      walls.push([145, 330, 18, 70, 105, 120]);
-      if (number > 5) walls.push([510, 330, 18, 70, 470, 120]);
+      const gap = gaps[0] || { start: 430, end: 470 };
+      walls.push([
+        Math.max(80, gap.start - 90),
+        walkable[0][1] - 70,
+        18,
+        70,
+        Math.max(45, gap.start - 130),
+        gap.end - gap.start + 75,
+      ]);
+      if (number > 5 && gaps[1])
+        walls.push([
+          gaps[1].start - 85,
+          walkable[1][1] - 70,
+          18,
+          70,
+          gaps[1].start - 125,
+          gaps[1].end - gaps[1].start + 70,
+        ]);
     }
     if (group === 2) walls.push([520, 330, 20, 70, Infinity, 0, "gate"]);
-    const portals = group === 2 ? [[275, 360, 710, 360]] : [];
+    const portals =
+      group === 2
+        ? [
+            [
+              walkable[0][0] + walkable[0][2] - 55,
+              walkable[0][1] - 40,
+              walkable.at(-1)[0] + 45,
+              walkable.at(-1)[1] - 40,
+            ],
+          ]
+        : [];
     const buttons =
-      group === 2 ? [[365, 390, 30, 10, number % 2 ? "size" : "gate"]] : [];
+      group === 2
+        ? [
+            [
+              walkable[Math.min(1, walkable.length - 1)][0] + 35,
+              walkable[Math.min(1, walkable.length - 1)][1] - 10,
+              30,
+              10,
+              number % 2 ? "size" : "gate",
+            ],
+          ]
+        : [];
     return {
       group,
       number,
@@ -300,8 +384,11 @@
           : group === 1
             ? "Walls push. They do not kill."
             : "Portals and buttons change the room.",
-      spawn: [28, 447],
-      exit: [900, 415],
+      spawn: [28, walkable[0][1] - 38],
+      exit: [
+        walkable.at(-1)[0] + walkable.at(-1)[2] - 60,
+        walkable.at(-1)[1] - 65,
+      ],
       solid,
       haz,
       crumb,
@@ -389,6 +476,7 @@
         active: v[6] === "gate",
         progress: v[6] === "gate" ? 1 : 0,
         originX: v[0],
+        bottom: v[1] + v[3],
         open: false,
         travel: 0,
       })),
@@ -423,20 +511,11 @@
       p.originX = p.x;
       p.originY = p.y;
     });
-    P.y = 400 - P.h;
+    P.y = l.spawn[1];
     R.haz.forEach((h, i) => {
       if (carriers[i]) h.y = carriers[i].y - 20;
     });
-    const nearestFloor = (x) =>
-      terrain.reduce((a, p) =>
-        Math.abs(p.x + p.w / 2 - x) < Math.abs(a.x + a.w / 2 - x) ? p : a,
-      );
-    const exitFloor = nearestFloor(l.exit[0]);
-    R.exit = [l.exit[0], exitFloor.y - 65];
-    if (l.fake) {
-      const fakeFloor = nearestFloor(l.fake[0]);
-      R.fake = [l.fake[0], fakeFloor.y - 58];
-    }
+    R.exit = [...l.exit];
     energy = 100;
     pulse = 0;
     particles = [];
@@ -682,7 +761,7 @@
       w.x = w.originX + w.travel;
       const box = {
         x: w.x,
-        y: 400 - w.h * w.progress,
+        y: w.bottom - w.h * w.progress,
         w: w.w,
         h: w.h * w.progress,
       };
@@ -820,7 +899,7 @@
   function drawWall(w) {
     const c = palette(),
       h = w.h * w.progress,
-      y = 400 - h;
+      y = w.bottom - h;
     X.fillStyle = c[3];
     X.fillRect(Math.round(w.x), Math.round(y), w.w, Math.round(h));
     X.fillStyle = c[2];
