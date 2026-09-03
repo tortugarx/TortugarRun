@@ -15,12 +15,12 @@
   };
   const K = { left: 0, right: 0, jump: 0 };
   const PAL = [
-    ["#e5ddca", "#8aa6a1", "#c47d62", "#343a40"],
-    ["#d9dfcf", "#8fa57d", "#bf806f", "#3f4850"],
-    ["#dce1e5", "#8ca0b5", "#c4956c", "#4f5962"],
-    ["#e4d9dc", "#9b91ad", "#b97c72", "#3e4541"],
-    ["#dedcc9", "#82a4a0", "#b58b60", "#4c4a55"],
-    ["#d8dfda", "#8997b2", "#be776d", "#39444d"],
+    ["#dce8e3", "#a9c6bb", "#668f80", "#29483e"],
+    ["#e8dfd5", "#c9ad91", "#987253", "#503b2b"],
+    ["#dde4eb", "#aabdd0", "#6b88a4", "#344b62"],
+    ["#e8dce2", "#c8a7b7", "#976a80", "#513747"],
+    ["#e5e5d6", "#c2c19b", "#8b8956", "#48472b"],
+    ["#e2ddea", "#b9acd0", "#806ba2", "#44375c"],
   ];
   const palette = () => PAL[Math.min(li, PAL.length - 1)];
   let unlocked = Math.max(
@@ -326,7 +326,7 @@
     li = 0;
     deaths = 0;
     UI.deaths.textContent = "00";
-    UI.start.classList.add("hidden");
+    UI.start?.classList.add("hidden");
     UI.win.classList.add("hidden");
     reset();
     beep(260, 0.08, "triangle");
@@ -340,7 +340,7 @@
       b.innerHTML = `${i + 1}<small>${b.disabled ? "GESPERRT" : "OFFEN"}</small>`;
       b.onclick = () => {
         li = i;
-        UI.start.classList.add("hidden");
+        UI.start?.classList.add("hidden");
         UI.win.classList.add("hidden");
         $("#levelScreen").classList.add("hidden");
         reset();
@@ -714,9 +714,11 @@
     if (map[e.code]) K[map[e.code]] = 0;
   });
   const activePointers = { left: new Set(), right: new Set(), jump: new Set() };
+  const activeTouches = { left: new Set(), right: new Set(), jump: new Set() };
   document.querySelectorAll("[data-key]").forEach((b) => {
     const k = b.dataset.key,
       down = (e) => {
+        if (e.pointerType === "touch") return;
         e.preventDefault();
         b.setPointerCapture?.(e.pointerId);
         if (k === "focus") focus();
@@ -726,6 +728,7 @@
         }
       },
       up = (e) => {
+        if (e.pointerType === "touch") return;
         e.preventDefault();
         if (k !== "focus") {
           activePointers[k].delete(e.pointerId);
@@ -735,13 +738,33 @@
     b.addEventListener("pointerdown", down);
     b.addEventListener("pointerup", up);
     b.addEventListener("pointercancel", up);
+    b.addEventListener(
+      "touchstart",
+      (e) => {
+        e.preventDefault();
+        if (k === "focus") return focus();
+        for (const touch of e.changedTouches)
+          activeTouches[k].add(touch.identifier);
+        K[k] = 1;
+      },
+      { passive: false },
+    );
+    const touchUp = (e) => {
+      e.preventDefault();
+      if (k === "focus") return;
+      for (const touch of e.changedTouches)
+        activeTouches[k].delete(touch.identifier);
+      K[k] = activeTouches[k].size || activePointers[k].size ? 1 : 0;
+    };
+    b.addEventListener("touchend", touchUp, { passive: false });
+    b.addEventListener("touchcancel", touchUp, { passive: false });
   });
   function toggle() {
     muted = !muted;
     $("#soundBtn").textContent = muted ? "×" : "♪";
   }
-  $("#startBtn").onclick = start;
-  $("#levelsBtn").onclick = openLevels;
+  if ($("#startBtn")) $("#startBtn").onclick = start;
+  if ($("#levelsBtn")) $("#levelsBtn").onclick = openLevels;
   $("#mapBtn").onclick = openLevels;
   $("#closeLevelsBtn").onclick = () => {
     $("#levelScreen").classList.add("hidden");
@@ -752,5 +775,6 @@
     if (state !== "menu") reset(false);
   };
   $("#soundBtn").onclick = toggle;
+  start();
   requestAnimationFrame(loop);
 })();
