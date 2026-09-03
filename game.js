@@ -15,12 +15,12 @@
   };
   const K = { left: 0, right: 0, jump: 0 };
   const PAL = [
-    ["#e3e7e4", "#adb8b1", "#68766d", "#202622"],
-    ["#e5e3dc", "#bbb3a2", "#786e5a", "#29251d"],
-    ["#e1e5e8", "#aab6c0", "#657583", "#20272d"],
-    ["#e7e1e4", "#beaab3", "#806572", "#2b2126"],
-    ["#e5e5dd", "#b9b99e", "#747455", "#25251c"],
-    ["#e1e2e8", "#abadc0", "#676a84", "#22232e"],
+    ["#e5ddca", "#8aa6a1", "#c47d62", "#343a40"],
+    ["#d9dfcf", "#8fa57d", "#bf806f", "#3f4850"],
+    ["#dce1e5", "#8ca0b5", "#c4956c", "#4f5962"],
+    ["#e4d9dc", "#9b91ad", "#b97c72", "#3e4541"],
+    ["#dedcc9", "#82a4a0", "#b58b60", "#4c4a55"],
+    ["#d8dfda", "#8997b2", "#be776d", "#39444d"],
   ];
   const palette = () => PAL[Math.min(li, PAL.length - 1)];
   let unlocked = Math.max(
@@ -232,13 +232,15 @@
       py: 0,
     };
     R = {
-      solid: l.solid.map((v, i) => ({
-        x: v[0],
-        y: v[1],
-        w: v[2],
-        h: v[3],
-        id: "s" + i,
-      })),
+      solid: l.solid
+        .filter((v) => !l.crumb.some((c) => c[0] === v[0] && c[1] === v[1]))
+        .map((v, i) => ({
+          x: v[0],
+          y: v[1],
+          w: v[2],
+          h: v[3],
+          id: "s" + i,
+        })),
       crumb: l.crumb.map((v, i) => ({
         x: v[0],
         y: v[1],
@@ -250,26 +252,55 @@
         armed: 0,
         id: "c" + i,
       })),
-      haz: l.haz.map((v, i) => {
-        const active = ["on", "orbit", "vertical", "horizontal"].includes(v[5]);
-        return {
-          type: v[0],
-          x: v[1],
-          y: v[2],
-          w: v[3],
-          range: v[4],
-          mode: v[5],
-          trigger: v[6],
-          active,
-          progress: active ? 1 : 0,
-          phase: i * 1.6,
-          speed: 1.5 + Math.random() * 2.3,
-          direction: Math.random() < 0.5 ? -1 : 1,
-        };
-      }),
+      haz: l.haz
+        .filter((v) => v[0] === "spike")
+        .map((v, i) => {
+          const active = ["on", "orbit", "vertical", "horizontal"].includes(
+            v[5],
+          );
+          return {
+            type: v[0],
+            x: v[1],
+            y: v[2],
+            w: v[3],
+            range: v[4],
+            mode: v[5],
+            trigger: v[6],
+            active,
+            progress: active ? 1 : 0,
+            phase: i * 1.6,
+            speed: 1.5 + Math.random() * 2.3,
+            direction: Math.random() < 0.5 ? -1 : 1,
+          };
+        }),
       tide: H + 60,
       fakeLock: 0,
     };
+    const terrain = [...R.solid, ...R.crumb];
+    const carriers = R.haz.map((h) =>
+      terrain.find(
+        (p) =>
+          Math.abs(p.y - (h.y + 20)) < 2 &&
+          h.x >= p.x &&
+          h.x + h.w <= p.x + p.w,
+      ),
+    );
+    terrain.forEach((p) => {
+      if (p.y < 480) p.y = 430;
+    });
+    R.haz.forEach((h, i) => {
+      if (carriers[i]) h.y = carriers[i].y - 20;
+    });
+    const nearestFloor = (x) =>
+      terrain.reduce((a, p) =>
+        Math.abs(p.x + p.w / 2 - x) < Math.abs(a.x + a.w / 2 - x) ? p : a,
+      );
+    const exitFloor = nearestFloor(l.exit[0]);
+    R.exit = [l.exit[0], exitFloor.y - 65];
+    if (l.fake) {
+      const fakeFloor = nearestFloor(l.fake[0]);
+      R.fake = [l.fake[0], fakeFloor.y - 58];
+    }
     R.haz.forEach((h) => {
       if (h.type !== "spike") return;
       const floor = [...R.solid, ...R.crumb].find(
@@ -471,7 +502,7 @@
     P.coyote = P.ground ? 0.105 : Math.max(0, P.coyote - dt);
     P.buffer = K.jump && !P.held ? 0.11 : Math.max(0, P.buffer - dt);
     if (P.buffer > 0 && P.coyote > 0) {
-      P.vy = -395;
+      P.vy = -340;
       P.ground = 0;
       P.coyote = 0;
       P.buffer = 0;
@@ -502,9 +533,9 @@
       if (P.y + P.h > R.tide) die();
     }
     if (
-      l.fake &&
+      R.fake &&
       !R.fakeLock &&
-      hit(P, { x: l.fake[0], y: l.fake[1], w: 46, h: 60 })
+      hit(P, { x: R.fake[0], y: R.fake[1], w: 46, h: 60 })
     ) {
       R.fakeLock = 1;
       R.haz.forEach((h) => (h.active = true));
@@ -512,7 +543,7 @@
       P.x -= 28;
       P.vy = -330;
     }
-    if (hit(P, { x: l.exit[0], y: l.exit[1], w: 48, h: 70 })) finish();
+    if (hit(P, { x: R.exit[0], y: R.exit[1], w: 48, h: 70 })) finish();
     pulse = Math.max(0, pulse - dt * 0.74);
     energy = Math.min(100, energy + dt * 7);
     UI.meter.style.width = energy + "%";
@@ -531,11 +562,6 @@
     const c = palette();
     const b = hbox(h);
     if (h.type === "spike") {
-      X.fillStyle = c[2];
-      X.fillRect(h.x, h.y + 16, h.w, 4);
-      X.fillStyle = c[1];
-      for (let q = h.x + 5; q < h.x + h.w - 4; q += 10)
-        X.fillRect(q, h.y + 17, 5, 2);
       if (!h.active && h.mode === "hidden" && !pulse) {
         X.restore();
         return;
@@ -546,10 +572,16 @@
       for (let i = 0; i < n; i++) {
         const sx = Math.round(h.x + (i * h.w) / n);
         const raised = Math.round(16 * h.progress);
-        X.fillRect(sx + 1, h.y + 16 - raised, 8, raised + 4);
-        X.fillStyle = c[2];
-        X.fillRect(sx + 3, h.y + 12 - raised, 4, 4);
-        X.fillStyle = c[3];
+        const center = sx + 6;
+        for (let row = 0; row < raised; row += 4) {
+          const width = Math.min(12, 3 + row * 0.55);
+          X.fillRect(
+            Math.round(center - width / 2),
+            h.y + 20 - raised + row,
+            Math.round(width),
+            Math.min(4, raised - row),
+          );
+        }
       }
     } else if (h.type === "riser") {
       X.fillStyle = c[3];
@@ -622,8 +654,8 @@
         if (c.fall < 180) platform({ ...c, y: c.y + c.fall }, true);
       });
       R.haz.forEach(hazard);
-      gate(l.exit[0], l.exit[1], 0);
-      if (l.fake) gate(l.fake[0], l.fake[1], 1);
+      gate(R.exit[0], R.exit[1], 0);
+      if (R.fake) gate(R.fake[0], R.fake[1], 1);
       if (l.tide) {
         X.fillStyle = c[2];
         X.fillRect(0, R.tide, W, H - R.tide);
