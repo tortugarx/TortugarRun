@@ -212,7 +212,7 @@
       ],
     },
   ];
-  const GROUPS = ["STACHELN", "BEWEGUNG", "TRICKS"];
+  const GROUPS = ["SPIKES", "MOVEMENT", "TRICKS"];
   function makeLevel(group, number) {
     const difficulty = group * 10 + number;
     const gapA = group === 0 && number < 4 ? 0 : 28 + Math.min(22, number * 2);
@@ -283,10 +283,10 @@
       name: `${GROUPS[group]} ${String(number).padStart(2, "0")}`,
       hint:
         group === 0
-          ? "Achte auf den Boden."
+          ? "Watch the floor."
           : group === 1
-            ? "Der Boden bleibt nicht stehen."
-            : "Bekannte Regeln. Neue Reihenfolge.",
+            ? "The floor will not stay put."
+            : "Old rules. New order.",
       spawn: [28, 447],
       exit: [900, 415],
       solid,
@@ -375,10 +375,11 @@
       ),
     );
     terrain.forEach((p) => {
-      if (p.y < 480) p.y = 430;
+      p.y = p.y >= 480 ? 400 : 365;
       p.originX = p.x;
       p.originY = p.y;
     });
+    P.y = 400 - P.h;
     R.haz.forEach((h, i) => {
       if (carriers[i]) h.y = carriers[i].y - 20;
     });
@@ -439,7 +440,7 @@
       if (level.group !== selectedGroup) return;
       const b = document.createElement("button");
       b.disabled = i + 1 > unlocked;
-      b.innerHTML = `${level.number}<small>${b.disabled ? "GESPERRT" : "OFFEN"}</small>`;
+      b.innerHTML = `${level.number}<small>${b.disabled ? "LOCKED" : "OPEN"}</small>`;
       b.onclick = () => {
         li = i;
         UI.start?.classList.add("hidden");
@@ -477,7 +478,7 @@
       if (++li === L.length) {
         state = "won";
         $("#finalStats").textContent =
-          `${deaths} Fehltritte. Moss hat den falschen Pfad bezwungen.`;
+          `${deaths} deaths. Moss beat the false path.`;
         UI.win.classList.remove("hidden");
       } else reset();
     }, 650);
@@ -649,7 +650,7 @@
     ) {
       R.fakeLock = 1;
       R.haz.forEach((h) => (h.active = true));
-      toast("Das war nicht der Mond.", 1200);
+      toast("Wrong door.", 1200);
       P.x -= 28;
       P.vy = -330;
     }
@@ -753,10 +754,21 @@
     X.fillStyle = c[0];
     X.fillRect(0, 0, W, H);
     X.fillStyle = c[1];
-    X.fillRect(90, 395, 120, 145);
-    X.fillRect(735, 350, 150, 190);
+    const blockCount = 2 + (li % 5);
+    for (let i = 0; i < blockCount; i++) {
+      const bw = 38 + ((li * 17 + i * 29) % 105);
+      const bh = 55 + ((li * 31 + i * 47) % 170);
+      const bx = (li * 83 + i * 197 + 35) % (W - bw);
+      X.fillRect(bx, H - bh, bw, bh);
+    }
     X.fillStyle = c[2];
-    X.fillRect(786, 68, 28, 28);
+    const markSize = 16 + (li % 4) * 7;
+    X.fillRect(
+      70 + ((li * 137) % 800),
+      55 + ((li * 53) % 130),
+      markSize,
+      markSize,
+    );
     if (state !== "menu" && R) {
       const l = L[Math.min(li, L.length - 1)];
       R.solid.forEach((r) => platform(r));
@@ -874,6 +886,7 @@
   if ($("#startBtn")) $("#startBtn").onclick = start;
   if ($("#levelsBtn")) $("#levelsBtn").onclick = openLevels;
   $("#mapBtn").onclick = openLevels;
+  $("#focusBtn").onclick = focus;
   $("#closeLevelsBtn").onclick = () => {
     $("#levelScreen").classList.add("hidden");
     state = levelReturnState;
