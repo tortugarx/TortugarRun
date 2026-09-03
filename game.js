@@ -205,8 +205,8 @@
     P = {
       x: l.spawn[0],
       y: l.spawn[1],
-      w: 36,
-      h: 30,
+      w: 24,
+      h: 18,
       vx: 0,
       vy: 0,
       ground: 0,
@@ -275,14 +275,14 @@
     deaths++;
     UI.deaths.textContent = String(deaths).padStart(2, "0");
     shake = 17;
-    burst(P.x + 18, P.y + 15, "#ff765f", 22);
+    burst(P.x + 12, P.y + 9, "#333", 12);
     beep(75, 0.24, "sawtooth");
     setTimeout(() => reset(false), 520);
   }
   function finish() {
     if (state !== "playing") return;
     state = "transition";
-    burst(P.x + 18, P.y + 15, "#9dffc3", 30);
+    burst(P.x + 12, P.y + 9, "#777", 16);
     beep(620, 0.12, "sine");
     setTimeout(() => {
       if (++li === L.length) {
@@ -450,23 +450,20 @@
     UI.meter.style.width = energy + "%";
   }
   function platform(r, crumb = false) {
-    X.fillStyle = crumb ? "#705e42" : "#315c4a";
+    X.fillStyle = crumb ? "#555" : "#222";
     X.beginPath();
-    X.roundRect(r.x, r.y, r.w, r.h, crumb ? 3 : 8);
+    X.rect(r.x, r.y, r.w, r.h);
     X.fill();
-    X.fillStyle = crumb ? "#e1a66a" : "#9cd092";
-    X.fillRect(r.x + 5, r.y, r.w - 10, 3);
-    X.fillStyle = "rgba(8,30,24,.6)";
-    for (let x = r.x + 12; x < r.x + r.w; x += 19)
-      X.fillRect(x, r.y + 6, 3, Math.min(9, r.h - 6));
+    X.fillStyle = crumb ? "#888" : "#555";
+    X.fillRect(r.x, r.y, r.w, 2);
   }
   function hazard(h) {
     X.save();
     const b = hbox(h);
     if (h.type === "spike") {
-      X.fillStyle = "#725f58";
+      X.fillStyle = "#555";
       X.fillRect(h.x, h.y + 16, h.w, 4);
-      X.fillStyle = "#b08d78";
+      X.fillStyle = "#888";
       for (let q = h.x + 5; q < h.x + h.w - 4; q += 10)
         X.fillRect(q, h.y + 17, 5, 2);
       if (!h.active && h.mode === "hidden" && !pulse) {
@@ -474,30 +471,30 @@
         return;
       }
       X.globalAlpha = h.active ? 1 : Math.max(0.25, pulse);
-      X.fillStyle = "#ddd5bc";
+      X.fillStyle = "#333";
       const n = Math.max(1, Math.floor(h.w / 12));
       for (let i = 0; i < n; i++) {
         const sx = Math.round(h.x + (i * h.w) / n);
         const raised = Math.round(16 * h.progress);
         X.fillRect(sx + 1, h.y + 16 - raised, 8, raised + 4);
-        X.fillStyle = "#f1ead0";
+        X.fillStyle = "#555";
         X.fillRect(sx + 3, h.y + 12 - raised, 4, 4);
-        X.fillStyle = "#ddd5bc";
+        X.fillStyle = "#333";
       }
     } else if (h.type === "riser") {
-      X.fillStyle = "#c75a50";
+      X.fillStyle = "#333";
       X.fillRect(b.x, b.y, b.w, b.h);
-      X.fillStyle = "#ead39b";
+      X.fillStyle = "#777";
       X.fillRect(b.x, b.y, b.w, 4);
     } else {
       X.translate(b.x + b.w / 2, b.y + b.h / 2);
       X.rotate(clock * 3);
-      X.fillStyle = "#d9cfaa";
+      X.fillStyle = "#444";
       for (let i = 0; i < 10; i++) {
         X.rotate(Math.PI / 5);
         X.fillRect(h.w * 0.55, -2, h.w * 0.65, 4);
       }
-      X.fillStyle = "#594c49";
+      X.fillStyle = "#222";
       X.beginPath();
       X.arc(0, 0, h.w * 0.68, 0, Math.PI * 2);
       X.fill();
@@ -507,18 +504,12 @@
   function gate(x, y, fake) {
     X.save();
     X.translate(x + 23, y + 34);
-    X.shadowBlur = 22;
-    X.shadowColor = fake ? "#ff755f" : "#d7ffc8";
-    X.strokeStyle = fake ? "#ff755f" : "#edffd4";
-    X.lineWidth = 5;
-    X.beginPath();
-    X.ellipse(0, 0, 18, 32, 0, 0, Math.PI * 2);
-    X.stroke();
-    X.setLineDash([4, 7]);
-    X.rotate(clock * (fake ? -1 : 1));
-    X.beginPath();
-    X.ellipse(0, 0, 27, 39, 0, 0, Math.PI * 2);
-    X.stroke();
+    X.fillStyle = fake ? "#777" : "#222";
+    X.fillRect(-17, -31, 34, 62);
+    X.fillStyle = "#ddd";
+    X.fillRect(-11, -24, 22, 55);
+    X.fillStyle = fake ? "#555" : "#222";
+    X.fillRect(5, 2, 3, 3);
     X.restore();
   }
   function drawHero() {
@@ -526,18 +517,15 @@
     X.translate(Math.round(P.x + P.w / 2), Math.round(P.y + P.h / 2));
     if (P.face < 0) X.scale(-1, 1);
     const b = P.ground && Math.abs(P.vx) ? Math.round(Math.sin(clock * 16)) : 0;
-    X.fillStyle = "#25333a";
-    X.fillRect(-14, -9 + b, 22, 17);
-    X.fillStyle = "#6f9e65";
-    X.fillRect(-11, -12 + b, 18, 5);
-    X.fillStyle = "#91bd72";
-    X.fillRect(7, -7 + b, 11, 10);
-    X.fillRect(-13, 8 + b, 7, 5);
-    X.fillRect(5, 8 + b, 7, 5);
-    X.fillStyle = "#e8e0a2";
-    X.fillRect(15, -4 + b, 2, 2);
-    X.fillStyle = "#ca6658";
-    X.fillRect(-17, -7 + b, 5, 3);
+    X.fillStyle = "#26332a";
+    X.fillRect(-10, -6 + b, 15, 11);
+    X.fillStyle = "#78a85a";
+    X.fillRect(-8, -8 + b, 12, 4);
+    X.fillRect(5, -4 + b, 7, 7);
+    X.fillRect(-9, 5 + b, 4, 3);
+    X.fillRect(2, 5 + b, 4, 3);
+    X.fillStyle = "#eee";
+    X.fillRect(10, -2 + b, 1, 1);
     X.restore();
   }
   function draw() {
@@ -547,22 +535,13 @@
       shake *= 0.82;
     }
     X.imageSmoothingEnabled = false;
-    X.fillStyle = "#192b38";
+    X.fillStyle = "#ddd";
     X.fillRect(0, 0, W, H);
-    X.fillStyle = "#223d49";
-    for (let x = 24; x < W; x += 112) {
-      const h = 80 + ((x * 7) % 140);
-      X.fillRect(x, H - h, 68, h);
-      X.fillStyle = "#294651";
-      for (let y = H - h + 16; y < H; y += 30) X.fillRect(x + 9, y, 7, 11);
-      X.fillStyle = "#223d49";
-    }
-    X.fillStyle = "#eadc9c";
-    X.fillRect(785, 58, 38, 38);
-    X.fillStyle = "#192b38";
-    X.fillRect(773, 48, 38, 38);
-    X.fillStyle = "rgba(105,155,143,.16)";
-    for (let y = 330; y < H; y += 24) X.fillRect(0, y, W, 2);
+    X.fillStyle = "#ccc";
+    X.fillRect(90, 395, 120, 145);
+    X.fillRect(735, 350, 150, 190);
+    X.fillStyle = "#bbb";
+    X.fillRect(786, 68, 28, 28);
     if (state !== "menu" && R) {
       const l = L[Math.min(li, L.length - 1)];
       R.solid.forEach((r) => platform(r));
@@ -573,13 +552,10 @@
       gate(l.exit[0], l.exit[1], 0);
       if (l.fake) gate(l.fake[0], l.fake[1], 1);
       if (l.tide) {
-        const g = X.createLinearGradient(0, R.tide, 0, H);
-        g.addColorStop(0, "rgba(255,97,103,.82)");
-        g.addColorStop(1, "#3d0c22");
-        X.fillStyle = g;
+        X.fillStyle = "#555";
         X.fillRect(0, R.tide, W, H - R.tide);
-        X.strokeStyle = "#ffc17f";
-        X.lineWidth = 3;
+        X.strokeStyle = "#222";
+        X.lineWidth = 2;
         X.beginPath();
         for (let x = 0; x <= W; x += 12)
           X.lineTo(x, R.tide + Math.sin(x * 0.05 + clock * 5) * 4);
@@ -595,17 +571,12 @@
         X.globalAlpha = 1;
       });
       if (pulse) {
-        X.strokeStyle = `rgba(150,255,202,${pulse * 0.7})`;
-        X.lineWidth = 4;
+        X.strokeStyle = `rgba(40,40,40,${pulse * 0.5})`;
+        X.lineWidth = 2;
         X.beginPath();
         X.arc(P.x + 18, P.y + 15, (1 - pulse) * 550, 0, Math.PI * 2);
         X.stroke();
       }
-      const v = X.createRadialGradient(W / 2, H / 2, 200, W / 2, H / 2, 570);
-      v.addColorStop(0, "transparent");
-      v.addColorStop(1, "rgba(0,7,12,.68)");
-      X.fillStyle = v;
-      X.fillRect(0, 0, W, H);
     }
     X.restore();
   }
