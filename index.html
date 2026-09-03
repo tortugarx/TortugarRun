@@ -8,7 +8,7 @@
     />
     <meta name="theme-color" content="#071b22" />
     <title>Level Devil</title>
-    <link rel="stylesheet" href="style.css?v=12" />
+    <link rel="stylesheet" href="style.css?v=13" />
   </head>
   <body>
     <main class="shell">
@@ -38,6 +38,20 @@
             </div>
           </div>
         </div>
+        <div id="settingsScreen" class="overlay hidden">
+          <div class="panel settings-panel">
+            <p class="eyebrow">SETTINGS</p>
+            <h2>Game options</h2>
+            <button id="autoRestartSetting" class="setting-row">
+              <span>AUTO RESTART</span
+              ><strong id="autoRestartValue">OFF</strong>
+            </button>
+            <button id="soundSetting" class="setting-row">
+              <span>SOUND</span><strong id="soundValue">ON</strong>
+            </button>
+            <button id="closeSettingsBtn" class="secondary">BACK</button>
+          </div>
+        </div>
         <div class="hud">
           <div><small>ROOM</small><strong id="levelLabel">01 / 30</strong></div>
           <div class="focus-wrap">
@@ -53,7 +67,7 @@
           <button id="focusBtn" aria-label="Reveal spikes">!</button>
           <button id="mapBtn" aria-label="Level select">▦</button>
           <button id="restartBtn" aria-label="Restart room">↻</button>
-          <button id="soundBtn" aria-label="Toggle sound">♪</button>
+          <button id="settingsBtn" aria-label="Settings">⚙</button>
         </div>
         <nav class="touch-controls" aria-label="Touch controls">
           <button data-key="left" aria-label="Move left">←</button>
@@ -62,6 +76,6 @@
         </nav>
       </section>
     </main>
-    <script src="game.js?v=12"></script>
+    <script src="game.js?v=13"></script>
   </body>
 </html>
