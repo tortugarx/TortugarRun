@@ -212,7 +212,7 @@
       ],
     },
   ];
-  const GROUPS = ["SPIKES", "MOVEMENT", "TRICKS"];
+  const GROUPS = ["SPIKES", "MOVING WALLS", "PORTALS"];
   function makeLevel(group, number) {
     const difficulty = group * 10 + number;
     const gapA = group === 0 && number < 4 ? 0 : 28 + Math.min(22, number * 2);
@@ -230,7 +230,7 @@
           [b + gapB, 485, 960 - b - gapB, 55],
         ];
     if (!gapB) solid.splice(0, solid.length, [0, 485, 960, 55]);
-    if (group >= 1) {
+    if (group === 1) {
       solid.push([
         a - 12,
         448,
@@ -272,11 +272,17 @@
         x - 48,
       ]);
     }
-    const crumb =
-      group === 2 && number > 2
-        ? [[455, 448, 72, 16, 0.55 - Math.min(0.2, number * 0.02)]]
-        : [];
+    const crumb = [];
     if (crumb.length) solid.push([455, 448, 72, 16]);
+    const walls = [];
+    if (group === 1) {
+      walls.push([145, 330, 18, 70, 105, 120]);
+      if (number > 5) walls.push([510, 330, 18, 70, 470, 120]);
+    }
+    if (group === 2) walls.push([520, 330, 20, 70, Infinity, 0, "gate"]);
+    const portals = group === 2 ? [[275, 360, 710, 360]] : [];
+    const buttons =
+      group === 2 ? [[365, 390, 30, 10, number % 2 ? "size" : "gate"]] : [];
     return {
       group,
       number,
@@ -285,15 +291,16 @@
         group === 0
           ? "Watch the floor."
           : group === 1
-            ? "The floor will not stay put."
-            : "Old rules. New order.",
+            ? "Walls push. They do not kill."
+            : "Portals and buttons change the room.",
       spawn: [28, 447],
       exit: [900, 415],
       solid,
       haz,
       crumb,
-      fake: group === 2 && number === 7 ? [720, 425] : undefined,
-      tide: group === 2 && number === 10,
+      walls,
+      portals,
+      buttons,
     };
   }
   const L = GROUPS.flatMap((_, group) =>
@@ -364,6 +371,34 @@
         }),
       tide: H + 60,
       fakeLock: 0,
+      walls: l.walls.map((v) => ({
+        x: v[0],
+        y: v[1],
+        w: v[2],
+        h: v[3],
+        trigger: v[4],
+        range: v[5],
+        kind: v[6] || "push",
+        active: v[6] === "gate",
+        progress: v[6] === "gate" ? 1 : 0,
+        originX: v[0],
+        open: false,
+      })),
+      portals: l.portals.map((v) => ({
+        ax: v[0],
+        ay: v[1],
+        bx: v[2],
+        by: v[3],
+        cooldown: 0,
+      })),
+      buttons: l.buttons.map((v) => ({
+        x: v[0],
+        y: v[1],
+        w: v[2],
+        h: v[3],
+        action: v[4],
+        pressed: false,
+      })),
     };
     const terrain = [...R.solid, ...R.crumb];
     const carriers = R.haz.map((h) =>
@@ -393,20 +428,6 @@
       const fakeFloor = nearestFloor(l.fake[0]);
       R.fake = [l.fake[0], fakeFloor.y - 58];
     }
-    R.haz.forEach((h) => {
-      if (h.type !== "spike") return;
-      const floor = [...R.solid, ...R.crumb].find(
-        (p) =>
-          Math.abs(p.y - (h.y + 20)) < 2 &&
-          h.x >= p.x &&
-          h.x + h.w <= p.x + p.w,
-      );
-      if (!floor) return;
-      const min = floor.x === 0 ? Math.max(floor.x + 8, P.x + 48) : floor.x + 8;
-      const max = floor.x + floor.w - h.w - 8;
-      if (max > min) h.x = Math.round(min + Math.random() * (max - min));
-      if (h.mode === "near") h.trigger = h.x - 45 - Math.random() * 28;
-    });
     energy = 100;
     pulse = 0;
     particles = [];
@@ -634,6 +655,57 @@
       s.x = s.originX + (s.move.axis === "x" ? amount : 0);
       s.y = s.originY + (s.move.axis === "y" ? amount : 0);
     });
+    R.walls.forEach((w) => {
+      if (P.x > w.trigger) w.active = true;
+      if (w.kind === "gate" && w.open)
+        w.progress = Math.max(0, w.progress - dt * 3);
+      else if (w.active) w.progress = Math.min(1, w.progress + dt * 3);
+      const slide =
+        w.kind === "push" ? Math.max(0, (w.progress - 0.45) / 0.55) : 0;
+      w.x = w.originX + w.range * slide;
+      const box = {
+        x: w.x,
+        y: 400 - w.h * w.progress,
+        w: w.w,
+        h: w.h * w.progress,
+      };
+      if (w.progress > 0.05 && hit(P, box)) {
+        if (P.x + P.w / 2 < box.x + box.w / 2) P.x = box.x - P.w;
+        else P.x = box.x + box.w;
+        if (w.kind === "push") P.vx = Math.max(P.vx, 120);
+      }
+    });
+    R.buttons.forEach((b) => {
+      if (b.pressed || !hit(P, b)) return;
+      b.pressed = true;
+      if (b.action === "size") {
+        const feet = P.y + P.h;
+        P.w = 14;
+        P.h = 12;
+        P.y = feet - P.h;
+        toast("SMALL MODE", 1000);
+      } else {
+        R.walls
+          .filter((w) => w.kind === "gate")
+          .forEach((w) => (w.open = true));
+        toast("WALL OPEN", 1000);
+      }
+    });
+    R.portals.forEach((p) => {
+      p.cooldown = Math.max(0, p.cooldown - dt);
+      if (p.cooldown) return;
+      const a = { x: p.ax - 9, y: p.ay, w: 18, h: 40 },
+        b = { x: p.bx - 9, y: p.by, w: 18, h: 40 };
+      if (hit(P, a)) {
+        P.x = p.bx + 18;
+        P.y = p.by + 40 - P.h;
+        p.cooldown = 0.7;
+      } else if (hit(P, b)) {
+        P.x = p.ax + 18;
+        P.y = p.ay + 40 - P.h;
+        p.cooldown = 0.7;
+      }
+    });
     R.haz.forEach((h) => {
       if (h.mode === "near" && P.x > h.trigger) h.active = true;
       if (h.active) h.progress = Math.min(1, h.progress + dt * 3.2);
@@ -726,6 +798,35 @@
     X.fillRect(5, 2, 3, 3);
     X.restore();
   }
+  function drawWall(w) {
+    const c = palette(),
+      h = w.h * w.progress,
+      y = 400 - h;
+    X.fillStyle = c[3];
+    X.fillRect(Math.round(w.x), Math.round(y), w.w, Math.round(h));
+    X.fillStyle = c[2];
+    for (let yy = y + 6; yy < 400; yy += 12)
+      X.fillRect(Math.round(w.x) + 3, Math.round(yy), w.w - 6, 3);
+  }
+  function drawPortal(p) {
+    const c = palette();
+    for (const [x, y] of [
+      [p.ax, p.ay],
+      [p.bx, p.by],
+    ]) {
+      X.fillStyle = c[3];
+      X.fillRect(x - 9, y, 18, 40);
+      X.fillStyle = c[1];
+      X.fillRect(x - 5, y + 4, 10, 32);
+      X.fillStyle = c[2];
+      X.fillRect(x - 2, y + 8, 4, 24);
+    }
+  }
+  function drawButton(b) {
+    const c = palette();
+    X.fillStyle = b.pressed ? c[1] : c[2];
+    X.fillRect(b.x, b.y + (b.pressed ? 5 : 0), b.w, b.h - (b.pressed ? 5 : 0));
+  }
   function drawHero() {
     X.save();
     const c = palette();
@@ -776,6 +877,9 @@
         if (c.fall < 180) platform({ ...c, y: c.y + c.fall }, true);
       });
       R.haz.forEach(hazard);
+      R.walls.forEach(drawWall);
+      R.portals.forEach(drawPortal);
+      R.buttons.forEach(drawButton);
       gate(R.exit[0], R.exit[1], 0);
       if (R.fake) gate(R.fake[0], R.fake[1], 1);
       if (l.tide) {
