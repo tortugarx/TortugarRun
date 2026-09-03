@@ -15,7 +15,7 @@ html,
 body {
   margin: 0;
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   overflow: hidden;
   background: var(--bg);
   color: var(--fg);
@@ -33,15 +33,16 @@ button {
   cursor: pointer;
 }
 .shell {
-  width: min(100vw, 1280px);
-  height: 100vh;
+  width: 100vw;
+  height: 100dvh;
   display: grid;
   place-items: center;
 }
 .game-wrap {
   position: relative;
-  width: 100%;
-  max-height: 100vh;
+  width: min(100vw, calc(100dvh * 16 / 9));
+  height: min(100dvh, calc(100vw * 9 / 16));
+  flex: none;
   aspect-ratio: 16/9;
   overflow: hidden;
   background: #181818;
@@ -100,6 +101,7 @@ canvas {
   padding: 24px;
   text-align: center;
   background: rgba(17, 17, 17, 0.96);
+  overflow: hidden;
 }
 .overlay.hidden {
   display: none;
@@ -245,8 +247,8 @@ kbd {
     display: none;
   }
   .game-wrap {
-    width: 100vw;
-    height: auto;
+    width: min(100vw, calc(100dvh * 16 / 9));
+    height: min(100dvh, calc(100vw * 9 / 16));
   }
   .hud {
     inset: 8px 9px auto;
@@ -256,15 +258,21 @@ kbd {
     right: 8px;
   }
 }
-@media (max-aspect-ratio: 16/9) {
-  .game-wrap {
-    width: 100vw;
-    height: auto;
+@media (max-height: 500px) {
+  .overlay h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
   }
-}
-@media (min-aspect-ratio: 16/9) {
-  .game-wrap {
-    height: 100vh;
-    width: auto;
+  .overlay > p:not(.eyebrow) {
+    margin-bottom: 10px;
+  }
+  .key-row {
+    display: none;
+  }
+  .primary {
+    padding: 8px 16px;
+  }
+  .secondary {
+    margin-top: 5px;
   }
 }
