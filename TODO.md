@@ -13,40 +13,9 @@ Erste Überarbeitung am 4. September 2026 umgesetzt und geprüft. Das anschließ
 - [ ] Begonnene Animationen vollständig bis zu ihrem vorgesehenen Endzustand laufen lassen. Abbrüche und vorzeitig stehenbleibende Bewegungen untersuchen; Bewegungswege und Platzbedarf so abstimmen, dass die Abläufe vollständig funktionieren.
 - [ ] Überlappende Items und Spielelemente weiterhin konsequent beseitigen. Alle Level über vollständige Abläufe prüfen, einschließlich Auslösen, Bewegung und Endpositionen; die bisherigen Prüfungen auf Gewinnwegen reichen dafür nicht aus.
 
-## Bedienung und Erkennbarkeit
-
-- [x] Den leeren oberen Bereich hinter den Anzeigen und Steuerelementen durch eine durchgehende Wand bis zum oberen Rand ersetzen (siehe Screenshot); dort keinen freien Hintergrundstreifen lassen.
-- [x] Die oberen Steuerelemente und Anzeigen auf der Wand gut sichtbar und lesbar gestalten: deutliche Kontraste, erkennbare Symbole und klare Umrandungen.
-- [x] Die obere Bedienleiste schöner und pixeliger gestalten, mit zum Spiel passenden Pixel-Symbolen, Rahmen und Schaltflächen.
-- [x] Restart-Button genauso wie den Level-Button gestalten.
-- [x] Knöpfe im Level deutlich vom Hintergrund abheben.
-- [x] Hintergrund und spielbare Flächen klarer voneinander unterscheiden; den Hintergrund bei Bedarf anpassen.
-- [x] Ausgangstür kleiner und schöner gestalten, passend zum bestehenden Grafikstil.
-
 ## Raumaufbau und Abwechslung
 
-- [x] Noch einmal viele Bilder verschiedener Level-Devil-Level ansehen und deren Raumaufbau als Referenz nutzen. Dashier bleibt ein eigenes Spiel, kein Plattformer.
-- [x] Viele unterschiedliche Szenen und Raumformen entwerfen. Böden und Wände sind bisher zu ähnlich; ihre Anordnung, Höhen, Aussparungen und Wege stärker variieren.
 - [ ] Ungewollte Überschneidungen von Elementen vermeiden; auch Bewegungswege und Endpositionen kontrollieren. Durch Spielerfeedback wieder geöffnet; siehe offene Nacharbeiten.
-- [x] Das wiederholte Muster „Boden schiebt den Spieler in eine extra Stacheldecke“ aufbrechen. Stattdessen unterschiedliche Fallenabläufe und plötzlich auftauchende Stacheln einsetzen.
-
-## Stacheln und Überraschungen
-
-- [x] Stachel- und Wandfallen weniger vorhersehbar gestalten: wiederkehrende Positionen, Abstände und Auslöser aufbrechen. Fallen dürfen sowohl an erwarteten als auch an unerwarteten Stellen erscheinen; erwartete Fallen gelegentlich auslassen.
-- [x] Bewegliche Stacheln einsetzen.
-- [x] Bereits sichtbare Stacheln verschwinden lassen, sodass zuvor versperrte Wege frei werden.
-- [x] Stacheln bei passenden Auslösern plötzlich erscheinen lassen.
-
-## Bewegliche Wände und Böden
-
-- [x] Wandbewegungen beschleunigen; Geschwindigkeit und Bewegungsverlauf je Falle abstimmen.
-- [x] Bewegungen flüssiger animieren und ruckelige Übergänge vermeiden.
-- [x] Positionen, Abmessungen, Einfahrwege und Endpunkte besser an die Umgebung anpassen.
-- [x] Bewegliche Teile unterschiedlich einsetzen: Sie können helfen, heben, schieben oder den Spieler hereinlegen und dürfen erst während des Versuchs auftauchen beziehungsweise losfahren.
-
-## Knöpfe und ihre Folgen
-
-- [x] Auch Knöpfe gegen den Spieler arbeiten lassen: Größenänderungen, Türen und verschobene Böden oder Wände können sowohl hilfreich als auch eine Falle sein.
 
 ## Regeln für die Umsetzung
 
