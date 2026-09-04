@@ -43,6 +43,7 @@ button {
   place-items: center;
 }
 .game-wrap {
+  container-type: inline-size;
   position: relative;
   width: min(100vw, calc(100dvh * 16 / 9));
   height: min(100dvh, calc(100vw * 9 / 16));
@@ -256,7 +257,7 @@ canvas {
 .group-tabs {
   grid-column: 1/-1;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 5px;
   margin-bottom: 4px;
 }
@@ -314,11 +315,53 @@ kbd {
   height: 42px;
   padding: 0;
   font-size: 15px;
-  opacity: 0.8;
+  opacity: 1;
   box-shadow:
     2px 2px 0 #000,
     inset -3px -3px 0 #080808,
     inset 3px 3px 0 #494949;
+}
+/* The HUD sits inside the solid upper wall at every canvas size. */
+.hud {
+  inset: clamp(6px, 1.6cqw, 18px) auto auto clamp(8px, 2cqw, 24px);
+  width: 48%;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 12px;
+  color: var(--level-light, #fff);
+  text-shadow: 1px 1px 0 #101a16;
+}
+.hud small { color: var(--level-light, #fff); font-size: clamp(9px, 1.1cqw, 12px); font-weight: bold; }
+.hud strong { font-size: clamp(12px, 1.6cqw, 17px); font-weight: bold; }
+.meter { height: 6px; background: #17241f; border: 1px solid var(--level-light, #fff); }
+.meter i { background: var(--level-light, #fff); }
+.game-actions {
+  top: clamp(5px, 1.2cqw, 14px);
+  right: clamp(8px, 1.8cqw, 22px);
+  padding: 0;
+  gap: clamp(5px, 0.8cqw, 9px);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.game-actions button {
+  display: grid;
+  place-items: center;
+  width: clamp(24px, 4.5cqw, 48px);
+  height: clamp(24px, 4.5cqw, 48px);
+  background: var(--level-light, #eee);
+  color: var(--level-dark, #222);
+  border: 2px solid var(--level-light, #eee);
+  box-shadow: 3px 3px 0 #14201b, inset -3px -3px 0 var(--level-mid, #888), inset 3px 3px 0 #fff;
+}
+.game-actions svg { width: 50%; height: 50%; fill: currentColor; shape-rendering: crispEdges; pointer-events: none; }
+.game-actions button:hover { background: #fff; }
+button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.game-actions button:active { transform: translate(2px, 2px); box-shadow: inset 2px 2px 0 var(--level-mid, #888); }
+#deathScreen .secondary, #levelScreen .secondary, #settingsScreen .secondary {
+  background: var(--level-dark, #222);
+  color: var(--level-light, #eee);
+  border: 2px solid var(--level-mid, #888);
+  box-shadow: 3px 3px 0 #14201b, inset 2px 2px 0 var(--level-mid, #888);
 }
 .touch-controls {
   display: none;
@@ -335,12 +378,16 @@ kbd {
   width: 108px;
   height: 46px;
   padding: 0;
-  background: rgba(17, 17, 17, 0.72);
+  background: var(--level-light, #eee);
+  color: var(--level-dark, #222);
+  border-color: var(--level-mid, #888);
+  box-shadow: 3px 3px 0 #14201b, inset -3px -3px 0 var(--level-mid, #888), inset 3px 3px 0 #fff;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   font-size: 20px;
 }
+.touch-controls svg { width: 20px; height: 20px; fill: currentColor; shape-rendering: crispEdges; pointer-events: none; }
 .touch-controls .jump {
   grid-column: 4;
   width: 132px;
@@ -355,13 +402,6 @@ kbd {
   .game-wrap {
     width: min(100vw, calc(100dvh * 16 / 9));
     height: min(100dvh, calc(100vw * 9 / 16));
-  }
-  .hud {
-    inset: 8px 9px auto;
-  }
-  .game-actions {
-    top: 27px;
-    right: 6px;
   }
 }
 @media (max-width: 400px) {
