@@ -1,6 +1,16 @@
 const { levels } = require('../levels.js');
 const { World, STEP, hit } = require('../world.js');
 const assert = require('node:assert/strict');
+const touches=(a,b)=>a.x<=b.x+b.w&&a.x+a.w>=b.x&&a.y<=b.y+b.h&&a.y+a.h>=b.y;
+function supported(level,h,x,y) {
+  return level.blocks.some(b=>{
+    const dir=h.dir||'up';
+    if(dir==='up') return b[1]===y&&b[0]<=x&&b[0]+b[2]>=x+h.w;
+    if(dir==='down') return b[1]+b[3]===y&&b[0]<=x&&b[0]+b[2]>=x+h.w;
+    if(dir==='right') return b[0]+b[2]===x&&b[1]<=y&&b[1]+b[3]>=y+h.w;
+    return b[0]===x&&b[1]<=y&&b[1]+b[3]>=y+h.w;
+  });
+}
 for (const [i,l] of levels.entries()) {
   assert.equal(l.number,i+1);
   assert.equal(l.group,i<14?0:i<29?1:i<39?2:3);
@@ -21,6 +31,24 @@ for (const [i,l] of levels.entries()) {
     assert(!world.solid.some(b=>hit(body,b)),`portal in stone: ${i+1} ${p.id}`);
   }
   for(const m of l.motions) assert(world.object(m.id),`missing map part ${i+1}`);
+  const anchored=new Set(world.solid.filter(b=>b.x<=32||b.x+b.w>=928||b.y<=104||b.y+b.h>=540||l.motions.some(m=>m.id===b.id)));
+  for(let changed=true;changed;) { changed=false; for(const b of world.solid) if(!anchored.has(b)&&[...anchored].some(a=>touches(a,b))) { anchored.add(b);changed=true; } }
+  assert.equal(anchored.size,world.solid.length,`detached static terrain: ${i+1}`);
+  for(const [j,h] of l.spikes.entries()) {
+    if(h.attach) {
+      const carrier=l.blocks.find(b=>b[4]===h.attach);
+      assert(carrier,`missing spike carrier: ${i+1}.${j}`);
+      assert(supported({blocks:[carrier]},h,h.x,h.y),`spike detached from carrier: ${i+1}.${j}`);
+    } else {
+      const points=[[h.x,h.y],...(h.path||[]).map(p=>[h.x+p[0],h.y+p[1]])];
+      assert(points.every(([x,y])=>supported(l,h,x,y)),`unsupported spike path: ${i+1}.${j}`);
+    }
+  }
+  const animation=new World(l); animation.p.x=900; animation.p.y=250;
+  animation.haz=[]; animation.portals=[]; animation.buttons=[]; animation.locked=true;
+  for(const m of animation.motions) { m.when=null; m.delay=0; }
+  for(let t=0;t<2400;t++) animation.tick({});
+  for(const m of animation.motions) assert(m.done||m.loop,`unfinished map animation: ${i+1} ${m.id}`);
   const other=new World(l);
   for(let t=0;t<900;t++) {
     const input={right:t%180<120,left:t%180>=150,jump:t%75<24};

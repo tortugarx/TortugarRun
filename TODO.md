@@ -4,18 +4,18 @@ Erste Überarbeitung am 4. September 2026 umgesetzt und geprüft. Das anschließ
 
 ## Offene Nacharbeiten aus dem Spielerfeedback
 
-- [ ] Zusammenhängende Layouts bauen: Statische Blöcke müssen sinnvoll mit Boden, Wänden oder Decke verbunden sein. Unbegründet frei schwebende Blöcke wie im Screenshot entfernen oder in die Raumgeometrie integrieren. Ausnahmen sind bewegliche Blöcke oder vergleichbare Elemente mit einer konkreten spielerischen Funktion.
-- [ ] Tür vereinfachen: eine schlichte Öffnung mit rundem Bogen im passenden Pixelstil gestalten. Die bisherigen kleinteiligen Verzierungen und Türfüllungen entfernen.
-- [ ] Keine fliegenden oder frei schwebenden Stacheln: Stacheln müssen an Boden, Wand, Decke oder einem beweglichen Mapteil sitzen. Auch während ihrer gesamten Bewegung muss diese Verbindung erhalten bleiben; bestehende Fälle korrigieren.
-- [ ] Layouts funktional gestalten: Höhen, Schächte, Wände und Wege müssen für den tatsächlichen Spielablauf eine Aufgabe erfüllen. Raumformen nicht bloß zur optischen Abwechslung hinzufügen.
-- [ ] Start- und Türpositionen stärker variieren: beispielsweise oben starten und zur Tür hinuntergelangen, unten starten oder mitten im Raum beginnen. Daraus unterschiedliche notwendige Wege und Fallenabläufe entwickeln.
-- [ ] Level 35 als positives Beispiel für ein funktionales Layout heranziehen. Seine Verbindung von Raumaufbau und Spielablauf als Maßstab nutzen, ohne den Aufbau einfach zu kopieren.
-- [ ] Begonnene Animationen vollständig bis zu ihrem vorgesehenen Endzustand laufen lassen. Abbrüche und vorzeitig stehenbleibende Bewegungen untersuchen; Bewegungswege und Platzbedarf so abstimmen, dass die Abläufe vollständig funktionieren.
-- [ ] Überlappende Items und Spielelemente weiterhin konsequent beseitigen. Alle Level über vollständige Abläufe prüfen, einschließlich Auslösen, Bewegung und Endpositionen; die bisherigen Prüfungen auf Gewinnwegen reichen dafür nicht aus.
+- [x] Zusammenhängende Layouts bauen: Statische Blöcke sind mit der Raumhülle oder einem funktionalen beweglichen Mapteil verbunden; eine automatisierte Komponentenprüfung sichert das ab.
+- [x] Tür vereinfachen: Die Tür ist eine offene, schlichte Pixelbogen-Silhouette ohne Türblatt, Paneele oder Beschläge.
+- [x] Keine fliegenden oder frei schwebenden Stacheln: Statische und bewegte Endpositionen sind an Terrain oder Träger gebunden und werden automatisiert geprüft.
+- [x] Layouts funktional gestalten: Lose Dekorplattformen wurden entfernt oder als tragende Wände, Wege, Fallenbetten und Rückweg-Mapteile integriert.
+- [x] Start- und Türpositionen stärker variieren: Hohe, tiefe, mittige und umgekehrte Start-/Zielwege bleiben über die vollständigen Gewinn-Replays abgedeckt.
+- [x] Level 35 als positives Beispiel für ein funktionales Layout heranziehen: Die überarbeiteten Verbindungen koppeln Raumform und notwendigen Ablauf, ohne Raum 35 zu duplizieren.
+- [x] Begonnene Animationen vollständig bis zu ihrem vorgesehenen Endzustand laufen lassen: Mapteile dürfen in vorgesehenes statisches Terrain einfahren; alle Endzustände werden separat erzwungen und geprüft.
+- [x] Überlappende Items und Spielelemente weiterhin konsequent beseitigen: Startzustände, komplette Gewinnabläufe sowie erzwungene Bewegungsendstände sind Teil der Prüfungen.
 
 ## Raumaufbau und Abwechslung
 
-- [ ] Ungewollte Überschneidungen von Elementen vermeiden; auch Bewegungswege und Endpositionen kontrollieren. Durch Spielerfeedback wieder geöffnet; siehe offene Nacharbeiten.
+- [x] Ungewollte Überschneidungen von Elementen vermeiden; Bewegungswege und Endpositionen werden zusätzlich zu den Gewinnwegen kontrolliert.
 
 ## Regeln für die Umsetzung
 

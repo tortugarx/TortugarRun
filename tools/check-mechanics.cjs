@@ -15,6 +15,12 @@ const trapped=new World({...push,blocks:[...push.blocks,[260,300,30,120]]});adva
 assert.equal(trapped.status,'playing');
 assert(!trapped.solid.some(b=>hit(trapped.p,b)));
 
+// Docking into static terrain does not truncate a map-part animation.
+const docking=new World({...base,spawn:[40,420],blocks:[...base.blocks,[120,380,30,40,'wall'],[300,300,40,120]],motions:[{id:'wall',path:[[190,0,1]]}]});
+advance(docking,180);
+assert.equal(docking.motions[0].done,true);
+assert.equal(docking.object('wall').x,310);
+
 // Feet stay attached to a rising support without requiring a jump.
 const lift=new World({...base,spawn:[230,400],blocks:[[200,400,120,24,'lift']],motions:[{id:'lift',when:{stand:'lift'},path:[[0,-100,1]]}]});
 advance(lift,150);assert.equal(lift.status,'playing');

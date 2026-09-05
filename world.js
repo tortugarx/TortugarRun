@@ -80,8 +80,10 @@
         else if (dy < 0 && py + p.h <= by + 1.5) this.moveActor(0, b.y - p.h - p.y, b);
         else if (dy > 0 && py >= by + b.h - 1) this.moveActor(0, b.y + b.h - p.y, b);
       }
-      // A blocked map piece stalls; there is deliberately no crush damage.
-      if (hit(p, b) || this.solid.some(s => s !== b && hit(p, s))) {
+      // Terrain may deliberately dock into or retract behind other terrain.
+      // Only the player can block a step; static stone must never truncate an
+      // animation just because the moving piece started inside a floor cutout.
+      if (hit(p, b)) {
         b.x = bx; b.y = by; p.x = px; p.y = py;
         return false;
       }

@@ -236,6 +236,26 @@
   L[49].motions[1].path=[[0,100,0.28]];
   L[45].spikes.push(sp(465,420,27,signal("button:wrong"),{delay:0.1}));
   L[46].spikes[0]=sp(850,420,27,signal("button:small"),{initial:true,vanish:true,delay:0.4});
+  // Integrate formerly decorative static platforms into the room silhouette.
+  L[12].blocks.push(b(680,220,30,102));
+  L[17].blocks.push(b(477,250,28,84));
+  L[22].blocks=L[22].blocks.filter(r=>!(r[0]===537&&r[1]===420));
+  L[38].blocks.push(b(500,349,20,191));
+  L[39].blocks.push(b(300,387,20,33));
+  L[41].blocks.push(b(422,225,28,75));
+  L[48].blocks.push(b(785,245,20,75));
+  const returnShelf=L[49].blocks.find(r=>r[0]===370&&r[1]===270);
+  returnShelf[4]="returnShelf";
+  L[49].motions.push(mv("returnShelf",signal("arrival:B"),[[-5,0,0.2]]));
+  const finalLedge=L[49].blocks.find(r=>r[0]===150&&r[1]===180);
+  L[49].blocks.push(b(32,180,118,20));
+  // Deep traps grow from visible stone beds instead of hovering above pits.
+  for(const [n,x,w] of [[22,423,62],[24,330,250],[28,340,210],[48,655,140],[49,710,45]]) L[n-1].blocks.push(floor(x,515,w));
+  // The travelling spike in room 9 remains grounded over the shallow step.
+  L[8].blocks.push(b(489,420,43,22));
+  // Side-facing teeth sit flush against the full height of their wall face.
+  L[7].spikes[0].y=319;
+  L[11].spikes[0].y=289;
   // Keep spike attachment offsets immutable across simulation ticks.
   for (const l of L) for (const h of l.spikes) { h.baseX=h.x; h.baseY=h.y; }
   const api={levels:L,groups:["SPIKES","MOVING MAP","PORTALS","BUTTONS"]};

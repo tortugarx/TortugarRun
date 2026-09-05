@@ -251,19 +251,16 @@
     X.save();
     const c = palette();
     X.translate(x + 11, y + 26);
+    // A plain, open pixel arch with no panels, door leaf or ornamental hardware.
     X.fillStyle = c[3];
-    X.fillRect(0, 3, 24, 35);
-    X.fillRect(3, 0, 18, 3);
-    X.fillStyle = c[2];
-    X.fillRect(3, 3, 18, 32);
+    X.fillRect(0, 8, 4, 30);
+    X.fillRect(20, 8, 4, 30);
+    X.fillRect(4, 4, 4, 4);
+    X.fillRect(16, 4, 4, 4);
+    X.fillRect(8, 1, 8, 4);
     X.fillStyle = c[0];
-    X.fillRect(5, 5, 14, 30);
-    X.fillStyle = c[1];
-    X.fillRect(7, 8, 10, 11);
-    X.fillRect(7, 24, 10, 9);
-    X.fillStyle = c[3];
-    X.fillRect(15, 21, 3, 3);
-    if (fake) { X.fillRect(8, 16, 8, 7); X.fillRect(10, 13, 4, 4); }
+    X.fillRect(4, 9, 16, 29);
+    if (fake) { X.fillStyle = c[2]; X.fillRect(4, 20, 16, 3); }
     X.restore();
   }
   function drawPortal(p) { drawPortalEnd(p.x, p.y - 40, "floor", 0); }
