@@ -2,28 +2,6 @@
 const fs=require('node:fs');
 const {levels}=require('../levels.js');
 const {World}=require('../world.js');
-const guides={
-  6:[[470,410],[590,380],[730,340]],
-  8:[[300,315],[420,400]],12:[[350,360],[395,430],[625,400],[725,365]],
-  17:[[310,400],[540,400]],19:[[380,320],[420,425],[590,395],[700,360]],
-  20:[[360,335],[560,300]],21:[[380,370],[250,400],[650,400]],
-  24:[[350,375],[580,375]],25:[[730,400],[850,330],[730,310]],
-  28:[[380,385],[640,360]],29:[[330,365],[560,365],[705,330]],
-  30:[['arrival:C'],[550,430],[490,360],['arrival:B']],
-  31:[[365,405],['arrival:D']],32:[['arrival:B'],[405,390],[590,390]],
-  33:[[350,425],['arrival:C'],[295,275],[260,250],['arrival:B']],
-  34:[['arrival:B'],[715,365]],35:[['arrival:B'],[575,400],[535,400],['arrival:C']],
-  36:[['arrival:C'],[580,380],[700,360]],37:[['arrival:B']],
-  38:[['arrival:C'],[790,400],[740,400],['arrival:B'],[160,275],[220,280],['arrival:D']],
-  39:[['arrival:B'],[490,305],[430,305],['arrival:C']],
-  40:[['button:grow']],41:[['button:small']],42:[['button:wide'],['button:thin']],
-  43:[['button:thin'],[382,340],[470,430],[590,395],[730,360]],
-  44:[['button:open']],45:[['button:bridge'],[360,400],[620,400]],
-  46:[['button:right']],47:[['button:wide'],['button:small']],
-  48:[['button:swap'],[750,330],[650,300]],
-  49:[['arrival:B'],['button:delivery'],[405,400],['arrival:C'],[620,430],[760,400]],
-  50:[['button:wide'],['arrival:C'],[735,280],[655,230],['arrival:B'],['button:small'],[600,285],[560,245],[320,245]]
-};
 function clone(w) {
   const n=Object.create(World.prototype);Object.assign(n,w);
   n.p={...w.p};n.solid=w.solid.map(x=>({...x}));n.haz=w.haz.map(x=>({...x}));
@@ -41,7 +19,7 @@ function target(w,g) {
   return g || [w.exit[0]+20,w.exit[1]+50];
 }
 function solve(id,width=260,limit=500) {
-  const route=guides[id]||[], level=levels[id-1];
+  const level=levels[id-1], route=level.guide||[];
   let beam=[{w:new World(level),stage:0,path:null}], visited=new Map();
   const keys=[1,5,0,4,2,6];let highest=0, best=null;
   for(let depth=0;depth<limit;depth++) {
@@ -77,5 +55,5 @@ const ids=process.argv[2]?process.argv[2].split(',').map(Number):levels.map(l=>l
 for(const id of ids) {
  const result=solve(id,Number(process.env.BEAM)||260,Number(process.env.DEPTH)||500);
  if(result.actions){replays[id]=result.actions;fs.writeFileSync(__dirname+'/replays.json',JSON.stringify(replays));console.log(id,'WIN',result.seconds.toFixed(1)+'s');}
- else console.log(id,'FAIL',JSON.stringify(result));
+ else {console.log(id,'FAIL',JSON.stringify(result));process.exitCode=1;}
 }

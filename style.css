@@ -218,7 +218,7 @@ canvas {
 }
 .level-grid {
   display: grid;
-  grid-template-columns: repeat(5, 58px);
+  grid-template-columns: repeat(5, 64px);
   gap: 8px;
   margin-bottom: 14px;
   padding: 10px;
@@ -227,13 +227,14 @@ canvas {
   box-shadow: 6px 6px 0 #000;
 }
 .level-grid button {
-  width: 58px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   box-shadow:
     2px 2px 0 #000,
     inset -2px -2px 0 #090909,
     inset 2px 2px 0 #444;
   padding: 0;
+  position: relative;
 }
 #levelScreen .level-grid button {
   background: var(--level-dark, #222);
@@ -253,6 +254,46 @@ canvas {
   margin-top: 2px;
   font-size: 7px;
   color: #777;
+}
+.level-overview {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  min-height: 18px;
+  color: var(--level-light, #eee);
+  font-size: 7px;
+  letter-spacing: .06em;
+}
+.level-overview strong { font-size: 8px; }
+.room-shape {
+  display: block;
+  position: relative;
+  width: 48px;
+  height: 20px;
+  margin: 2px auto 0;
+  overflow: hidden;
+  border: 1px solid var(--level-mid, #777);
+  background: color-mix(in srgb, var(--level-dark, #222) 82%, #000);
+}
+.room-shape i {
+  position: absolute;
+  display: block;
+  height: 4px;
+  background: var(--level-light, #eee);
+}
+.level-grid button.current {
+  outline: 3px double var(--level-light, #fff);
+  outline-offset: 1px;
+}
+.level-grid button.current small { color: var(--level-light, #fff); }
+.level-grid button.complete::after {
+  content: "✓";
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  color: var(--level-mid, #aaa);
+  font-size: 7px;
 }
 .group-tabs {
   grid-column: 1/-1;
@@ -395,13 +436,17 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 @media (hover: none), (max-width: 760px) {
   .touch-controls {
     display: grid;
+    top: calc(100% + 10px);
+    bottom: auto;
   }
   .key-row {
     display: none;
   }
   .game-wrap {
-    width: min(100vw, calc(100dvh * 16 / 9));
-    height: min(100dvh, calc(100vw * 9 / 16));
+    width: min(100vw, calc((100dvh - 76px) * 16 / 9));
+    height: min(calc(100dvh - 76px), calc(100vw * 9 / 16));
+    overflow: visible;
+    margin-bottom: 66px;
   }
 }
 @media (max-width: 400px) {
@@ -416,12 +461,12 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
     width: 94px;
   }
   .level-grid {
-    grid-template-columns: repeat(5, 48px);
+    grid-template-columns: repeat(3, 64px);
     gap: 5px;
   }
   .level-grid button {
-    width: 48px;
-    height: 46px;
+    width: 64px;
+    height: 58px;
   }
 }
 @media (max-height: 500px) {

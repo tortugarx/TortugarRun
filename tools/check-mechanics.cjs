@@ -69,3 +69,24 @@ const smoothCarry=new World({...base,spawn:[230,400],blocks:[[200,400,120,24,'li
 advance(smoothCarry,100);assert.equal(smoothCarry.status,'playing');
 assert.equal(smoothCarry.haz[0].y,300);assert(Math.abs(smoothCarry.p.y+smoothCarry.p.h-300)<0.001);
 console.log('Verified permanent retraction, restart restoration, moving spikes, harmful buttons and smooth carrier attachment.');
+
+// Walking speed is relative to a grounded moving support, not overwritten by
+// it. Same-direction motion is faster; counter-walking offsets the carrier.
+function ride(input){
+  const w=new World({...base,spawn:[400,400],blocks:[[0,400,900,400,'carrier']],motions:[{id:'carrier',path:[[100,0,1]]}]});
+  advance(w,45,input);return w;
+}
+const still=ride({}),against=ride({left:true}),along=ride({right:true});
+assert(still.p.x>430);
+assert(against.p.x<still.p.x && along.p.x>still.p.x);
+assert(Math.abs((along.p.x-still.p.x)-(still.p.x-against.p.x))<.01);
+for(const w of [still,against,along])assert(Math.abs(w.p.y+w.p.h-w.object('carrier').y)<.01);
+const descending=new World({...base,spawn:[230,300],blocks:[[200,300,120,500,'lift']],motions:[{id:'lift',path:[[0,100,1]]}]});
+advance(descending,90);assert(Math.abs(descending.p.y+descending.p.h-descending.object('lift').y)<.01);
+console.log('Verified relative walking in both directions and descending lift contact.');
+
+const transitMotion=new World({...base,spawn:[100,420],blocks:[...base.blocks,[500,450,80,250,'lift']],motions:[{id:'lift',path:[[0,-80,2]]}],portals:[{id:'A',x:110,y:420,to:'B'},{id:'B',x:800,y:420,to:'A'}]});
+advance(transitMotion,2);assert(transitMotion.teleport);
+const beforeTransit=transitMotion.object('lift').y;
+advance(transitMotion,15);assert(transitMotion.teleport);
+assert(transitMotion.object('lift').y<beforeTransit,'world animation must continue during teleport');

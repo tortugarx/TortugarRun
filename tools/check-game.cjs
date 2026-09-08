@@ -34,10 +34,14 @@ const app=boot();
 for(const id of [1,6,15,24,30,38,40,43,50]) {
   app.select(id);app.frame();
   assert.equal(app.$('#levelLabel').textContent,String(id).padStart(2,'0')+' / 50');
+  app.$('#mapBtn').onclick();
+  const current=app.$('#levelGrid').children.find(n=>n.className==='current');
+  assert(current?.innerHTML.includes('AKTUELL'),`current room marker ${id}`);
+  app.$('#closeLevelsBtn').onclick();
 }
 // Every recorded route also passes through the production update/draw adapter.
 const replays=require('./replays.json');
-for(const id of [1,15,30,42,50]) {
+for(const id of Array.from({length:50},(_,i)=>i+1)) {
   const a=boot();a.frame();a.select(id);
   let previous=0;
   for(const [mask,ticks] of replays[id]) {
@@ -58,4 +62,4 @@ assert.equal(touch.$('#deathLabel').textContent,'01');
 touch.key('KeyR',true);touch.touches[1].listeners.touchend({changedTouches:[{identifier:1}],preventDefault(){}});
 for(let t=0;t<130;t++)touch.frame();
 assert(touch.$('#deathScreen').classList.contains('hidden'));
-console.log('Verified game rendering adapter, category selection, five complete game routes, final screen, touch input and restart timers.');
+console.log('Verified game rendering adapter, category selection, all 50 complete game routes, final screen, touch input and restart timers.');

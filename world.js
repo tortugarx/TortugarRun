@@ -26,6 +26,7 @@
     object(id) { return this.solid.find(s => s.id === id); }
     condition(c) {
       if (!c) return true;
+      if (this.teleport && (c.zone || c.stand || c.jump)) return false;
       const p = this.p;
       if (c.zone && !hit(p, rect(c.zone))) return false;
       if (c.jump && !this.jumpNow) return false;
@@ -71,7 +72,9 @@
     moveBlock(b, x, y) {
       const p = this.p, bx = b.x, by = b.y, px = p.x, py = p.y;
       const dx = x - bx, dy = y - by;
-      const rider = Math.abs(p.y + p.h - by) < 1.5 && p.x + p.w > bx && p.x < bx + b.w && p.vy >= 0;
+      // During transit the player has no physical body in either room.
+      if(this.teleport){b.x=x;b.y=y;return true;}
+      const rider = this.supportId === b.id || (Math.abs(p.y + p.h - by) < 1.5 && p.x + p.w > bx && p.x < bx + b.w && p.vy >= 0);
       b.x = x; b.y = y;
       if (rider) this.moveActor(dx, dy, b);
       if (hit(p, b)) {
@@ -83,7 +86,7 @@
       // Terrain may deliberately dock into or retract behind other terrain.
       // Only the player can block a step; static stone must never truncate an
       // animation just because the moving piece started inside a floor cutout.
-      if (hit(p, b)) {
+      if (hit(p, b) || this.solid.some(s => s !== b && hit(p, s))) {
         b.x = bx; b.y = by; p.x = px; p.y = py;
         return false;
       }
@@ -103,25 +106,15 @@
       if (this.status !== "playing") return;
       const dt = STEP, p = this.p;
       this.events = [];
-      if (this.teleport) {
-        this.teleport.t = Math.min(1, this.teleport.t + dt / 0.55);
-        if (this.teleport.t < 1) return;
-        const dest = this.portals.find(v => v.id === this.teleport.to);
-        p.x = dest.x - p.w / 2; p.y = dest.y - p.h;
-        p.vx = dest.vx ?? 0; p.vy = dest.vy ?? 0;
-        p.ground = false; p.coyote = 0; p.buffer = 0;
-        dest.blocked = true;
-        this.signal(`arrival:${dest.id}`);
-        this.teleport = null;
-        this.emit("arrival");
-        return;
-      }
+      // Support displacement is added once, independently of walking velocity.
+      const support = p.vy >= 0 ? this.solid.find(b => Math.abs(p.y+p.h-b.y)<1.5 && p.x+p.w>b.x && p.x<b.x+b.w) : null;
+      this.supportId = support?.id || null;
       this.time += dt;
       p.coyote = p.ground ? 0.105 : Math.max(0, p.coyote - dt);
       p.buffer = keys.jump && !p.held ? 0.11 : Math.max(0, p.buffer - dt);
-      this.jumpNow = p.buffer > 0 && p.coyote > 0;
+      this.jumpNow = !this.teleport && p.buffer > 0 && p.coyote > 0;
       p.held = !!keys.jump;
-      if (this.jumpNow) { p.vy = -340; p.ground = false; p.coyote = 0; p.buffer = 0; this.emit("jump"); }
+      if (this.jumpNow) { p.vy = -340; p.ground = false; this.supportId=null; p.coyote = 0; p.buffer = 0; this.emit("jump"); }
       for (const m of this.motions) {
         if (!m.started && this.condition(m.when)) { m.started = true; this.signal(`motion:${m.id}`); }
         if (!m.started || m.done) continue;
@@ -172,6 +165,21 @@
           const b = this.object(h.attach);
           h.x = h.baseX + b.x - b.originX; h.y = h.baseY + b.y - b.originY;
         }
+      }
+      // Mechanisms keep running during the short portal transition.
+      if (this.teleport) {
+        this.teleport.t = Math.min(1, this.teleport.t + dt / 0.28);
+        if(this.level.exitOn){const b=this.object(this.level.exitOn);this.exit=[this.level.exit[0]+b.x-b.originX,this.level.exit[1]+b.y-b.originY];}
+        if (this.teleport.t < 1) return;
+        const dest = this.portals.find(v => v.id === this.teleport.to);
+        p.x = dest.x - p.w / 2; p.y = dest.y - p.h;
+        p.vx = dest.vx ?? 0; p.vy = dest.vy ?? 0;
+        p.ground = false; p.coyote = 0; p.buffer = 0;
+        dest.blocked = true;
+        this.signal(`arrival:${dest.id}`);
+        this.teleport = null;
+        this.emit('arrival');
+        return;
       }
       const target = (keys.right ? 220 : 0) - (keys.left ? 220 : 0);
       p.vx += clamp(target - p.vx, -(p.ground ? 1500 : 850) * dt, (p.ground ? 1500 : 850) * dt);

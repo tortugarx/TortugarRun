@@ -14,15 +14,15 @@
     toast: $("#toast"),
   };
   const K = { left: 0, right: 0, jump: 0 };
+  // One unmistakable visual identity per world; rooms no longer cycle through
+  // unrelated palettes and therefore read as four deliberate chapters.
   const PAL = [
-    ["#dce8e3", "#a9c6bb", "#668f80", "#29483e"],
-    ["#e8dfd5", "#c9ad91", "#987253", "#503b2b"],
-    ["#dde4eb", "#aabdd0", "#6b88a4", "#344b62"],
-    ["#e8dce2", "#c8a7b7", "#976a80", "#513747"],
-    ["#e5e5d6", "#c2c19b", "#8b8956", "#48472b"],
-    ["#e2ddea", "#b9acd0", "#806ba2", "#44375c"],
+    ["#e6eee4", "#b8ccb3", "#66855f", "#263c29"],
+    ["#f0e0c9", "#d3aa77", "#9a643d", "#4b2d22"],
+    ["#dce9f4", "#9ebed8", "#537fa5", "#263f63"],
+    ["#eee0ef", "#c69bc9", "#8d5b92", "#472c52"],
   ];
-  const palette = () => PAL[li % PAL.length];
+  const palette = () => PAL[L[Math.min(li, L.length - 1)]?.group || 0];
   let unlocked = DevilLevels.levels.length;
   localStorage.setItem("level-devil-unlocked", String(unlocked));
   let state = "menu",
@@ -87,11 +87,25 @@
       tabs.appendChild(tab);
     });
     grid.appendChild(tabs);
+    const current = L[li];
+    const overview = document.createElement("div");
+    overview.className = "level-overview";
+    overview.innerHTML = `<strong>WELT ${current.group + 1} · ${GROUPS[current.group]}</strong><span>LEVEL ${String(li + 1).padStart(2,"0")} / ${L.length}</span>`;
+    grid.appendChild(overview);
     L.forEach((level, i) => {
       if (level.group !== selectedGroup) return;
       const b = document.createElement("button");
       b.disabled = i + 1 > unlocked;
-      b.innerHTML = `${level.number}<small>${b.disabled ? "LOCKED" : "OPEN"}</small>`;
+      const status = i === li ? "AKTUELL" : b.disabled ? "GESPERRT" : i + 1 < unlocked ? "FERTIG" : "SPIELEN";
+      const shape = level.blocks
+        .filter(v => v[0] > 31 && v[0] + v[2] < 929 && v[1] > 95)
+        .slice(0, 5)
+        .map(v => `<i style="left:${Math.round(v[0] / 12)}%;top:${Math.round(v[1] / 7)}%;width:${Math.max(7,Math.round(v[2] / 12))}%"></i>`)
+        .join("");
+      b.className = i === li ? "current" : i + 1 < unlocked ? "complete" : "";
+      b.setAttribute?.("aria-current", i === li ? "level" : "false");
+      b.title = `${String(level.number).padStart(2,"0")} · ${level.name}`;
+      b.innerHTML = `${level.number}<span class="room-shape">${shape}</span><small>${status}</small>`;
       b.onclick = () => {
         li = i;
         UI.start?.classList.add("hidden");
@@ -115,8 +129,8 @@
     state = "dying";
     deaths++;
     UI.deaths.textContent = String(deaths).padStart(2, "0");
-    shake = 17;
-    burst(P.x + 12, P.y + 9, "#333", 12);
+    shake = 4;
+    burst(P.x + 12, P.y + 9, "#333", 6);
     beep(75, 0.24, "sawtooth");
     const deathRun = runId;
     setTimeout(() => {
@@ -132,7 +146,7 @@
   function finish() {
     if (state !== "playing") return;
     state = "transition";
-    burst(P.x + 12, P.y + 9, "#777", 16);
+    burst(P.x + 12, P.y + 9, "#777", 6);
     beep(620, 0.12, "sine");
     unlocked = Math.max(unlocked, Math.min(L.length, li + 2));
     localStorage.setItem("level-devil-unlocked", unlocked);
@@ -285,7 +299,7 @@
   function drawTeleport() {
     if (!portalAnim) return;
     const c = palette();
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 5; i++) {
       const delay = i / 55;
       const t = Math.max(0, Math.min(1, (portalAnim.t - delay) / 0.75));
       const x = portalAnim.from.x + (portalAnim.to.x - portalAnim.from.x) * t;

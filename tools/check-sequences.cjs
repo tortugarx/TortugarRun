@@ -1,0 +1,46 @@
+// Audit the entire room mechanism timeline, independently of a winning path.
+const assert=require('node:assert/strict');
+const {levels}=require('../levels');
+const {World,hit}=require('../world');
+const near=(a,b)=>Math.abs(a-b)<1e-6;
+function attached(w,h){
+  const boxes=h.attach?[w.object(h.attach)]:w.solid;
+  return boxes.some(b=>{
+    if(h.dir==='down')return near(b.y+b.h,h.y)&&b.x<=h.x+1e-6&&b.x+b.w>=h.x+h.w-1e-6;
+    if(h.dir==='right')return near(b.x+b.w,h.x)&&b.y<=h.y+1e-6&&b.y+b.h>=h.y+h.w-1e-6;
+    if(h.dir==='left')return near(b.x,h.x)&&b.y<=h.y+1e-6&&b.y+b.h>=h.y+h.w-1e-6;
+    return near(b.y,h.y)&&b.x<=h.x+1e-6&&b.x+b.w>=h.x+h.w-1e-6;
+  });
+}
+function inspect(w,label){
+  for(const b of w.solid)assert(b.y<=0||b.y+b.h>=540||b.x<=0||b.x+b.w>=960,`${label}: floating stone ${b.id}`);
+  for(const h of w.haz)assert(attached(w,h),`${label}: detached spike ${h.id}`);
+  const items=[w.exitBox(),...w.portals.map(p=>w.portalBox(p)),...w.buttons.map(b=>({...b,h:8}))];
+  for(const [i,a] of items.entries()){
+    const inner={x:a.x+.001,y:a.y+.001,w:a.w-.002,h:a.h-.002};
+    assert(!w.solid.some(b=>hit(inner,b)),`${label}: item ${i} intersects terrain`);
+    for(const b of items.slice(i+1))assert(!hit({...a,x:a.x-16,y:a.y-8,w:a.w+32,h:a.h+16},b),`${label}: crowded items`);
+  }
+  for(const button of w.buttons)for(const h of w.haz)if(h.progress>.01)assert(!hit({...button,h:8},w.spikeBox(h)),`${label}: button/spike overlap`);
+}
+for(const l of levels){
+  assert(l.spikes.length<=3&&l.motions.length<=2,`room ${l.number}: overload`);
+  for(const order of ['together','staggered']){
+    const w=new World(l);
+    // Isolate authored world motion from player obstruction or terminal state.
+    w.p.x=-1000;w.p.y=-1000;w.moveActor=()=>{};w.locked=true;
+    w.condition=function(c){if(!c)return true;if(c.signal)return this.signals[c.signal]!==undefined;if(c.stand)return this.time>.2;return this.time>.1;};
+    for(let t=0;t<1800;t++){
+      w.status='playing';
+      for(const [i,b] of w.buttons.entries())if(t>(order==='together'?10:10+i*90))w.signal(`button:${b.id}`);
+      for(const [i,p] of w.portals.entries())if(t>(order==='together'?10:80+i*120))w.signal(`arrival:${p.id}`);
+      w.tick({});inspect(w,`${l.number}/${order}/${t}`);
+    }
+    for(const motion of w.motions){
+      assert(motion.done,`${l.number}: incomplete ${motion.id}`);
+      const b=w.object(motion.id),last=motion.path.at(-1);
+      assert(near(b.x,b.originX+last[0])&&near(b.y,b.originY+last[1]),`${l.number}: wrong endpoint`);
+    }
+  }
+}
+console.log('50 rooms: full 15-second simultaneous/staggered timelines, grounded geometry, attachments, item spacing and exact motion endpoints.');
