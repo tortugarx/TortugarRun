@@ -2,19 +2,19 @@
 
 ## Freigegebener Szenenplan
 
-- [x] 50 Räume als vier aufeinander aufbauende psychologische Bögen angelegt.
-- [x] Unterschiedliche Raum-Silhouetten: Laufbahn, U-Becken, Schacht, Turm, Inseln, Etagen, Rückwege und Überhänge.
-- [x] Bewegte Böden/Wände mit bündigem Ursprung, weichen Phasen und gegnerischen Richtungswechseln.
+- [ ] Alle 50 Szenen des freigegebenen Plans exakt in die tatsächlichen Leveldaten übertragen.
+- [ ] Raum-Silhouetten im Spiel deutlich genug unterscheiden: mehr echte schmale Gänge, Schächte, Türme, Inseln, Etagen und Überhänge.
+- [ ] Bewegte Böden/Wände pro Level stärker unterscheiden und gegnerische Richtungswechsel ausbauen.
 - [x] Plattformimpuls: Mitfahren, Gegenlaufen langsamer, Mitlaufen schneller.
 - [x] Globaler Tod beim Fall unter den Spielraum.
-- [x] Stachel-Erwartungen über aufeinanderfolgende Räume verschoben statt immer vor der Tür wiederholt.
-- [x] Portale und Knöpfe räumlich getrennt; ehrliche Einführungen, spätere Köder und Rückwege.
+- [ ] Stachel-Erwartungen konsequent über aufeinanderfolgende Räume verschieben.
+- [ ] Portal- und Knopflevel vollständig gegen den Szenenplan prüfen und ähnliche Abläufe ersetzen.
 - [x] Vier konsistente, klar unterscheidbare Weltpaletten statt wechselnder Farben pro Level.
-- [x] Levelübersicht vereinheitlicht: Welt/Level-Anzeige, Mini-Silhouetten, `AKTUELL`, `FERTIG`, `SPIELEN`, `GESPERRT`.
+- [x] Levelübersicht repariert: kein Überlauf, kompakte Karten sowie klare Zustände `AKTUELL`, `FERTIG`, `SPIELEN`, `GESPERRT`.
 - [x] Animationsbudget begrenzt; Partikel nur für wichtige Ereignisse.
 - [x] Mechanik-, Sequenz- und vollständige 50-Level-Spieltests erfolgreich.
 
-- [x] Alle 50 Räume neu aufgebaut; eigene Route und Fallenidee je Raum.
+- [ ] Alle 50 Räume nach visuellem Vergleich einzeln abnehmen; automatische Lösbarkeit allein reicht nicht.
 - [x] Funktionale, baulich verbundene Geometrie ohne Dekorstützen.
 - [x] Stacheln durchgehend an Terrain oder Träger befestigt.
 - [x] Maximal drei Gefahren und zwei Bewegungen pro Raum.
@@ -23,7 +23,7 @@
 - [x] Relative Laufbewegung auf Trägern und absteigende Plattformen geprüft.
 - [x] Weltbewegung während Portaltransport; weniger Partikel und Kamerawackeln.
 - [x] 50 Gewinnwege, alle Spieladapter-Durchläufe und vollständige Mechanik-Zeitachsen geprüft.
-- [x] Alle 50 Räume im Chromium gerendert; Desktop und Handyansicht kontrolliert.
+- [ ] Alle 50 Räume und das Levelmenü nach dem nächsten Umbau erneut im Browser visuell kontrollieren.
 
 ## Verbindliche Regeln
 

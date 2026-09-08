@@ -123,6 +123,16 @@ canvas {
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
 }
+#levelScreen {
+  position: fixed;
+  overflow: auto;
+  padding: 16px;
+}
+#levelScreen .panel {
+  width: min(390px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+}
 #levelScreen .eyebrow,
 #deathScreen .eyebrow,
 #settingsScreen .eyebrow {
@@ -218,8 +228,8 @@ canvas {
 }
 .level-grid {
   display: grid;
-  grid-template-columns: repeat(5, 64px);
-  gap: 8px;
+  grid-template-columns: repeat(5, 58px);
+  gap: 7px;
   margin-bottom: 14px;
   padding: 10px;
   background: var(--level-dark, #222);
@@ -227,8 +237,8 @@ canvas {
   box-shadow: 6px 6px 0 #000;
 }
 .level-grid button {
-  width: 64px;
-  height: 64px;
+  width: 58px;
+  height: 50px;
   box-shadow:
     2px 2px 0 #000,
     inset -2px -2px 0 #090909,
@@ -266,22 +276,6 @@ canvas {
   letter-spacing: .06em;
 }
 .level-overview strong { font-size: 8px; }
-.room-shape {
-  display: block;
-  position: relative;
-  width: 48px;
-  height: 20px;
-  margin: 2px auto 0;
-  overflow: hidden;
-  border: 1px solid var(--level-mid, #777);
-  background: color-mix(in srgb, var(--level-dark, #222) 82%, #000);
-}
-.room-shape i {
-  position: absolute;
-  display: block;
-  height: 4px;
-  background: var(--level-light, #eee);
-}
 .level-grid button.current {
   outline: 3px double var(--level-light, #fff);
   outline-offset: 1px;
@@ -461,13 +455,15 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
     width: 94px;
   }
   .level-grid {
-    grid-template-columns: repeat(3, 64px);
+    grid-template-columns: repeat(5, minmax(42px, 1fr));
     gap: 5px;
   }
   .level-grid button {
-    width: 64px;
-    height: 58px;
+    width: 100%;
+    height: 46px;
   }
+  .group-tabs { grid-template-columns: repeat(2, 1fr); }
+  .level-overview { align-items: flex-start; gap: 4px; flex-direction: column; }
 }
 @media (max-height: 500px) {
   .overlay h1 {

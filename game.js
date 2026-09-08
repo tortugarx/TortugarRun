@@ -97,15 +97,10 @@
       const b = document.createElement("button");
       b.disabled = i + 1 > unlocked;
       const status = i === li ? "AKTUELL" : b.disabled ? "GESPERRT" : i + 1 < unlocked ? "FERTIG" : "SPIELEN";
-      const shape = level.blocks
-        .filter(v => v[0] > 31 && v[0] + v[2] < 929 && v[1] > 95)
-        .slice(0, 5)
-        .map(v => `<i style="left:${Math.round(v[0] / 12)}%;top:${Math.round(v[1] / 7)}%;width:${Math.max(7,Math.round(v[2] / 12))}%"></i>`)
-        .join("");
       b.className = i === li ? "current" : i + 1 < unlocked ? "complete" : "";
       b.setAttribute?.("aria-current", i === li ? "level" : "false");
       b.title = `${String(level.number).padStart(2,"0")} · ${level.name}`;
-      b.innerHTML = `${level.number}<span class="room-shape">${shape}</span><small>${status}</small>`;
+      b.innerHTML = `${level.number}<small>${status}</small>`;
       b.onclick = () => {
         li = i;
         UI.start?.classList.add("hidden");

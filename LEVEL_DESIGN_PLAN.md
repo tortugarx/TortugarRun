@@ -1,6 +1,6 @@
 # Szenenplan: kompletter Level-Neuaufbau
 
-Status: **Freigegeben und als Produktionsgrundlage umgesetzt.**
+Status: **Freigegeben; Umsetzung begonnen, aber noch nicht vollständig abgenommen.**
 
 ## Referenzanalyse und Leitplanken
 
