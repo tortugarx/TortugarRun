@@ -18,6 +18,13 @@ const fs=require('node:fs');
     images.push(await page.locator('#game').evaluate(c=>c.toDataURL()));
   }
   await page.locator('#mapBtn').click();
+  await page.locator('.group-tabs button').nth(2).click();
+  await page.locator('#levelGrid > button[title^="30 ·"]').click();
+  await page.keyboard.down('ArrowRight');
+  await page.waitForTimeout(500);
+  await page.locator('#game').screenshot({path:'/tmp/leveldevil-portal-flight.png'});
+  await page.keyboard.up('ArrowRight');
+  await page.locator('#mapBtn').click();
   await page.screenshot({path:'/tmp/leveldevil-desktop.png'});
   await page.setViewportSize({width:390,height:844});
   await page.screenshot({path:'/tmp/leveldevil-mobile.png'});

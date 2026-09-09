@@ -204,8 +204,8 @@
       for (const event of world.events) {
         if (event.type === "jump") beep(300,0.05);
         if (event.type === "button") beep(240,0.07);
-        if (event.type === "teleport") beep(430,0.16);
-        if (event.type === "arrival") beep(120,0.1);
+        if (event.type === "teleport") { beep(430,0.16); burst(P.x+P.w/2,P.y+P.h/2,palette()[3],12); }
+        if (event.type === "arrival") { beep(120,0.1); burst(P.x+P.w/2,P.y+P.h/2,palette()[2],12); }
       }
       if (world.status === "dead") die();
       else if (world.status === "won") finish();
@@ -276,14 +276,12 @@
     X.save();
     X.translate(Math.round(x), Math.round(y + 20));
     if (orientation === "ceiling") X.rotate(Math.PI / 2);
-    // Four animated, neutral square frames: unmistakably a portal and never
-    // an arch-shaped door. Frames pulse inward instead of using particles.
+    // Four perfectly centred square frames: symmetric and unlike the door.
     const shades=["#3d3f43","#696c71","#989b9f","#d0d1d2"];
     for(let i=0;i<4;i++) {
-      const beat=(Math.floor(phase*2)+i)%4;
-      const size=32-i*7+(beat===0?2:0), half=Math.floor(size/2);
+      const size=32-i*8, half=size/2;
       X.strokeStyle=shades[(i+Math.floor(phase))%4];
-      X.lineWidth=i===0?3:2;
+      X.lineWidth=2;
       X.strokeRect(-half+.5,-half+.5,size,size);
     }
     X.fillStyle=shades[Math.floor(phase*2)%4];
@@ -292,24 +290,23 @@
   }
   function drawTeleport() {
     if(!portalAnim)return;
-    const t=portalAnim.t, eased=t*t*(3-2*t);
-    const x=portalAnim.from.x+(portalAnim.to.x-portalAnim.from.x)*eased;
-    const y=portalAnim.from.y+(portalAnim.to.y-portalAnim.from.y)*eased;
-    X.save();X.translate(Math.round(x),Math.round(y));
-    const c=palette();
-    for(let i=0;i<4;i++){
-      const size=Math.max(3,24-i*6-Math.abs(.5-t)*8);
-      X.strokeStyle=i%2?c[2]:c[3];X.lineWidth=2;
-      X.strokeRect(-size/2,-size/2,size,size);
+    const t=portalAnim.t,eased=t*t*(3-2*t),c=palette();
+    X.save();
+    for(let i=0;i<10;i++){
+      const lane=(i-4.5)*3,lag=Math.max(0,Math.min(1,eased+(i%3-1)*.055));
+      const x=portalAnim.from.x+(portalAnim.to.x-portalAnim.from.x)*lag;
+      const y=portalAnim.from.y+(portalAnim.to.y-portalAnim.from.y)*lag+Math.sin(t*Math.PI)*lane;
+      X.fillStyle=i%2?c[2]:c[3];
+      X.fillRect(Math.round(x/3)*3,Math.round(y/3)*3,i%3===0?5:3,i%3===0?5:3);
     }
     X.restore();
   }
   function drawButton(b) {
     const c = palette();
-    const w=18,x=Math.round(b.x+(b.w-w)/2),top=Math.round(b.y+(b.pressed?5:2));
-    X.fillStyle=c[3];X.fillRect(x-2,b.y+6,w+4,2);
-    X.fillStyle=b.pressed?c[2]:c[3];X.fillRect(x,top,w,b.pressed?2:4);
-    if(!b.pressed){X.fillStyle=c[1];X.fillRect(x+2,top+1,w-4,1);}
+    const w=8,h=b.pressed?4:15,x=Math.round(b.x+(b.w-w)/2),bottom=b.y+8;
+    X.fillStyle=c[3];X.fillRect(x-2,bottom-2,w+4,2);
+    X.fillStyle=b.pressed?c[2]:c[3];X.fillRect(x,bottom-h,w,h);
+    if(!b.pressed){X.fillStyle=c[1];X.fillRect(x+2,bottom-h+2,w-4,4);}
   }
   function drawHero() {
     X.save();

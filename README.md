@@ -16,7 +16,7 @@ A/D oder Pfeile: laufen. W/↑/Leertaste: springen. R: Neustart. F: Fokus. M: To
 
 Räume 1–14: Stacheln; ab 15: bewegliche Mapteile; ab 30: Portale; ab 40: Knöpfe. Pro Raum maximal drei Stachelfelder und zwei bewegliche Bauteile. Portalziele sind fest und farblich nicht verraten. Steine schieben und tragen, verursachen aber keinen Kontaktschaden.
 
-Auf einer Plattform addieren sich ihre Verschiebung und die eigene Laufbewegung. Gegenlaufen reduziert den Weg in Fahrtrichtung, Mitlaufen vergrößert ihn. Auch sinkende Plattformen tragen. Wer einen bewegten Mapteil dagegen seitlich oder als Quetschwand berührt, stirbt – ohne vorherige Kennzeichnung. Kurze Portalreisen unterbrechen die übrigen Mechaniken nicht.
+Auf einer Plattform addieren sich ihre Verschiebung und die eigene Laufbewegung. Gegenlaufen reduziert den Weg in Fahrtrichtung, Mitlaufen vergrößert ihn. Auch sinkende Plattformen tragen. Bewegte Wände stoppen nicht am Spieler und schieben ihn weiter; tödlich wird erst die echte Gefahr dahinter. Kurze Portalreisen unterbrechen die übrigen Mechaniken nicht.
 
 ## Prüfen
 
@@ -24,10 +24,11 @@ Auf einer Plattform addieren sich ihre Verschiebung und die eigene Laufbewegung.
 node tools/check-levels.cjs
 node tools/check-sequences.cjs
 node tools/check-mechanics.cjs
+node tools/check-difficulty.cjs
 node tools/check-game.cjs
 ```
 
-50 gespeicherte Gewinnwege, 50 tatsächlich verschiedene Terrain-Silhouetten, frühe Fallenfenster, tödliche Wandkontakte, Start- und Laufzeitkollisionen, Neustart-Determinismus, Trägerphysik, Portaltransport, Körpergröße und alle Wege durch die tatsächliche Spielanbindung werden geprüft. Die Ablaufprüfung löst Mechaniken gleichzeitig und versetzt aus und prüft bei 120 Hz die kompletten 15-Sekunden-Abläufe einschließlich Befestigungen, Objektabständen und Endpunkten.
+50 gespeicherte Gewinnwege, 50 tatsächlich verschiedene Terrain-Silhouetten, späte Fallenfenster, kontinuierliche Wandbewegungen, Start- und Laufzeitkollisionen, Neustart-Determinismus, Trägerphysik, Portaltransport, Körpergröße und alle Wege durch die tatsächliche Spielanbindung werden geprüft. Die Ablaufprüfung löst Mechaniken gleichzeitig und versetzt aus und prüft bei 120 Hz die kompletten 15-Sekunden-Abläufe einschließlich Befestigungen, Objektabständen und Endpunkten.
 
 `node tools/solve-levels.cjs 1,2,3` sucht neue Wege mit der Spielphysik. `PLAYWRIGHT_MODULE=/pfad/zu/playwright node tools/browser-audit.cjs` prüft mit installiertem Playwright die 50 Browseransichten und erzeugt Screenshots in /tmp.
 

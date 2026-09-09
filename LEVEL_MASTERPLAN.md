@@ -1,6 +1,6 @@
 # Verbindlicher Masterplan für 50 Level
 
-Status: **Härte- und Layoutabnahme nach Spielerfeedback am 9. September 2026 vollständig abgeschlossen.** Dieser Plan ersetzt frühere grobe Szenenlisten.
+Status: **Wand-, Timing- und Portalüberarbeitung nach Spielerfeedback am 9. September 2026 vollständig abgenommen.** Dieser Plan ersetzt frühere grobe Szenenlisten.
 
 ## Auswertung des Chats
 
@@ -11,7 +11,7 @@ Folgende Wünsche sind verbindlich:
 - Schwebende Plattformen sind erlaubt, wenn sie Route, Transport, Landung oder Köder sind. Dekorative oder unmotivierte Blöcke entfallen.
 - Stacheln, Wände und Plattformen entstehen nie bereits sichtbar schwebend. Bewegliche Teile kommen aus passenden Taschen, Schächten oder Anschlüssen.
 - Bewegungen sind weich, kollisionssicher und exakt. Plattformen tragen den Spieler mit; Mitlaufen beschleunigt, Gegenlaufen bremst relativ zur Weltbewegung.
-- Jeder bewegte Mapteil kann bei seitlicher oder quetschender Kollision töten. Das wird weder grafisch noch durch einen Gefahrentyp markiert; nur korrektes Mitfahren ist sicher.
+- Stein tötet nie durch bloßen Kontakt. Bewegte Wände halten niemals am Spieler an; sie folgen ihrer festen Bahn und schieben die Schildkröte in sichtbare oder ausgelöste Gefahren.
 - Fallen sind deterministisch, aber beim ersten Versuch psychologisch überraschend. Das Spiel nutzt Erinnerungen an vorherige Level gegen den Spieler.
 - Ein Level bleibt übersichtlich: eine Hauptmechanik, höchstens eine Finte und höchstens ein kurzer Schlussstich.
 - Jeder Fall ins Nichts ist tödlich.
@@ -44,6 +44,8 @@ Die **Portalzeichnung** besteht nach dem jüngsten Spielerfeedback verbindlich a
 Vor der Umsetzung erhält jeder Raum vier Kennwerte: `Silhouette`, `Hauptrichtung`, `Haupttrigger`, `Türlage`. Keine Kombination darf zweimal vorkommen. Zusätzlich dürfen zwei Level nicht dieselbe Abfolge aus Startfläche, Hauptbewegung und Zielannäherung besitzen.
 
 Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterrasse; 03 tiefes Treppen-U; 04 niedriger Tunnel; 05 Drei-Insel-Sprung; 06 Mittelsockel mit Seitenarm; 07 Mittelturm mit Ober-/Unterroute; 08 isolierter Hochturm; 09 drei ungleiche Pfeiler; 10 großes C; 11 Doppelstock-Rückweg; 12 enger Vertikalschacht; 13 einzelner Schwebesteg; 14 absteigendes Zickzack; 15 Bodenklappe im Saal; 16 Liftgrube; 17 Zwei-Ufer-Fähre; 18 diagonaler Abstieg; 19 Dreifeld-Korridor; 20 Gegenstromsteg; 21 versetzte Doppeletage; 22 fliehende Türinsel; 23 Segmentbrücke; 24 L-Schacht mit Schubwand; 25 Drei-Haltestellen-Archipel; 26 Domino-Treppe; 27 Zangenhalle; 28 dreistufige Fluchtstrecke; 29 bewegter Innenkern im C-Rahmen; 30 zwei ungleiche Portalräume; 31 Turm mit unterer Nische; 32 Anlauftunnel in offene Kammer; 33 drei Räume in S-Anordnung; 34 Portal über Liftgrube; 35 asymmetrisches Portal-U; 36 gespiegelte Doppel-C-Kammer; 37 Turm mit Fallschlitz; 38 Ufer mit fahrendem Eintrittsportal; 39 hohe Direktabkürzung; 40 Knopfinsel und Brückenschacht; 41 sinkende Mittelhalle; 42 Kriechtunnel plus Schlucht; 43 Balkonzimmer mit fahrender Türinsel; 44 umlaufender Doppelgang; 45 Y-Kammer; 46 langer Größensteg; 47 Doppelturm mit Schalterfähre; 48 rückwärts steigendes Zickzack; 49 drei getrennte Akträume; 50 Turm-U-Nischen-Raum.
+
+**Verbindlicher Portalwelt-Override vom 9. September 2026:** 30 einsamer Mittelturm; 31 senkrechter Schlitz; 32 Impulsinsel im Leerraum; 33 gestapelter Doppelstock; 34 tiefes Portal-U; 35 asymmetrische Rückschleife; 36 gegeneinander gedrehte C-Arme; 37 Fall-Zickzack; 38 diagonale Portal-Fähre; 39 hohe Direktabkürzung. Diese jüngere Liste ersetzt für Level 30–39 die ältere Silhouettenzeile oben.
 
 ## Technische Raumregeln
 
@@ -265,40 +267,35 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 
 ## Welt III – Portale und Raumlogik, Level 30–39
 
-### 30 · DIE KLARE VERBINDUNG
+### 30 · MITTELTURM
 
-- **Bild:** Zwei vollständig getrennte, ungleich große Kammern; ein Portal mittig links, Tür weit vom freien Zielpunkt rechts entfernt.
-- **Ablauf:** Das einzelne Portal transportiert an einen freien Bodenpunkt in der rechten Kammer. Dort steht kein Portal; die Ausstiegsfläche ist breit und sicher.
-- **Lösung:** Portal betreten und zur Tür laufen.
-- **Abgrenzung:** Reine Regelvermittlung ohne Falle.
+- **Bild:** Ein einziger hoher Turm steht mittig in fast vollständig leerem Raum; zwei niedrige Ufer liegen weit außen.
+- **Ablauf:** Der erste Eingang quert den Leerraum, der zweite setzt auf den Turm. Dort löst der letzte kurze Lauf einen späten Stachel aus.
+- **Abgrenzung:** Einzige monumentale Mittelturmsilhouette der Portalwelt.
 
-### 31 · OBEN HINAUS
+### 31 · DER SENKRECHTE SCHLITZ
 
-- **Bild:** Tiefe Halle links, hoher Turm rechts, Tür in einer Nische unterhalb des Turmkopfs.
-- **Portal:** Der einzelne Eingang setzt die Figur an einem freien Punkt auf dem Turm ab. Direkte Falllinie führt an der Tür vorbei ins Nichts; am Ziel steht kein Portal.
-- **Lösung:** Erst außen auf eine Zwischenstufe, dann zurück in die Türnische.
-- **Abgrenzung:** Portal löst Höhe, nicht den kompletten Weg.
+- **Bild:** Zwei riesige Seitenmassen lassen nur einen extrem schmalen, senkrechten Schlitz mit drei versetzten Fängen frei.
+- **Portal:** Der Eingang oben wirft auf den ersten Fang; danach folgt ein kontrollierter Fall mit spätem Stachel.
+- **Abgrenzung:** Einziger nahezu vollständig vertikaler Portalraum.
 
-### 32 · IMPULS
+### 32 · IMPULSINSEL
 
-- **Bild:** Langer Anlauftunnel links, offene Zielkammer rechts.
-- **Portal:** Horizontale Geschwindigkeit bleibt erhalten; 120 px nach dem freien Zielpunkt steht ein sichtbarer Wandstachel.
-- **Lösung:** Vor dem Portal abbremsen oder direkt nach dem Erscheinen gegensteuern.
-- **Abgrenzung:** Portal verändert keine Geometrie, sondern macht Physik relevant.
+- **Bild:** Zwei tiefe Außenbänke und eine einzelne kleine Hochinsel in enormem Leerraum.
+- **Portal:** Der Eintritt schleudert mit horizontalem Impuls auf die Hochinsel; Insel und Zielbank lösen getrennte späte Stacheln aus.
+- **Abgrenzung:** Einziger Portalraum, dessen Hauptroute ein Impulsflug ist.
 
-### 33 · DREI ADRESSEN
+### 33 · DOPPELSTOCK
 
-- **Bild:** Flache Startkammer, hoher Mittelschacht und kleine Zielinsel, durch massive Wände getrennt.
-- **Portalfolge:** Portal 1 führt zu einem freien Punkt im Mittelschacht. Nach dessen Umrundung führt ein räumlich getrennter Eingang 2 zu einem freien Punkt auf der Zielinsel.
-- **Lösung:** Im Mittelschacht erst vom Ankunftspunkt weg und auf anderer Höhe zum zweiten Eingang.
-- **Abgrenzung:** Zwei unabhängige Eingänge mit freien Zielpunkten statt einer linearen Transportstrecke.
+- **Bild:** Zwei fast bildschirmbreite, übereinanderliegende Korridore ohne vertikale Kammerteilung.
+- **Portalfolge:** Oben vollständig nach rechts, unten vollständig zurück nach links, dann oben erneut nach rechts.
+- **Abgrenzung:** Längster horizontaler Richtungswechsel der Portalwelt.
 
-### 34 · DER AUSGANG FÄHRT
+### 34 · DAS TIEFE PORTAL-U
 
-- **Bild:** Breite Startkammer und schmale Zielgrube mit Lift.
-- **Trigger:** Das Portal setzt die Figur auf einem freien Punkt des Lifts ab; die Ankunft startet dessen Aufstieg. Er hält 550 ms auf Türhöhe und fährt weiter. Auf dem Lift steht kein Zielportal.
-- **Lösung:** Nach Teleport ruhig mitfahren und auf Türhöhe aussteigen.
-- **Abgrenzung:** Bewegung beginnt durch Ankunft, Portal bleibt mit seinem Träger verbunden.
+- **Bild:** Zwei sehr hohe Ufer um ein fast leeres, tiefes U; nur am Grund steht ein schmaler Portal-Lift.
+- **Trigger:** Betreten startet eine einzige saubere Aufwärtsfahrt. Ein sichtbarer Zahn erzwingt den Einstiegssprung.
+- **Abgrenzung:** Einziger tiefer Portal-Lift und einzige U-Silhouette dieser Welt.
 
 ### 35 · ZURÜCKGESCHICKT
 
@@ -314,12 +311,11 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 - **Lösung:** Nach Ankunft stoppen, Blickrichtung und Öffnung neu lesen.
 - **Abgrenzung:** Visuelle Erinnerung statt versteckter Falle.
 
-### 37 · PORTAL IST KÖDER
+### 37 · FALL-ZICKZACK
 
-- **Bild:** Einzelner hoher Mittelturm; Tür unten rechts, auffälliges Portal oben, schmaler Seitenspalt im Turm.
-- **Portal:** Führt nur zum Start zurück.
-- **Lösung:** Portal ignorieren und kontrolliert durch den Seitenspalt fallen.
-- **Psychologie:** Die neu gelernte Hauptmechanik ist erstmals nicht die Lösung.
+- **Bild:** Zwei riesige Deckenmassen bilden einen horizontal-vertikalen Zickzack mit drei stark versetzten Höhen.
+- **Portal:** Zwei Eingänge schneiden die unüberspringbaren Höhenwechsel ab; jede Ankunft ändert sofort die Laufrichtung.
+- **Psychologie:** Späte Stacheln bestrafen den gewohnten Geradeauslauf nach jeder Ankunft.
 
 ### 38 · BEWEGTE ADRESSE
 

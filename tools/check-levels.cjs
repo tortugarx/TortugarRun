@@ -71,9 +71,25 @@ const terrainSignature=l=>{
   return out;
 };
 assert.equal(new Set(levels.map(terrainSignature)).size,50,'duplicate rendered terrain silhouette');
+const detailedSignature=l=>{
+  const blocks=l.blocks.slice(3);let out='';
+  for(let y=100;y<540;y+=30)for(let x=32;x<928;x+=30)
+    out+=blocks.some(b=>x<b[0]+b[2]&&x+30>b[0]&&y<b[1]+b[3]&&y+30>b[1])?'1':'0';
+  return out;
+};
+const detailed=levels.map(detailedSignature);
+for(let i=0;i<detailed.length;i++)for(let j=i+1;j<detailed.length;j++){
+  let distance=0;for(let p=0;p<detailed[i].length;p++)distance+=detailed[i][p]!==detailed[j][p];
+  assert(distance>=15,`terrain silhouettes too similar: ${i+1}/${j+1} (${distance})`);
+}
 for(const l of levels)for(const hazard of l.spikes)if(hazard.when&&!hazard.initial){
-  assert(hazard.delay<=.06,`late hidden hazard: ${l.number}`);
+  assert(hazard.delay<=.02,`early hidden hazard: ${l.number}`);
   assert(hazard.speed>=5.55&&hazard.speed<=8.34,`hidden hazard outside 120-180ms: ${l.number}`);
+  if(hazard.when.zone&&((hazard.dir||'up')==='up'||hazard.dir==='down')){
+    const q=hazard.when.zone;
+    const edgeGap=Math.min(Math.abs(q[0]+q[2]-hazard.x),Math.abs(q[0]-(hazard.x+hazard.w)));
+    assert(edgeGap<=10,`hazard trigger is not last-moment: ${l.number}`);
+  }
 }
 console.log(`Checked ${levels.length} rooms: categories, spawns, portal destinations, deterministic replay.`);
 if(require('node:fs').existsSync(__dirname+'/replays.json')) {

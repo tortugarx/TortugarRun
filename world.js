@@ -77,25 +77,14 @@
       const rider = this.supportId === b.id || (Math.abs(p.y + p.h - by) < 1.5 && p.x + p.w > bx && p.x < bx + b.w && p.vy >= 0);
       b.x = x; b.y = y;
       if (rider) this.moveActor(dx, dy, b);
-      // Every moving map part may be the wall that kills. There is no flag and
-      // no visual tell: riders are carried safely, every other impact is fatal.
-      if (!rider && hit(p, b)) {
-        this.status = "dead";
-        return true;
-      }
       if (hit(p, b)) {
         if (dx > 0 && px >= bx + b.w - 1) this.moveActor(b.x + b.w - p.x, 0, b);
         else if (dx < 0 && px + p.w <= bx + 1) this.moveActor(b.x - p.w - p.x, 0, b);
         else if (dy < 0 && py + p.h <= by + 1.5) this.moveActor(0, b.y - p.h - p.y, b);
         else if (dy > 0 && py >= by + b.h - 1) this.moveActor(0, b.y + b.h - p.y, b);
       }
-      // Terrain may deliberately dock into or retract behind other terrain.
-      // Only the player can block a step; static stone must never truncate an
-      // animation just because the moving piece started inside a floor cutout.
-      if (hit(p, b) || this.solid.some(s => s !== b && hit(p, s))) {
-        b.x = bx; b.y = by; p.x = px; p.y = py;
-        return false;
-      }
+      // Motion never waits for the player. Walls keep their authored timeline
+      // and shove the turtle toward actual hazards; stone contact itself is safe.
       return true;
     }
     resize(size, anchor = "center") {
@@ -120,7 +109,7 @@
       p.buffer = keys.jump && !p.held ? 0.08 : Math.max(0, p.buffer - dt);
       this.jumpNow = !this.teleport && p.buffer > 0 && p.coyote > 0;
       p.held = !!keys.jump;
-      if (this.jumpNow) { p.vy = -340; p.ground = false; this.supportId=null; p.coyote = 0; p.buffer = 0; this.emit("jump"); }
+      if (this.jumpNow) { p.vy = -365; p.ground = false; this.supportId=null; p.coyote = 0; p.buffer = 0; this.emit("jump"); }
       for (const m of this.motions) {
         if (!m.started && this.condition(m.when)) { m.started = true; this.signal(`motion:${m.id}`); }
         if (!m.started || m.done) continue;

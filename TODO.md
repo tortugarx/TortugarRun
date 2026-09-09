@@ -1,7 +1,18 @@
+# Wand-, Timing- und Portalpass vom 9. September 2026
+
+- [x] Wände töten nie durch Kontakt, stoppen nie am Spieler und schieben stattdessen in echte Gefahren.
+- [x] Wandbewegungen sind sauber angeschlossen, statisch getaktet und bei Angriffswänden einseitig.
+- [x] Fallen erst im letzten sicheren Reaktionsfenster auslösen.
+- [x] Unmögliche Sprünge und die zwei gemeldeten ähnlichen Räume ersetzen.
+- [x] Portalwelt 30–39 vollständig in zehn radikal verschiedene, schwierigere Großlayouts umbauen.
+- [x] Symmetrische Portale mit Pixel-Transportanimation sowie hohe, schmale Knöpfe abnehmen.
+- [x] Geschätzte Spielzeit mit Fehlversuchen auf ungefähr eine Minute je Raum kalibrieren.
+- [x] Alle 50 Räume neu lösen, zeitlich prüfen und im Browser einzeln abnehmen.
+
 # Härte- und Layoutpass vom 9. September 2026
 
-- [x] Versteckte Fallen früh genug auslösen und auf 120–180 ms Ausfahrzeit normieren.
-- [x] Jeden bewegten Mapteil bei seitlicher/quetschender Kollision tödlich machen, ohne Markierung; korrektes Mitfahren bleibt sicher.
+- [x] ~~Versteckte Fallen früh auslösen.~~ Durch das neuere Feedback zugunsten später Kurz-vor-knapp-Trigger ersetzt.
+- [x] ~~Bewegte Mapteile durch Kontakt tödlich machen.~~ Durch kontinuierliches Schieben in echte Gefahren ersetzt.
 - [x] Portale als animierte, ineinanderlaufende Quadrate klar von Türen unterscheiden.
 - [x] Knopfgrafik kleiner, einfacher und ruhiger zeichnen.
 - [x] Schwache Silhouetten durch Leerräume, Türme, Engstellen, Zickzack und Vertikalschluchten ersetzen.
@@ -31,12 +42,12 @@
 - [x] Hohe, tiefe, mittige und umgekehrte Starts und Ziele.
 - [x] Freiraum zwischen Portalen, Knöpfen und Türen.
 - [x] Relative Laufbewegung auf Trägern und absteigende Plattformen geprüft.
-- [x] Weltbewegung während Portaltransport; weniger Partikel und Kamerawackeln.
+- [x] Weltbewegung während Portaltransport; gezielte Pixel-Fluganimation ohne Kamerawackeln.
 - [x] 50 Gewinnwege, alle Spieladapter-Durchläufe und vollständige Mechanik-Zeitachsen geprüft.
 - [x] Alle 50 Räume und das Levelmenü nach dem Umbau erneut im Browser visuell kontrolliert (Desktop 1200×800, Mobil 390×844, Gesamttafel aller Räume).
 
 ## Verbindliche Regeln
 
-Feste Auslöser und Portalziele, kein Zufall zwischen Versuchen. Jeder bewegte Mapteil kann bei seitlicher oder quetschender Kollision töten, ohne sichtbare oder interne Gefahrenmarkierung; korrektes Mitfahren bleibt sicher. Mechaniken ab Raum 1/15/30/40: Stacheln, bewegte Mapteile, Portale, Knöpfe. Keine verräterischen Portalfarben. Bestehender Pixelstil.
+Feste Auslöser und Portalziele, kein Zufall zwischen Versuchen. Stein tötet nie durch bloßen Kontakt. Bewegte Wände stoppen nicht am Spieler, sondern schieben ihn entlang ihrer festen Bahn in Stacheln, Schluchten oder andere echte Gefahren. Mechaniken ab Raum 1/15/30/40: Stacheln, bewegte Mapteile, Portale, Knöpfe. Keine verräterischen Portalfarben. Bestehender Pixelstil.
 
 Automatische Lösbarkeit ersetzt keine persönliche Bewertung des Schwierigkeitsgrads. Weiteres Spielerfeedback bleibt maßgeblich.
