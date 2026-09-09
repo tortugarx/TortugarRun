@@ -1,3 +1,12 @@
+# Mobile-, Bahn- und Härtepass vom 9. September 2026
+
+- [x] Alle bewegten Bauteile über ihre komplette Bahn auf Durchfahren und rückseitiges Herausragen prüfen.
+- [x] Gemeldete unsaubere Plattform in Level 36 vollständig innerhalb ihres sichtbaren Schachts führen.
+- [x] Mehr spätere Räume mit kombinierten, verpflichtenden Timingmomenten auf das höhere Schwierigkeitsniveau bringen.
+- [x] Mobile Folge-Kamera mit höherem Zoom und größeren Touchflächen auf echter 390×844-Ansicht abnehmen.
+- [x] Triggerfenster sämtlicher Fallen auf weder zu frühe noch zu späte Aktivierung prüfen.
+- [x] Alle 50 Räume erneut lösen sowie Desktop und Mobil im Browser abnehmen.
+
 # Wand-, Timing- und Portalpass vom 9. September 2026
 
 - [x] Wände töten nie durch Kontakt, stoppen nie am Spieler und schieben stattdessen in echte Gefahren.

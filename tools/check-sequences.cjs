@@ -30,6 +30,7 @@ for(const l of levels){
   assert(l.spikes.length<=3&&l.motions.length<=5,`room ${l.number}: overload`);
   for(const order of ['together','staggered']){
     const w=new World(l);
+    const overlaps=new Map();
     // Isolate authored world motion from player obstruction or terminal state.
     w.p.x=-1000;w.p.y=-1000;w.moveActor=()=>{};w.locked=true;
     w.condition=function(c){if(!c)return true;if(c.signal)return this.signals[c.signal]!==undefined;if(c.stand)return this.time>.2;return this.time>.1;};
@@ -38,7 +39,14 @@ for(const l of levels){
       for(const [i,b] of w.buttons.entries())if(t>(order==='together'?10:10+i*90))w.signal(`button:${b.id}`);
       for(const [i,p] of w.portals.entries())if(t>(order==='together'?10:80+i*120))w.signal(`arrival:${p.id}`);
       w.tick({});inspect(w,`${l.number}/${order}/${t}`);
+      for(const motion of w.motions){
+        const moving=w.object(motion.id);
+        for(const fixed of w.solid)if(fixed!==moving&&moving.x<fixed.x+fixed.w-.01&&moving.x+moving.w>fixed.x+.01&&moving.y<fixed.y+fixed.h-.01&&moving.y+moving.h>fixed.y+.01){
+          const key=`${motion.id}>${fixed.id}`,span=overlaps.get(key)||{first:t,last:t};span.last=t;overlaps.set(key,span);
+        }
+      }
     }
+    for(const [pair,span] of overlaps)assert(span.first<=1||span.last>=1798,`${l.number}: moving part passes through terrain (${pair})`);
     for(const motion of w.motions){
       assert(motion.done||motion.loop,`${l.number}: incomplete ${motion.id}`);
       if(motion.loop)continue;

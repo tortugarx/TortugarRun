@@ -40,6 +40,7 @@
     levelReturnState = "menu",
     settingsReturnState = "menu",
     portalAnim = null,
+    camera = { x: 0, y: 0, ready: false },
     P,
     R,
     particles = [];
@@ -53,6 +54,7 @@
     P = world.p;
     R = world;
     energy = 100; pulse = 0; particles = []; portalAnim = null;
+    camera.ready = false;
     accumulator = 0;
     clock = 0;
     for (const id of ["#levelScreen", "#settingsScreen"]) $(id).classList.add("hidden");
@@ -326,20 +328,40 @@
     X.fillRect(10, -2 + b, 1, 1);
     X.restore();
   }
+  function applyCamera() {
+    const mobile = (globalThis.innerWidth ?? W) <= 760;
+    if (!mobile || !P) { camera.x = camera.y = 0; camera.ready = false; return; }
+    const zoom = 1.55, viewW = W / zoom, viewH = H / zoom;
+    let focusX = P.x + P.w / 2, focusY = P.y + P.h / 2;
+    if (portalAnim) {
+      const t = portalAnim.t * portalAnim.t * (3 - 2 * portalAnim.t);
+      focusX = portalAnim.from.x + (portalAnim.to.x - portalAnim.from.x) * t;
+      focusY = portalAnim.from.y + (portalAnim.to.y - portalAnim.from.y) * t;
+    }
+    const targetX = Math.max(0, Math.min(W - viewW, focusX - viewW * .48));
+    const targetY = Math.max(0, Math.min(H - viewH, focusY - viewH * .58));
+    if (!camera.ready) { camera.x = targetX; camera.y = targetY; camera.ready = true; }
+    else { camera.x += (targetX - camera.x) * .16; camera.y += (targetY - camera.y) * .16; }
+    X.scale(zoom, zoom);
+    X.translate(-Math.round(camera.x), -Math.round(camera.y));
+  }
   function draw() {
     X.save();
-    if (shake) {
-      X.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
-      shake *= 0.82;
-    }
     X.imageSmoothingEnabled = false;
     const c = palette();
     X.fillStyle = c[0];
     X.fillRect(0, 0, W, H);
+    if (state !== "menu" && R) applyCamera();
+    if (shake) {
+      X.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+      shake *= 0.82;
+    }
     if (state !== "menu" && R) {
       R.buttons.forEach(drawButton);
-      R.solid.forEach((r) => platform(r));
-      R.solid.forEach(stoneEdges);
+      const moving = new Set(R.motions.map(m => m.id));
+      const ordered = [...R.solid.filter(r => moving.has(r.id)), ...R.solid.filter(r => !moving.has(r.id))];
+      ordered.forEach((r) => platform(r));
+      ordered.forEach(stoneEdges);
       R.haz.forEach(hazard);
       R.portals.forEach(drawPortal);
       drawTeleport();

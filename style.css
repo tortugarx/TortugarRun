@@ -430,18 +430,20 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 @media (hover: none), (max-width: 760px) {
   .touch-controls {
     display: grid;
-    top: calc(100% + 10px);
+    top: calc(100% + 8px);
     bottom: auto;
   }
   .key-row {
     display: none;
   }
   .game-wrap {
-    width: min(100vw, calc((100dvh - 76px) * 16 / 9));
-    height: min(calc(100dvh - 76px), calc(100vw * 9 / 16));
+    width: min(100vw, calc((100dvh - 98px) * 16 / 9));
+    height: min(calc(100dvh - 98px), calc(100vw * 9 / 16));
     overflow: visible;
-    margin-bottom: 66px;
+    margin-bottom: 86px;
   }
+  .touch-controls { gap: 12px; }
+  .touch-controls button { height: 62px; }
 }
 @media (max-width: 400px) {
   .touch-controls {

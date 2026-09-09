@@ -34,7 +34,25 @@ const fs=require('node:fs');
     images.forEach((src,i)=>{const box=document.createElement('div');box.style.cssText='width:320px;height:230px;color:black;font:16px sans-serif';const img=new Image();img.src=src;img.style.width='320px';box.append(String(i+1).padStart(2,'0'),img);document.body.append(box);});
   },images);
   await page.screenshot({path:'/tmp/leveldevil-all-rooms.png',fullPage:true});
+  const mobilePage=await browser.newPage({viewport:{width:390,height:844}});
+  mobilePage.on('pageerror',e=>errors.push(e.message));
+  await mobilePage.goto(process.env.BASE_URL||'http://127.0.0.1:4173');
+  for(let id=1;id<=50;id++){
+    await mobilePage.locator('#mapBtn').click();
+    await mobilePage.locator('.group-tabs button').nth(id<15?0:id<30?1:id<40?2:3).click();
+    await mobilePage.locator(`#levelGrid > button[title^="${String(id).padStart(2,'0')} ·"]`).click();
+    await mobilePage.waitForTimeout(20);
+  }
+  await mobilePage.locator('#mapBtn').click();
+  await mobilePage.locator('.group-tabs button').nth(2).click();
+  await mobilePage.locator('#levelGrid > button[title^="36 ·"]').click();
+  await mobilePage.keyboard.down('ArrowRight');
+  await mobilePage.waitForTimeout(720);
+  await mobilePage.keyboard.up('ArrowRight');
+  await mobilePage.waitForTimeout(700);
+  await mobilePage.screenshot({path:'/tmp/leveldevil-mobile-gameplay.png'});
+  await mobilePage.close();
   await browser.close();
   if(errors.length)throw Error(errors.join('\n'));
-  console.log('All 50 rooms rendered in Chromium, no page errors; desktop/mobile and room sheet captured.');
+  console.log('All 50 rooms rendered in Chromium at desktop and mobile zoom, no page errors; room sheet captured.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

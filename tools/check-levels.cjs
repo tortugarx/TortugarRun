@@ -85,6 +85,9 @@ for(let i=0;i<detailed.length;i++)for(let j=i+1;j<detailed.length;j++){
 for(const l of levels)for(const hazard of l.spikes)if(hazard.when&&!hazard.initial){
   assert(hazard.delay<=.02,`early hidden hazard: ${l.number}`);
   assert(hazard.speed>=5.55&&hazard.speed<=8.34,`hidden hazard outside 120-180ms: ${l.number}`);
+  const collisionLatency=(hazard.delay||0)+.25/hazard.speed;
+  assert(collisionLatency>=.025&&collisionLatency<=.08,`hazard collision starts too early or late: ${l.number}`);
+  if(hazard.duration!==undefined)assert(hazard.duration>collisionLatency,`hazard retracts before it can collide: ${l.number}`);
   if(hazard.when.zone&&((hazard.dir||'up')==='up'||hazard.dir==='down')){
     const q=hazard.when.zone;
     const edgeGap=Math.min(Math.abs(q[0]+q[2]-hazard.x),Math.abs(q[0]-(hazard.x+hazard.w)));

@@ -12,6 +12,8 @@ Port 4173. Der Server liefert ausschließlich Spielassets aus und deaktiviert Br
 
 A/D oder Pfeile: laufen. W/↑/Leertaste: springen. R: Neustart. F: Fokus. M: Ton. Alle Räume sind freigeschaltet. Touch-Tasten stehen unter der Spielfläche.
 
+Auf Displays bis 760 px zeigt eine 1,55-fach vergrößerte Folge-Kamera nur den spielrelevanten Raumausschnitt. Sie folgt der Schildkröte und während eines Portalflugs dessen Pixelspur; die größeren Touchflächen bleiben außerhalb des Spielfelds.
+
 ## Regeln
 
 Räume 1–14: Stacheln; ab 15: bewegliche Mapteile; ab 30: Portale; ab 40: Knöpfe. Pro Raum maximal drei Stachelfelder und zwei bewegliche Bauteile. Portalziele sind fest und farblich nicht verraten. Steine schieben und tragen, verursachen aber keinen Kontaktschaden.

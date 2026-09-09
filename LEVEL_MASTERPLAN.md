@@ -2,6 +2,8 @@
 
 Status: **Portal- und Schwierigkeitsüberarbeitung nach Spielerfeedback am 9. September 2026 technisch, spielmechanisch und visuell abgenommen.** Die Zielzeit von ungefähr einer Minute einschließlich echter Fehlversuche bleibt bewusst ein Spieler-Testwert und wird nicht künstlich errechnet. Dieser Plan ersetzt frühere grobe Szenenlisten.
 
+**Mobile-/Bahn-Nachtrag:** Bewegte Bauteile werden über ihre vollständige Zeitachse geprüft; ein Teil darf nicht durch statisches Terrain fahren und auf dessen Rückseite wieder erscheinen. Auf Displays bis 760 px folgt eine 1,55-fach vergrößerte Kamera der Schildkröte beziehungsweise der Portalspur. Level 37, 41, 43, 46, 47 und 49 kombinieren nun zusätzliche verpflichtende Timingmomente; Level 40 bleibt als ehrliche Knopfeinführung unangetastet. Versteckte Fallen beginnen nach ihrem späten Raumtrigger innerhalb von 25–80 ms zu kollidieren und fahren in 120–180 ms vollständig aus.
+
 ## Auswertung des Chats
 
 Folgende Wünsche sind verbindlich:
@@ -233,8 +235,8 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 ### 25 · HALTESTELLE
 
 - **Bild:** Drei Inseln auf gleicher Höhe, eine lange Fähre verbindet alle.
-- **Bewegung:** Fähre stoppt 700 ms an der Mittelinsel; anschließend fährt sie unter einen niedrigen Zielüberhang.
-- **Lösung:** Am Mittelhalt aussteigen und über die feste Insel zur Tür springen.
+- **Bewegung:** Die Fähre fährt einmal bis exakt vor die Mittelinsel und dockt dort bündig, ohne durch die Insel zu laufen.
+- **Lösung:** Am Mittelhalt aussteigen und die weite Restlücke ohne weiteren Träger überwinden.
 - **Abgrenzung:** Zeitentscheidung statt schneller Reaktion.
 
 ### 26 · DOMINO-BODEN
@@ -254,7 +256,7 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 ### 28 · DER JÄGER LÜGT
 
 - **Bild:** Lange Laufbahn mit drei großen Höhenwechseln und komplett freiem Ziel.
-- **Bewegung:** Verfolgerwand fährt ohne Halt in einer Richtung, wechselt aber zwischen drei festen Geschwindigkeiten.
+- **Bewegung:** Die kurze Verfolgerwand steigt ohne Halt diagonal an den Terrassenkanten entlang; horizontale und vertikale Richtung bleiben durchgehend gleich.
 - **Lösung:** Eigenen Sprungrhythmus halten; die Wand bleibt bei perfektem Lauf mindestens 35 px zurück.
 - **Psychologie:** Der Bewegungsrhythmus selbst täuscht, keine zusätzliche Stachelfalle.
 
@@ -306,14 +308,14 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 ### 36 · DER SPIEGEL
 
 - **Bild:** Zwei gespiegelt gebaute C-Kammern mit vertauschten Öffnungen.
-- **Täuschung:** Das Portal schleudert nach links in den zweiten Arm. Dessen kompletter Innenboden fährt danach erst seitlich und dann nach oben.
-- **Lösung:** Portalimpuls abbremsen, den verschobenen Boden mitfahren und anschließend wieder nach rechts zur Tür wechseln.
+- **Täuschung:** Das Portal schleudert nach rechts in den zweiten Arm. Dessen verkürzter Innenboden bleibt vollständig im sichtbaren Schacht und fährt erst rechts, dann hoch.
+- **Lösung:** Portalimpuls kontrollieren, den Boden mitfahren und anschließend zur Tür wechseln.
 - **Abgrenzung:** Visuelle Erinnerung statt versteckter Falle.
 
 ### 37 · FALL-ZICKZACK
 
 - **Bild:** Zwei riesige Deckenmassen bilden einen horizontal-vertikalen Zickzack mit drei stark versetzten Höhen.
-- **Portal:** Zwei Eingänge schneiden die unüberspringbaren Höhenwechsel ab; beide betretenen Absätze brechen nach der Ankunft weg und jede Ankunft ändert die Laufrichtung.
+- **Portal:** Zwei Eingänge schneiden die unüberspringbaren Höhenwechsel ab; beide Absätze brechen weg, jede Ankunft ändert die Laufrichtung und unten jagt eine einseitige Wand nach.
 - **Psychologie:** Späte Stacheln bestrafen den gewohnten Geradeauslauf nach jeder Ankunft.
 
 ### 38 · BEWEGTE ADRESSE
@@ -342,7 +344,7 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 ### 41 · BRÜCKE GEGEN BODEN
 
 - **Bild:** Flache Halle, Knopf links, Tür rechts hinter einer Lücke.
-- **Wirkung:** Zuerst steigt die Brücke; 300 ms später sinkt das bisher sichere Mittelfeld.
+- **Wirkung:** Zuerst steigt die Brücke samt spätem Mittelzahn; 300 ms später sinkt das bisher sichere Mittelfeld.
 - **Lösung:** Direkt von altem Boden auf neue Brücke wechseln.
 - **Abgrenzung:** Knopf hilft und nimmt zugleich eine frühere Option.
 
@@ -356,7 +358,7 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 ### 43 · DER KNOPF ZIEHT UM
 
 - **Bild:** Start unten, Knopf auf linkem Balkon, Tür auf einer hohen rechten Insel.
-- **Wirkung:** Tür wird entriegelt; ihre komplette Insel fährt weich nach unten und links.
+- **Wirkung:** Tür wird entriegelt; ihre komplette Insel fährt samt Zahn weich nach unten und links.
 - **Lösung:** Bewegung abwarten und zum neuen Standort springen.
 - **Abgrenzung:** Der Knopf bewegt das Ziel statt einen Weg.
 
@@ -378,14 +380,14 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 
 - **Bild:** Langer Steg, zwei äußerlich gleiche Knöpfe, hohe Zielnische.
 - **Wirkung:** Knopf 1 macht groß und ermöglicht die Stufe. Knopf 2 würde klein machen und ist optional.
-- **Lösung:** Zweiten Knopf überspringen.
+- **Lösung:** Zweiten Knopf und zwei erst im letzten Fenster wachsende Zähne überspringen.
 - **Psychologie:** Wiederholung der Optik erzeugt falsche Pflicht; Nichtdrücken ist die Entscheidung.
 
 ### 47 · FAHRENDER SCHALTER
 
 - **Bild:** Zwei Türme und eine Fähre; Knopf mittig auf der Fähre, einzelnes Portal weit hinten auf dem rechten Turm.
-- **Wirkung:** Drücken öffnet das Portal und kehrt die Fähre sofort nach kurzer Bremsung um.
-- **Lösung:** Gegen die Rückfahrt laufen, rechts abspringen, anschließend das Portal zum freien Zielpunkt hinter der Sperrwand nutzen.
+- **Wirkung:** Drücken hebt die Fähre samt Zahn aus der unteren Kammer und fährt sie anschließend nach rechts über die Stufenköpfe.
+- **Lösung:** Den mitfahrenden Zahn überspringen, rechts abspringen und das Portal zum freien Zielpunkt nutzen.
 - **Abgrenzung:** Plattformphysik und Knopfreaktion in einem übersichtlichen Raum.
 
 ### 48 · DIE TÜR WAR HINTER DIR
@@ -398,16 +400,16 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 ### 49 · DREI GETRENNTE AKTE
 
 - **Bild:** Startkammer links, hohe Portalhalle mittig, Türinsel rechts; große ruhige Abstände.
-- **Ablauf:** Knopf hebt in der Portalhalle eine Plattform. Diese fährt leicht gegen den Spieler; oben liegt ein Portal. Es setzt die Figur ohne Zielportal auf der Zielinsel mit sicherer Zone ab, danach folgt ein ehrlicher Sprung.
-- **Lösung:** Drücken, gegen den Träger laufen, Portal betreten, springen.
+- **Ablauf:** Knopf hebt in der Portalhalle eine Plattform mit eigenem Zahn. Oben liegt ein Portal; auf der Zielinsel entsteht nach der Ankunft ein zweiter Zahn.
+- **Lösung:** Drücken, den Liftzahn überspringen, Portal betreten und den Ankunftszahn sofort lesen.
 - **Abgrenzung:** Drei Mechaniken, aber zeitlich vollständig getrennt und nie gleichzeitig animiert.
 
 ### 50 · DIE LETZTE GESCHICHTE
 
-- **Bild:** Monumentaler Raum aus hohem Startturm rechts, tiefem U im Zentrum und schmaler Türnische links oben; nur vier große Flächen.
+- **Bild:** Monumentaler Raum aus hohem Startturm rechts, tiefem U im Zentrum und schmaler Türgalerie links oben; der Lift dockt nur an ihrer Außenkante.
 - **Akt 1:** Kontrollierter Fall ins U. Der erwartete Stachel vor dem Knopf bleibt aus; Knopf öffnet ehrlich die Tür und startet den Lift links.
 - **Akt 2:** Lift fährt zum hoch liegenden einzelnen Portal, bremst davor und kehrt um. Gegenlaufen und im Zeitfenster eintreten.
-- **Akt 3:** Das Portal setzt die Figur frei auf dem linken Dach ab; dort steht kein zweites Portal. Nach 120 px Sicherheitszone schützt ein sichtbarer Stachel den letzten Sprung; direkt vor der Tür geschieht nichts.
+- **Akt 3:** Das Portal setzt die Figur frei auf der mittleren Türgalerie ab; dort steht kein zweites Portal. Die Tür liegt links, während der sichtbare Liftzahn zurückbleibt.
 - **Finale:** Alle gelernten Fähigkeiten werden abgefragt. Nach dem letzten sichtbaren Hindernis gibt es keine nachträgliche Todesfalle.
 
 ## Levelübersicht

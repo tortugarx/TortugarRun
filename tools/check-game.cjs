@@ -1,9 +1,9 @@
 // Exercise the real game adapter, canvas draw calls and input listeners in a
 // minimal DOM. Room physics are separately covered by the winning replays.
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-function boot() {
-  const nodes=new Map(),handlers={},timers=new Map();let raf,time=0,timerId=0;
-  const context2d=new Proxy({}, {get:(o,k)=>k in o?o[k]:(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
+function boot(innerWidth=960) {
+  const nodes=new Map(),handlers={},timers=new Map(),transforms=[];let raf,time=0,timerId=0;
+  const context2d=new Proxy({scale:(x,y)=>transforms.push(['scale',x,y]),translate:(x,y)=>transforms.push(['translate',x,y])}, {get:(o,k)=>k in o?o[k]:(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
   function node() {
     let text='';const classes=new Set(['hidden']);
     return {children:[],style:{setProperty(){}},dataset:{},listeners:{},
@@ -14,7 +14,7 @@ function boot() {
   const $=id=>{if(!nodes.has(id))nodes.set(id,node());return nodes.get(id);};
   const touches=['left','right','jump'].map(key=>Object.assign(node(),{dataset:{key}}));
   const data=new Map([['level-devil-sound','off'],['level-devil-unlocked','50']]);
-  const env={console,URLSearchParams,Math,DevilLevels:require('../levels.js'),DevilWorld:require('../world.js'),
+  const env={console,URLSearchParams,Math,innerWidth,DevilLevels:require('../levels.js'),DevilWorld:require('../world.js'),
     document:{querySelector:$,querySelectorAll:()=>touches,createElement:node,documentElement:node()},
     localStorage:{getItem:k=>data.get(k),setItem:(k,v)=>data.set(k,String(v))},location:{search:''},
     addEventListener:(key,f)=>handlers[key]=f,requestAnimationFrame:f=>raf=f,
@@ -28,7 +28,7 @@ function boot() {
     grid.children[0].children[group].onclick();
     grid.children.find(n=>n.innerHTML?.startsWith(id+'<')).onclick();
   }
-  return {$,frame,key,select,touches};
+  return {$,frame,key,select,touches,transforms};
 }
 const app=boot();
 for(const id of [1,6,15,24,30,38,40,43,50]) {
@@ -62,4 +62,6 @@ assert.equal(touch.$('#deathLabel').textContent,'01');
 touch.key('KeyR',true);touch.touches[1].listeners.touchend({changedTouches:[{identifier:1}],preventDefault(){}});
 for(let t=0;t<130;t++)touch.frame();
 assert(touch.$('#deathScreen').classList.contains('hidden'));
+const mobile=boot(390);mobile.frame();mobile.select(36);mobile.frame();
+assert(mobile.transforms.some(t=>t[0]==='scale'&&t[1]===1.55&&t[2]===1.55),'mobile camera zoom');
 console.log('Verified game rendering adapter, category selection, all 50 complete game routes, final screen, touch input and restart timers.');
