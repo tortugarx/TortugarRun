@@ -62,6 +62,19 @@ for (const [i,l] of levels.entries()) {
 }
 assert.equal(new Set(levels.map(l=>l.identity.silhouette)).size,50,'duplicate silhouette');
 assert.equal(new Set(levels.map(l=>Object.values(l.identity).join('|'))).size,50,'duplicate identity combination');
+// Identity labels are not enough: the authored terrain itself must produce 50
+// different coarse silhouettes when rendered as black masses.
+const terrainSignature=l=>{
+  const blocks=l.blocks.slice(3);let out='';
+  for(let y=100;y<540;y+=40)for(let x=32;x<928;x+=40)
+    out+=blocks.some(b=>x<b[0]+b[2]&&x+40>b[0]&&y<b[1]+b[3]&&y+40>b[1])?'1':'0';
+  return out;
+};
+assert.equal(new Set(levels.map(terrainSignature)).size,50,'duplicate rendered terrain silhouette');
+for(const l of levels)for(const hazard of l.spikes)if(hazard.when&&!hazard.initial){
+  assert(hazard.delay<=.06,`late hidden hazard: ${l.number}`);
+  assert(hazard.speed>=5.55&&hazard.speed<=8.34,`hidden hazard outside 120-180ms: ${l.number}`);
+}
 console.log(`Checked ${levels.length} rooms: categories, spawns, portal destinations, deterministic replay.`);
 if(require('node:fs').existsSync(__dirname+'/replays.json')) {
   const replays=require('./replays.json');

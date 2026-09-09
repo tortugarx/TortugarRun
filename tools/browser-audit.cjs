@@ -13,6 +13,8 @@ const fs=require('node:fs');
     const number=String(id).padStart(2,'0');
     await page.locator(`#levelGrid > button[title^="${number} ·"]`).click();
     await page.waitForTimeout(40);
+    if(id===30)await page.locator('#game').screenshot({path:'/tmp/leveldevil-portal.png'});
+    if(id===40)await page.locator('#game').screenshot({path:'/tmp/leveldevil-button.png'});
     images.push(await page.locator('#game').evaluate(c=>c.toDataURL()));
   }
   await page.locator('#mapBtn').click();

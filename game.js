@@ -271,34 +271,45 @@
     if (fake) { X.fillStyle = c[2]; X.fillRect(4, 20, 16, 3); }
     X.restore();
   }
-  function drawPortal(p) { drawPortalEnd(p.x, p.y - 40, "floor", 0); }
+  function drawPortal(p) { drawPortalEnd(p.x, p.y - 40, "floor", clock * 3.5); }
   function drawPortalEnd(x, y, orientation, phase) {
     X.save();
     X.translate(Math.round(x), Math.round(y + 20));
     if (orientation === "ceiling") X.rotate(Math.PI / 2);
-    // Static grey pixel arch: no glow, animation, particles or pair colour.
-    X.fillStyle = "#414246";
-    X.fillRect(-14,-12,28,32); X.fillRect(-10,-16,20,4); X.fillRect(-6,-19,12,3);
-    X.fillStyle = "#96989a";
-    X.fillRect(-10,-10,20,30); X.fillRect(-6,-14,12,4);
-    X.fillStyle = "#c7c8c9";
-    X.fillRect(-6,-7,12,27);
+    // Four animated, neutral square frames: unmistakably a portal and never
+    // an arch-shaped door. Frames pulse inward instead of using particles.
+    const shades=["#3d3f43","#696c71","#989b9f","#d0d1d2"];
+    for(let i=0;i<4;i++) {
+      const beat=(Math.floor(phase*2)+i)%4;
+      const size=32-i*7+(beat===0?2:0), half=Math.floor(size/2);
+      X.strokeStyle=shades[(i+Math.floor(phase))%4];
+      X.lineWidth=i===0?3:2;
+      X.strokeRect(-half+.5,-half+.5,size,size);
+    }
+    X.fillStyle=shades[Math.floor(phase*2)%4];
+    X.fillRect(-2,-2,4,4);
     X.restore();
   }
   function drawTeleport() {
-    // Transport intentionally has no trail; the portal itself remains plain.
+    if(!portalAnim)return;
+    const t=portalAnim.t, eased=t*t*(3-2*t);
+    const x=portalAnim.from.x+(portalAnim.to.x-portalAnim.from.x)*eased;
+    const y=portalAnim.from.y+(portalAnim.to.y-portalAnim.from.y)*eased;
+    X.save();X.translate(Math.round(x),Math.round(y));
+    const c=palette();
+    for(let i=0;i<4;i++){
+      const size=Math.max(3,24-i*6-Math.abs(.5-t)*8);
+      X.strokeStyle=i%2?c[2]:c[3];X.lineWidth=2;
+      X.strokeRect(-size/2,-size/2,size,size);
+    }
+    X.restore();
   }
   function drawButton(b) {
     const c = palette();
-    const top = b.y + (b.pressed ? 5 : 0);
-    X.fillStyle = c[3];
-    X.fillRect(b.x, top, b.w, b.y + 8 - top);
-    X.fillStyle = b.pressed ? c[2] : c[0];
-    X.fillRect(b.x + 2, top + 2, b.w - 4, b.pressed ? 1 : 4);
-    X.fillStyle = c[3];
-    if (!b.pressed) for (let x = b.x + 5; x < b.x + b.w - 3; x += 6) X.fillRect(x,top+3,2,2);
-    X.fillStyle = c[2];
-    X.fillRect(b.x, b.y + 6, b.w, 2);
+    const w=18,x=Math.round(b.x+(b.w-w)/2),top=Math.round(b.y+(b.pressed?5:2));
+    X.fillStyle=c[3];X.fillRect(x-2,b.y+6,w+4,2);
+    X.fillStyle=b.pressed?c[2]:c[3];X.fillRect(x,top,w,b.pressed?2:4);
+    if(!b.pressed){X.fillStyle=c[1];X.fillRect(x+2,top+1,w-4,1);}
   }
   function drawHero() {
     X.save();

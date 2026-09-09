@@ -77,6 +77,12 @@
       const rider = this.supportId === b.id || (Math.abs(p.y + p.h - by) < 1.5 && p.x + p.w > bx && p.x < bx + b.w && p.vy >= 0);
       b.x = x; b.y = y;
       if (rider) this.moveActor(dx, dy, b);
+      // Every moving map part may be the wall that kills. There is no flag and
+      // no visual tell: riders are carried safely, every other impact is fatal.
+      if (!rider && hit(p, b)) {
+        this.status = "dead";
+        return true;
+      }
       if (hit(p, b)) {
         if (dx > 0 && px >= bx + b.w - 1) this.moveActor(b.x + b.w - p.x, 0, b);
         else if (dx < 0 && px + p.w <= bx + 1) this.moveActor(b.x - p.w - p.x, 0, b);
@@ -110,8 +116,8 @@
       const support = p.vy >= 0 ? this.solid.find(b => Math.abs(p.y+p.h-b.y)<1.5 && p.x+p.w>b.x && p.x<b.x+b.w) : null;
       this.supportId = support?.id || null;
       this.time += dt;
-      p.coyote = p.ground ? 0.105 : Math.max(0, p.coyote - dt);
-      p.buffer = keys.jump && !p.held ? 0.11 : Math.max(0, p.buffer - dt);
+      p.coyote = p.ground ? 0.075 : Math.max(0, p.coyote - dt);
+      p.buffer = keys.jump && !p.held ? 0.08 : Math.max(0, p.buffer - dt);
       this.jumpNow = !this.teleport && p.buffer > 0 && p.coyote > 0;
       p.held = !!keys.jump;
       if (this.jumpNow) { p.vy = -340; p.ground = false; this.supportId=null; p.coyote = 0; p.buffer = 0; this.emit("jump"); }
@@ -134,7 +140,7 @@
         }
         if (this.moveBlock(b, b.originX + dx, b.originY + dy)) {
           m.t += dt;
-          if (ended) { if (m.loop) m.t = m.delay || 0; else m.done = true; }
+          if (ended) { if (m.loop) m.t = m.delay || 0; else { m.done = true; this.signal(`done:${m.id}`); } }
         }
       }
       for (const portal of this.portals) {

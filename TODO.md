@@ -1,3 +1,13 @@
+# Härte- und Layoutpass vom 9. September 2026
+
+- [x] Versteckte Fallen früh genug auslösen und auf 120–180 ms Ausfahrzeit normieren.
+- [x] Jeden bewegten Mapteil bei seitlicher/quetschender Kollision tödlich machen, ohne Markierung; korrektes Mitfahren bleibt sicher.
+- [x] Portale als animierte, ineinanderlaufende Quadrate klar von Türen unterscheiden.
+- [x] Knopfgrafik kleiner, einfacher und ruhiger zeichnen.
+- [x] Schwache Silhouetten durch Leerräume, Türme, Engstellen, Zickzack und Vertikalschluchten ersetzen.
+- [x] Alle 50 Gewinnwege nach dem Härtepass neu berechnen und im echten Spieladapter prüfen.
+- [x] Alle 50 Räume, Portalframes, Knöpfe und das Menü auf Desktop und Mobil visuell abnehmen.
+
 # Überarbeitung vom 8. September 2026
 
 ## Freigegebener Szenenplan
@@ -17,7 +27,7 @@
 - [x] Alle 50 Räume nach visuellem Vergleich einzeln abnehmen; automatische Lösbarkeit allein reicht nicht.
 - [x] Funktionale, baulich verbundene Geometrie ohne Dekorstützen.
 - [x] Stacheln durchgehend an Terrain oder Träger befestigt.
-- [x] Maximal drei Gefahren und zwei Bewegungen pro Raum.
+- [x] Maximal drei Gefahren und zwei Bewegungsmechaniken pro Raum; gekoppelte Segmente einer Brücke oder Treppe zählen als ein System.
 - [x] Hohe, tiefe, mittige und umgekehrte Starts und Ziele.
 - [x] Freiraum zwischen Portalen, Knöpfen und Türen.
 - [x] Relative Laufbewegung auf Trägern und absteigende Plattformen geprüft.
@@ -27,6 +37,6 @@
 
 ## Verbindliche Regeln
 
-Feste Auslöser und Portalziele, kein Zufall zwischen Versuchen. Steine töten nicht durch Kontakt. Mechaniken ab Raum 1/15/30/40: Stacheln, bewegte Mapteile, Portale, Knöpfe. Keine verräterischen Portalfarben. Bestehender Pixelstil. Eine blockierte Plattform wartet, bis der Spieler ausweicht.
+Feste Auslöser und Portalziele, kein Zufall zwischen Versuchen. Jeder bewegte Mapteil kann bei seitlicher oder quetschender Kollision töten, ohne sichtbare oder interne Gefahrenmarkierung; korrektes Mitfahren bleibt sicher. Mechaniken ab Raum 1/15/30/40: Stacheln, bewegte Mapteile, Portale, Knöpfe. Keine verräterischen Portalfarben. Bestehender Pixelstil.
 
 Automatische Lösbarkeit ersetzt keine persönliche Bewertung des Schwierigkeitsgrads. Weiteres Spielerfeedback bleibt maßgeblich.

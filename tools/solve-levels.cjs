@@ -13,7 +13,7 @@ function target(w,g) {
   if(typeof g?.[0]==='string') {
     const [type,id]=g[0].split(':');
     if(type==='button'){const b=w.buttons.find(b=>b.id===id);return [b.x+10,b.y];}
-    if(type==='motion'){const b=w.object(id);return [b.x+b.w/2,b.y-18];}
+    if(type==='motion'||type==='done'){const b=w.object(id);return [b.x+b.w/2,b.y-18];}
     const p=w.portals.find(p=>p.id===id);return [p.x,p.y-18];
   }
   return g || [w.exit[0]+20,w.exit[1]+50];

@@ -3,17 +3,15 @@ const {World,hit}=require('../world.js');
 const base={spawn:[180,420],exit:[900,356],blocks:[[0,420,960,120]],spikes:[],motions:[],portals:[],buttons:[]};
 const advance=(w,n,input={})=>{for(let i=0;i<n;i++)w.tick(input);};
 
-// Stone pushes; only the spike on the route is lethal.
+// A moving wall is lethal on impact without an authored danger marker.
 const push={...base,blocks:[...base.blocks,[120,380,30,40,'wall']],motions:[{id:'wall',path:[[330,0,1.5]]}]};
-const safe=new World(push);advance(safe,240);
-assert.equal(safe.status,'playing');assert(safe.p.x>=479);
-const lethal=new World({...push,spikes:[{x:440,y:420,w:27}]});advance(lethal,240);
-assert.equal(lethal.status,'dead');
+const impact=new World(push);advance(impact,240);
+assert.equal(impact.status,'dead');
+assert.equal('dangerous' in impact.motions[0],false);
 
-// A blocked wall stalls, never crushes or tunnels through the player.
+// A closing wall also kills instead of silently stalling.
 const trapped=new World({...push,blocks:[...push.blocks,[260,300,30,120]]});advance(trapped,240);
-assert.equal(trapped.status,'playing');
-assert(!trapped.solid.some(b=>hit(trapped.p,b)));
+assert.equal(trapped.status,'dead');
 
 // Docking into static terrain does not truncate a map-part animation.
 const docking=new World({...base,spawn:[40,420],blocks:[...base.blocks,[120,380,30,40,'wall'],[300,300,40,120]],motions:[{id:'wall',path:[[190,0,1]]}]});
@@ -47,7 +45,7 @@ advance(coupled,30);assert.equal(coupled.locked,false);assert(coupled.object('wa
 // Death wins when spike and goal overlap during the same step.
 const finishTrap=new World({...base,spawn:[200,420],exit:[190,356],spikes:[{x:200,y:420,w:27}]});
 advance(finishTrap,2);assert.equal(finishTrap.status,'dead');
-console.log('Verified push, stall, carry, directed portals, re-entry lock, resize, coupled buttons and hazard priority.');
+console.log('Verified lethal moving-wall impacts, safe carrying, directed portals, re-entry lock, resize, coupled buttons and hazard priority.');
 
 // A visible barrier waits for its trigger, retracts, and remains gone on this run.
 const disappearing=new World({...base,spikes:[{x:350,y:420,w:45,initial:true,vanish:true,when:{signal:'open'}}]});

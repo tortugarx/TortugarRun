@@ -1,6 +1,6 @@
 # Verbindlicher Masterplan für 50 Level
 
-Status: **Vollständig umgesetzt und abgenommen am 8. September 2026.** Dieser Plan ersetzt frühere grobe Szenenlisten.
+Status: **Härte- und Layoutabnahme nach Spielerfeedback am 9. September 2026 vollständig abgeschlossen.** Dieser Plan ersetzt frühere grobe Szenenlisten.
 
 ## Auswertung des Chats
 
@@ -11,6 +11,7 @@ Folgende Wünsche sind verbindlich:
 - Schwebende Plattformen sind erlaubt, wenn sie Route, Transport, Landung oder Köder sind. Dekorative oder unmotivierte Blöcke entfallen.
 - Stacheln, Wände und Plattformen entstehen nie bereits sichtbar schwebend. Bewegliche Teile kommen aus passenden Taschen, Schächten oder Anschlüssen.
 - Bewegungen sind weich, kollisionssicher und exakt. Plattformen tragen den Spieler mit; Mitlaufen beschleunigt, Gegenlaufen bremst relativ zur Weltbewegung.
+- Jeder bewegte Mapteil kann bei seitlicher oder quetschender Kollision töten. Das wird weder grafisch noch durch einen Gefahrentyp markiert; nur korrektes Mitfahren ist sicher.
 - Fallen sind deterministisch, aber beim ersten Versuch psychologisch überraschend. Das Spiel nutzt Erinnerungen an vorherige Level gegen den Spieler.
 - Ein Level bleibt übersichtlich: eine Hauptmechanik, höchstens eine Finte und höchstens ein kurzer Schlussstich.
 - Jeder Fall ins Nichts ist tödlich.
@@ -36,7 +37,7 @@ Die Referenzbilder werden als direkte Formvorlage verwendet, ohne ihre konkreten
 - `/tmp/leveldevil-reference/08.jpg`: extreme Mittelwand beziehungsweise Schachtform mit seitlicher Türnische; Grundlage von Level 12.
 - `/tmp/leveldevil-reference/09.jpg`: einzelner hoher isolierter Turm in fast leerem Raum; Grundlage von Level 08.
 
-Die **Portalzeichnung** wird verbindlich aus `/tmp/leveldevil-reference/04.png` übernommen beziehungsweise als pixelgenaue Codegrafik nachgebaut: die kleine graue, bogenförmige Fläche mit dunkler Pixelkontur. Screenshot 04 ist die sauberere Vorlage; `/tmp/leveldevil-reference/02.png` zeigt dieselbe Form zusätzlich neben einer Münzreihe. Das Portal erhält kein Leuchten, keinen Partikelring und keine farbige Paarcodierung. Nur die Portalform wird übernommen; die übrige Screenshotgrafik wird nicht kopiert.
+Die **Portalzeichnung** besteht nach dem jüngsten Spielerfeedback verbindlich aus mehreren neutralgrauen, ineinanderlaufenden Pixelquadraten. Sie pulsiert auch im Leerlauf und verdichtet sich während des Transports. Dadurch ist sie schon in der Silhouette klar von der bogenförmigen Tür getrennt. Es gibt weiterhin keine farbige Paarcodierung und keinen Partikelring.
 
 ### Globale Einzigkeitsmatrix
 
