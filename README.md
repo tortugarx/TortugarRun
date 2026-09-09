@@ -12,7 +12,7 @@ Port 4173. Der Server liefert ausschließlich Spielassets aus und deaktiviert Br
 
 A/D oder Pfeile: laufen. W/↑/Leertaste: springen. R: Neustart. F: Fokus. M: Ton. Alle Räume sind freigeschaltet. Touch-Tasten stehen unter der Spielfläche.
 
-Auf Displays bis 760 px zeigt eine 1,55-fach vergrößerte Folge-Kamera nur den spielrelevanten Raumausschnitt. Sie folgt der Schildkröte und während eines Portalflugs dessen Pixelspur; die größeren Touchflächen bleiben außerhalb des Spielfelds.
+Auf Handys nutzt das Spielfeld im Hochformat die gesamte Bildschirmhöhe oberhalb der Touch-Tasten. Die unverzerrte Folge-Kamera zeigt einen schmaleren Raumausschnitt und folgt der Schildkröte sowie während eines Portalflugs dessen Pixelspur. Im Querformat arbeitet weiterhin die 1,55-fache Folge-Kamera.
 
 ## Regeln
 

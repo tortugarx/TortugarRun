@@ -329,15 +329,30 @@
     X.restore();
   }
   function applyCamera() {
-    const mobile = (globalThis.innerWidth ?? W) <= 760;
+    const screenW = globalThis.innerWidth ?? W;
+    const screenH = globalThis.innerHeight ?? H;
+    const mobile = screenW <= 760 || globalThis.matchMedia?.("(pointer: coarse)").matches;
+    const portrait = mobile && screenH > screenW;
     if (!mobile || !P) { camera.x = camera.y = 0; camera.ready = false; return; }
-    const zoom = 1.55, viewW = W / zoom, viewH = H / zoom;
     let focusX = P.x + P.w / 2, focusY = P.y + P.h / 2;
     if (portalAnim) {
       const t = portalAnim.t * portalAnim.t * (3 - 2 * portalAnim.t);
       focusX = portalAnim.from.x + (portalAnim.to.x - portalAnim.from.x) * t;
       focusY = portalAnim.from.y + (portalAnim.to.y - portalAnim.from.y) * t;
     }
+    if (portrait) {
+      // CSS fills the portrait play area with the 16:9 canvas via object-fit.
+      // Only this centred source slice remains visible, so move the world behind
+      // that slice while keeping its pixels and collision geometry undistorted.
+      const playHeight = Math.max(1, screenH - 86);
+      const viewW = Math.max(210, Math.min(W, H * screenW / playHeight));
+      const targetX = Math.max(0, Math.min(W - viewW, focusX - viewW * .48));
+      if (!camera.ready) { camera.x = targetX; camera.y = 0; camera.ready = true; }
+      else camera.x += (targetX - camera.x) * .16;
+      X.translate(Math.round((W - viewW) / 2 - camera.x), 0);
+      return;
+    }
+    const zoom = 1.55, viewW = W / zoom, viewH = H / zoom;
     const targetX = Math.max(0, Math.min(W - viewW, focusX - viewW * .48));
     const targetY = Math.max(0, Math.min(H - viewH, focusY - viewH * .58));
     if (!camera.ready) { camera.x = targetX; camera.y = targetY; camera.ready = true; }

@@ -1,6 +1,7 @@
 // Run with PLAYWRIGHT_MODULE pointing to an installed playwright package.
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const fs=require('node:fs');
+const assert=require('node:assert/strict');
 (async()=>{
   const browser=await chromium.launch({headless:true});
   const page=await browser.newPage({viewport:{width:1200,height:800}});
@@ -37,6 +38,12 @@ const fs=require('node:fs');
   const mobilePage=await browser.newPage({viewport:{width:390,height:844}});
   mobilePage.on('pageerror',e=>errors.push(e.message));
   await mobilePage.goto(process.env.BASE_URL||'http://127.0.0.1:4173');
+  const mobileLayout=await mobilePage.evaluate(()=>{
+    const wrap=document.querySelector('.game-wrap').getBoundingClientRect();
+    const canvas=getComputedStyle(document.querySelector('#game'));
+    return {width:wrap.width,height:wrap.height,fit:canvas.objectFit};
+  });
+  assert.deepEqual(mobileLayout,{width:390,height:758,fit:'cover'});
   for(let id=1;id<=50;id++){
     await mobilePage.locator('#mapBtn').click();
     await mobilePage.locator('.group-tabs button').nth(id<15?0:id<30?1:id<40?2:3).click();
@@ -54,5 +61,5 @@ const fs=require('node:fs');
   await mobilePage.close();
   await browser.close();
   if(errors.length)throw Error(errors.join('\n'));
-  console.log('All 50 rooms rendered in Chromium at desktop and mobile zoom, no page errors; room sheet captured.');
+  console.log('All 50 rooms rendered in Chromium; 390x844 portrait fills 390x758 above controls without distortion; no page errors.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

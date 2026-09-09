@@ -1,3 +1,10 @@
+# Hochformat-Vollbildpass vom 9. September 2026
+
+- [x] Schwarze Leerflächen der Mobilansicht entfernen und die gesamte Hochkanthöhe nutzen.
+- [x] Spielgeometrie trotz hochformatfüllender Darstellung unverzerrt lassen.
+- [x] HUD, Touchsteuerung und Kamerafahrt auf echter 390×844-Browseransicht abnehmen.
+- [x] Vollständige Spiel-, Physik- und Browserprüfungen erneut ausführen.
+
 # Mobile-, Bahn- und Härtepass vom 9. September 2026
 
 - [x] Alle bewegten Bauteile über ihre komplette Bahn auf Durchfahren und rückseitiges Herausragen prüfen.
