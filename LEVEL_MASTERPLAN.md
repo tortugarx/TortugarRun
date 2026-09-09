@@ -1,6 +1,6 @@
 # Verbindlicher Masterplan für 50 Level
 
-Status: **Wand-, Timing- und Portalüberarbeitung nach Spielerfeedback am 9. September 2026 vollständig abgenommen.** Dieser Plan ersetzt frühere grobe Szenenlisten.
+Status: **Portal- und Schwierigkeitsüberarbeitung nach Spielerfeedback am 9. September 2026 technisch, spielmechanisch und visuell abgenommen.** Die Zielzeit von ungefähr einer Minute einschließlich echter Fehlversuche bleibt bewusst ein Spieler-Testwert und wird nicht künstlich errechnet. Dieser Plan ersetzt frühere grobe Szenenlisten.
 
 ## Auswertung des Chats
 
@@ -45,7 +45,7 @@ Vor der Umsetzung erhält jeder Raum vier Kennwerte: `Silhouette`, `Hauptrichtun
 
 Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterrasse; 03 tiefes Treppen-U; 04 niedriger Tunnel; 05 Drei-Insel-Sprung; 06 Mittelsockel mit Seitenarm; 07 Mittelturm mit Ober-/Unterroute; 08 isolierter Hochturm; 09 drei ungleiche Pfeiler; 10 großes C; 11 Doppelstock-Rückweg; 12 enger Vertikalschacht; 13 einzelner Schwebesteg; 14 absteigendes Zickzack; 15 Bodenklappe im Saal; 16 Liftgrube; 17 Zwei-Ufer-Fähre; 18 diagonaler Abstieg; 19 Dreifeld-Korridor; 20 Gegenstromsteg; 21 versetzte Doppeletage; 22 fliehende Türinsel; 23 Segmentbrücke; 24 L-Schacht mit Schubwand; 25 Drei-Haltestellen-Archipel; 26 Domino-Treppe; 27 Zangenhalle; 28 dreistufige Fluchtstrecke; 29 bewegter Innenkern im C-Rahmen; 30 zwei ungleiche Portalräume; 31 Turm mit unterer Nische; 32 Anlauftunnel in offene Kammer; 33 drei Räume in S-Anordnung; 34 Portal über Liftgrube; 35 asymmetrisches Portal-U; 36 gespiegelte Doppel-C-Kammer; 37 Turm mit Fallschlitz; 38 Ufer mit fahrendem Eintrittsportal; 39 hohe Direktabkürzung; 40 Knopfinsel und Brückenschacht; 41 sinkende Mittelhalle; 42 Kriechtunnel plus Schlucht; 43 Balkonzimmer mit fahrender Türinsel; 44 umlaufender Doppelgang; 45 Y-Kammer; 46 langer Größensteg; 47 Doppelturm mit Schalterfähre; 48 rückwärts steigendes Zickzack; 49 drei getrennte Akträume; 50 Turm-U-Nischen-Raum.
 
-**Verbindlicher Portalwelt-Override vom 9. September 2026:** 30 einsamer Mittelturm; 31 senkrechter Schlitz; 32 Impulsinsel im Leerraum; 33 gestapelter Doppelstock; 34 tiefes Portal-U; 35 asymmetrische Rückschleife; 36 gegeneinander gedrehte C-Arme; 37 Fall-Zickzack; 38 diagonale Portal-Fähre; 39 hohe Direktabkürzung. Diese jüngere Liste ersetzt für Level 30–39 die ältere Silhouettenzeile oben.
+**Verbindlicher Portalwelt-Override vom 9. September 2026:** 30 einsamer Mittelturm; 31 senkrechter Schlitz; 32 Impulsinsel im Leerraum; 33 gestapelter Doppelstock; 34 tiefes Portal-U; 35 dreibändige Hinweg–Gegenlauf–Flucht-Folge; 36 gegeneinander gedrehte C-Arme; 37 Fall-Zickzack; 38 diagonale Portal-Fähre; 39 hohe Direktabkürzung. Diese jüngere Liste ersetzt für Level 30–39 die ältere Silhouettenzeile oben.
 
 ## Technische Raumregeln
 
@@ -254,7 +254,7 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 ### 28 · DER JÄGER LÜGT
 
 - **Bild:** Lange Laufbahn mit drei großen Höhenwechseln und komplett freiem Ziel.
-- **Bewegung:** Verfolgerwand fährt schnell, wird plötzlich langsam, stoppt scheinbar und startet beim nächsten Absatz erneut schneller.
+- **Bewegung:** Verfolgerwand fährt ohne Halt in einer Richtung, wechselt aber zwischen drei festen Geschwindigkeiten.
 - **Lösung:** Eigenen Sprungrhythmus halten; die Wand bleibt bei perfektem Lauf mindestens 35 px zurück.
 - **Psychologie:** Der Bewegungsrhythmus selbst täuscht, keine zusätzliche Stachelfalle.
 
@@ -270,58 +270,57 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 ### 30 · MITTELTURM
 
 - **Bild:** Ein einziger hoher Turm steht mittig in fast vollständig leerem Raum; zwei niedrige Ufer liegen weit außen.
-- **Ablauf:** Der erste Eingang quert den Leerraum, der zweite setzt auf den Turm. Dort löst der letzte kurze Lauf einen späten Stachel aus.
+- **Ablauf:** Das erste Portal lässt das rechte Ufer einstürzen. Das dort mitfahrende zweite Portal setzt in den Turmschacht; erst der sofort startende Lift öffnet den Ausgang zur Türgalerie.
 - **Abgrenzung:** Einzige monumentale Mittelturmsilhouette der Portalwelt.
 
 ### 31 · DER SENKRECHTE SCHLITZ
 
 - **Bild:** Zwei riesige Seitenmassen lassen nur einen extrem schmalen, senkrechten Schlitz mit drei versetzten Fängen frei.
-- **Portal:** Der Eingang oben wirft auf den ersten Fang; danach folgt ein kontrollierter Fall mit spätem Stachel.
+- **Portal:** Der Eingang oben wirft auf den ersten Fang. Zwei einseitig fahrende Seitenkolben und versetzte Stacheln erzwingen im Fall links–rechts–links.
 - **Abgrenzung:** Einziger nahezu vollständig vertikaler Portalraum.
 
 ### 32 · IMPULSINSEL
 
 - **Bild:** Zwei tiefe Außenbänke und eine einzelne kleine Hochinsel in enormem Leerraum.
-- **Portal:** Der Eintritt schleudert mit horizontalem Impuls auf die Hochinsel; Insel und Zielbank lösen getrennte späte Stacheln aus.
+- **Portal:** Der Eintritt schleudert mit horizontalem Impuls auf die Hochinsel. Die Insel sinkt sofort, während eine Seitenwand den Absprung zusammenschiebt.
 - **Abgrenzung:** Einziger Portalraum, dessen Hauptroute ein Impulsflug ist.
 
 ### 33 · DOPPELSTOCK
 
 - **Bild:** Zwei fast bildschirmbreite, übereinanderliegende Korridore ohne vertikale Kammerteilung.
-- **Portalfolge:** Oben vollständig nach rechts, unten vollständig zurück nach links, dann oben erneut nach rechts.
+- **Portalfolge:** Oben vollständig nach rechts, unten vor einer einseitigen Verfolgerwand vollständig zurück nach links, dann oben erneut nach rechts.
 - **Abgrenzung:** Längster horizontaler Richtungswechsel der Portalwelt.
 
 ### 34 · DAS TIEFE PORTAL-U
 
 - **Bild:** Zwei sehr hohe Ufer um ein fast leeres, tiefes U; nur am Grund steht ein schmaler Portal-Lift.
-- **Trigger:** Betreten startet eine einzige saubere Aufwärtsfahrt. Ein sichtbarer Zahn erzwingt den Einstiegssprung.
+- **Trigger:** Betreten startet eine saubere zweiphasige Aufwärtsfahrt. Zahn und mitfahrendes Portal müssen während der Fahrt passiert werden.
 - **Abgrenzung:** Einziger tiefer Portal-Lift und einzige U-Silhouette dieser Welt.
 
 ### 35 · ZURÜCKGESCHICKT
 
-- **Bild:** Großes U-Becken; Portale oben links/rechts, Tür unten mittig.
-- **Ablauf:** Portal links setzt die Figur frei oben rechts ab, wo der Abstieg schließt. Ein zweiter Eingang rechts setzt sie an einem freien Punkt oben links ab; dabei öffnet sich dort ein Fallschacht.
-- **Lösung:** Zwei getrennte Eingangsportale benutzen und danach auf der veränderten Startseite hinab.
-- **Abgrenzung:** Das Portal verändert die Route hinter dem Spieler.
+- **Bild:** Drei getrennte horizontale Akte: obere Startplatte, mittlere Gegenlaufplatte und unterer Fluchtkorridor. Keine U-Silhouette.
+- **Ablauf:** Erst rechts teleportieren, auf der mittleren Platte gegenlaufen, zurückteleportieren, mit der Startklappe fallen und vor der nachdrückenden Wand durch zwei späte Zähne fliehen.
+- **Abgrenzung:** Einziger Portalraum als dreistöckige Hinweg–Gegenlauf–Flucht-Folge.
 
 ### 36 · DER SPIEGEL
 
 - **Bild:** Zwei gespiegelt gebaute C-Kammern mit vertauschten Öffnungen.
-- **Täuschung:** Das Portal setzt die Figur frei in der Spiegelkammer ab. Der Raum sieht bekannt aus; derselbe Eingabereflex führt wegen Spiegelung in eine Lücke.
-- **Lösung:** Nach Ankunft stoppen, Blickrichtung und Öffnung neu lesen.
+- **Täuschung:** Das Portal schleudert nach links in den zweiten Arm. Dessen kompletter Innenboden fährt danach erst seitlich und dann nach oben.
+- **Lösung:** Portalimpuls abbremsen, den verschobenen Boden mitfahren und anschließend wieder nach rechts zur Tür wechseln.
 - **Abgrenzung:** Visuelle Erinnerung statt versteckter Falle.
 
 ### 37 · FALL-ZICKZACK
 
 - **Bild:** Zwei riesige Deckenmassen bilden einen horizontal-vertikalen Zickzack mit drei stark versetzten Höhen.
-- **Portal:** Zwei Eingänge schneiden die unüberspringbaren Höhenwechsel ab; jede Ankunft ändert sofort die Laufrichtung.
+- **Portal:** Zwei Eingänge schneiden die unüberspringbaren Höhenwechsel ab; beide betretenen Absätze brechen nach der Ankunft weg und jede Ankunft ändert die Laufrichtung.
 - **Psychologie:** Späte Stacheln bestrafen den gewohnten Geradeauslauf nach jeder Ankunft.
 
 ### 38 · BEWEGTE ADRESSE
 
-- **Bild:** Zwei Ufer, zentrale Fähre; das einzige Portal steht mit 100 px freier Zone auf der Fähre.
-- **Bewegung:** Die Fähre pendelt einmal. Der Eintrittszeitpunkt entscheidet, ob die danach bewegte Zielterrasse vom fest definierten Zielpunkt erreichbar ist.
-- **Lösung:** Fähre und Zielterrasse beobachten, dann das fahrende Portal im richtigen Moment betreten.
+- **Bild:** Riesiger Leerraum, lange freistehende Fähre und einziges Portal an ihrem entfernten Ende.
+- **Bewegung:** Die Fähre fährt erst horizontal und steigt dann am Zielufer auf. Zahn und Portal bewegen sich fest mit ihr.
+- **Lösung:** Aufspringen, während der ununterbrochenen Fahrt über den Zahn wechseln und das mitfahrende Portal erreichen.
 - **Abgrenzung:** Timing passiert vor dem Teleport statt danach.
 
 ### 39 · DIE LETZTE ABKÜRZUNG

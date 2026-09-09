@@ -24,11 +24,11 @@ Auf einer Plattform addieren sich ihre Verschiebung und die eigene Laufbewegung.
 node tools/check-levels.cjs
 node tools/check-sequences.cjs
 node tools/check-mechanics.cjs
-node tools/check-difficulty.cjs
+node tools/check-challenge.cjs
 node tools/check-game.cjs
 ```
 
-50 gespeicherte Gewinnwege, 50 tatsächlich verschiedene Terrain-Silhouetten, späte Fallenfenster, kontinuierliche Wandbewegungen, Start- und Laufzeitkollisionen, Neustart-Determinismus, Trägerphysik, Portaltransport, Körpergröße und alle Wege durch die tatsächliche Spielanbindung werden geprüft. Die Ablaufprüfung löst Mechaniken gleichzeitig und versetzt aus und prüft bei 120 Hz die kompletten 15-Sekunden-Abläufe einschließlich Befestigungen, Objektabständen und Endpunkten.
+50 gespeicherte Gewinnwege, 50 tatsächlich verschiedene Terrain-Silhouetten, späte Fallenfenster, kontinuierliche Wandbewegungen, Start- und Laufzeitkollisionen, Neustart-Determinismus, Trägerphysik, Portaltransport, Körpergröße und alle Wege durch die tatsächliche Spielanbindung werden geprüft. Die Herausforderungsauswertung verwendet ausschließlich gemessene Eigenschaften der echten Gewinnwege; sie erfindet weder Fehlversuche noch Spielzeit. Die Ablaufprüfung löst Mechaniken gleichzeitig und versetzt aus und prüft bei 120 Hz die kompletten 15-Sekunden-Abläufe einschließlich Befestigungen, Objektabständen und Endpunkten.
 
 `node tools/solve-levels.cjs 1,2,3` sucht neue Wege mit der Spielphysik. `PLAYWRIGHT_MODULE=/pfad/zu/playwright node tools/browser-audit.cjs` prüft mit installiertem Playwright die 50 Browseransichten und erzeugt Screenshots in /tmp.
 

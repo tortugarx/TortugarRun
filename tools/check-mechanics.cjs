@@ -15,11 +15,12 @@ const trapped=new World({...push,blocks:[...push.blocks,[260,300,30,120]]});adva
 assert.equal(trapped.motions[0].done,true);
 assert.equal(trapped.object('wall').x,450);
 
-// Authored attack walls never reverse; pauses are allowed but direction is fixed.
+// Authored attack walls never reverse or pause once their one-way run begins.
 const {levels}=require('../levels.js');
 for(const level of levels)for(const motion of level.motions){
   if(!/wall|jaw|hunter|gate/.test(motion.id))continue;
   const points=[[0,0],...motion.path.map(v=>v.slice(0,2))];
+  for(let i=1;i<points.length;i++)assert(points[i][0]!==points[i-1][0]||points[i][1]!==points[i-1][1],'wall pauses during its run');
   const dx=points.slice(1).map((p,i)=>p[0]-points[i][0]).filter(Boolean);
   const dy=points.slice(1).map((p,i)=>p[1]-points[i][1]).filter(Boolean);
   assert(dx.every(v=>Math.sign(v)===Math.sign(dx[0])),'wall reverses horizontally');

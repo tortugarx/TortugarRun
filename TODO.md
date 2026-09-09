@@ -4,10 +4,10 @@
 - [x] Wandbewegungen sind sauber angeschlossen, statisch getaktet und bei Angriffswänden einseitig.
 - [x] Fallen erst im letzten sicheren Reaktionsfenster auslösen.
 - [x] Unmögliche Sprünge und die zwei gemeldeten ähnlichen Räume ersetzen.
-- [x] Portalwelt 30–39 vollständig in zehn radikal verschiedene, schwierigere Großlayouts umbauen.
+- [x] Portalwelt 30–39 nicht nur optisch, sondern als zehn verschiedene Aufgaben umbauen.
 - [x] Symmetrische Portale mit Pixel-Transportanimation sowie hohe, schmale Knöpfe abnehmen.
-- [x] Geschätzte Spielzeit mit Fehlversuchen auf ungefähr eine Minute je Raum kalibrieren.
-- [x] Alle 50 Räume neu lösen, zeitlich prüfen und im Browser einzeln abnehmen.
+- [x] Schwierigkeit ohne erfundene Fehlversuche anhand echter Lösungswege und Timing-Toleranz prüfen.
+- [x] Alle 50 Räume nach dem Prinzip-Umbau neu lösen und im Browser einzeln abnehmen.
 
 # Härte- und Layoutpass vom 9. September 2026
 
