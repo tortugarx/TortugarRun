@@ -212,8 +212,7 @@
     }
     if (world.teleport) {
       const from = R.portals.find(p => p.id === world.teleport.from);
-      const to = R.portals.find(p => p.id === world.teleport.to);
-      portalAnim = { t: world.teleport.t, from: {x:from.x,y:from.y-20}, to:{x:to.x,y:to.y-40} };
+      portalAnim = { t: world.teleport.t, from: {x:from.x,y:from.y-20}, to:{x:from.targetX,y:from.targetY-20} };
     } else portalAnim = null;
     pulse = Math.max(0, pulse - dt*0.74);
     energy = Math.min(100, energy + dt*7);
@@ -274,43 +273,20 @@
   }
   function drawPortal(p) { drawPortalEnd(p.x, p.y - 40, "floor", 0); }
   function drawPortalEnd(x, y, orientation, phase) {
-    const c = palette();
     X.save();
     X.translate(Math.round(x), Math.round(y + 20));
     if (orientation === "ceiling") X.rotate(Math.PI / 2);
-    const pulse = Math.floor(clock * 9 + phase) % 3;
-    X.fillStyle = c[3];
-    X.fillRect(-18, -20, 36, 40);
-    X.fillStyle = c[0];
-    X.fillRect(-13, -15, 26, 30);
-    X.fillStyle = c[2];
-    X.fillRect(-9 + pulse, -11 + pulse, 18 - pulse * 2, 22 - pulse * 2);
-    X.fillStyle = c[0];
-    X.fillRect(-5, -7, 10, 14);
-    X.fillStyle = c[1];
-    X.fillRect(-2, -2, 4, 4);
+    // Static grey pixel arch: no glow, animation, particles or pair colour.
+    X.fillStyle = "#414246";
+    X.fillRect(-14,-12,28,32); X.fillRect(-10,-16,20,4); X.fillRect(-6,-19,12,3);
+    X.fillStyle = "#96989a";
+    X.fillRect(-10,-10,20,30); X.fillRect(-6,-14,12,4);
+    X.fillStyle = "#c7c8c9";
+    X.fillRect(-6,-7,12,27);
     X.restore();
   }
   function drawTeleport() {
-    if (!portalAnim) return;
-    const c = palette();
-    for (let i = 0; i < 5; i++) {
-      const delay = i / 55;
-      const t = Math.max(0, Math.min(1, (portalAnim.t - delay) / 0.75));
-      const x = portalAnim.from.x + (portalAnim.to.x - portalAnim.from.x) * t;
-      const y =
-        portalAnim.from.y +
-        (portalAnim.to.y + 20 - portalAnim.from.y) * t +
-        Math.sin(t * Math.PI) * (-44 - (i % 3) * 7);
-      X.fillStyle = c[2 + (i % 2)];
-      const size = i % 3 === 0 ? 5 : 3;
-      X.fillRect(
-        Math.round((x + ((i % 5) - 2) * 4) / 3) * 3,
-        Math.round((y + (i % 4) * 3) / 3) * 3,
-        size,
-        size,
-      );
-    }
+    // Transport intentionally has no trail; the portal itself remains plain.
   }
   function drawButton(b) {
     const c = palette();

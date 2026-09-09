@@ -26,10 +26,10 @@ const lift=new World({...base,spawn:[230,400],blocks:[[200,400,120,24,'lift']],m
 advance(lift,150);assert.equal(lift.status,'playing');
 assert(Math.abs(lift.p.y+lift.p.h-300)<0.001);
 
-// Three directed endpoints do not imply symmetric pairs or auto-bounce.
-const portalLevel={...base,spawn:[100,420],portals:[{id:'A',x:110,y:420,to:'C'},{id:'B',x:400,y:420,to:'A'},{id:'C',x:700,y:420,to:'B'}]};
+// A portal is one entrance with an invisible, freely positioned target.
+const portalLevel={...base,spawn:[100,420],portals:[{id:'A',x:110,y:420,targetX:700,targetY:420}]};
 const transport=new World(portalLevel);advance(transport,100);
-assert('arrival:C' in transport.signals);assert(!('arrival:B' in transport.signals));
+assert('arrival:A' in transport.signals);
 assert(transport.p.x>680);advance(transport,150);assert(!transport.teleport);
 const retry=new World(portalLevel);advance(retry,100);
 assert.deepEqual(retry.signals,transport.signals);
@@ -85,7 +85,7 @@ const descending=new World({...base,spawn:[230,300],blocks:[[200,300,120,500,'li
 advance(descending,90);assert(Math.abs(descending.p.y+descending.p.h-descending.object('lift').y)<.01);
 console.log('Verified relative walking in both directions and descending lift contact.');
 
-const transitMotion=new World({...base,spawn:[100,420],blocks:[...base.blocks,[500,450,80,250,'lift']],motions:[{id:'lift',path:[[0,-80,2]]}],portals:[{id:'A',x:110,y:420,to:'B'},{id:'B',x:800,y:420,to:'A'}]});
+const transitMotion=new World({...base,spawn:[100,420],blocks:[...base.blocks,[500,450,80,250,'lift']],motions:[{id:'lift',path:[[0,-80,2]]}],portals:[{id:'A',x:110,y:420,targetX:800,targetY:420}]});
 advance(transitMotion,2);assert(transitMotion.teleport);
 const beforeTransit=transitMotion.object('lift').y;
 advance(transitMotion,15);assert(transitMotion.teleport);

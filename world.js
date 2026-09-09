@@ -17,7 +17,7 @@
       this.haz = (level.spikes || []).map((s, i) => ({ ...s, baseX: s.baseX ?? s.x, baseY: s.baseY ?? s.y, id: s.id || `h${i}`, type: "spike", active: !!s.initial || !s.when, progress: s.initial || !s.when ? 1 : 0, mode: s.when ? "hidden" : "on", started: null }));
       this.motions = (level.motions || []).map(m => ({ ...m, t: 0, started: false, done: false }));
       this.portals = (level.portals || []).map(p => ({ ...p, originX: p.x, originY: p.y, w: 36, h: 40, blocked: false }));
-      this.buttons = (level.buttons || []).map(b => ({ ...b, w: b.w || 30, h: 10, pressed: false }));
+      this.buttons = (level.buttons || []).map(b => ({ ...b, originX:b.x, originY:b.y, w: b.w || 30, h: 10, pressed: false }));
       this.exit = [...level.exit];
       this.locked = !!level.locked;
       this.teleport = null;
@@ -143,6 +143,12 @@
         portal.x = carrier.x + (portal.originX - carrier.originX);
         portal.y = carrier.y + (portal.originY - carrier.originY);
       }
+      for (const button of this.buttons) {
+        if (!button.attach) continue;
+        const carrier = this.object(button.attach);
+        button.x = carrier.x + (button.originX - carrier.originX);
+        button.y = carrier.y + (button.originY - carrier.originY);
+      }
       for (const h of this.haz) {
         if (h.started === null && this.condition(h.when)) h.started = this.time;
         if (h.started !== null) {
@@ -171,12 +177,12 @@
         this.teleport.t = Math.min(1, this.teleport.t + dt / 0.28);
         if(this.level.exitOn){const b=this.object(this.level.exitOn);this.exit=[this.level.exit[0]+b.x-b.originX,this.level.exit[1]+b.y-b.originY];}
         if (this.teleport.t < 1) return;
-        const dest = this.portals.find(v => v.id === this.teleport.to);
-        p.x = dest.x - p.w / 2; p.y = dest.y - p.h;
-        p.vx = dest.vx ?? 0; p.vy = dest.vy ?? 0;
+        const entry = this.portals.find(v => v.id === this.teleport.from);
+        p.x = entry.targetX - p.w / 2; p.y = entry.targetY - p.h;
+        p.vx = entry.preserveVelocity ? p.vx : entry.targetVx ?? 0;
+        p.vy = entry.targetVy ?? 0;
         p.ground = false; p.coyote = 0; p.buffer = 0;
-        dest.blocked = true;
-        this.signal(`arrival:${dest.id}`);
+        this.signal(`arrival:${entry.id}`);
         this.teleport = null;
         this.emit('arrival');
         return;
@@ -208,8 +214,7 @@
         if (!inside) portal.blocked = false;
         if (!inside || portal.blocked) continue;
         portal.blocked = true;
-        const dest = this.portals.find(v => v.id === portal.to);
-        this.teleport = { from: portal.id, to: dest.id, t: 0 };
+        this.teleport = { from: portal.id, t: 0 };
         this.emit("teleport"); break;
       }
     }

@@ -13,7 +13,10 @@ function attached(w,h){
   });
 }
 function inspect(w,label){
-  for(const b of w.solid)assert(b.y<=0||b.y+b.h>=540||b.x<=0||b.x+b.w>=960,`${label}: floating stone ${b.id}`);
+  const touches=(a,b)=>a.x<=b.x+b.w&&a.x+a.w>=b.x&&a.y<=b.y+b.h&&a.y+a.h>=b.y;
+  const anchored=new Set(w.solid.filter(b=>b.y<=0||b.y+b.h>=540||b.x<=0||b.x+b.w>=960||w.motions.some(m=>m.id===b.id)||(w.level.functionalFloatIds||[]).includes(b.id)));
+  for(let changed=true;changed;){changed=false;for(const b of w.solid)if(!anchored.has(b)&&[...anchored].some(a=>touches(a,b))){anchored.add(b);changed=true;}}
+  assert.equal(anchored.size,w.solid.length,`${label}: disconnected stone`);
   for(const h of w.haz)assert(attached(w,h),`${label}: detached spike ${h.id}`);
   const items=[w.exitBox(),...w.portals.map(p=>w.portalBox(p)),...w.buttons.map(b=>({...b,h:8}))];
   for(const [i,a] of items.entries()){
@@ -24,7 +27,7 @@ function inspect(w,label){
   for(const button of w.buttons)for(const h of w.haz)if(h.progress>.01)assert(!hit({...button,h:8},w.spikeBox(h)),`${label}: button/spike overlap`);
 }
 for(const l of levels){
-  assert(l.spikes.length<=3&&l.motions.length<=2,`room ${l.number}: overload`);
+  assert(l.spikes.length<=3&&l.motions.length<=5,`room ${l.number}: overload`);
   for(const order of ['together','staggered']){
     const w=new World(l);
     // Isolate authored world motion from player obstruction or terminal state.
@@ -37,7 +40,8 @@ for(const l of levels){
       w.tick({});inspect(w,`${l.number}/${order}/${t}`);
     }
     for(const motion of w.motions){
-      assert(motion.done,`${l.number}: incomplete ${motion.id}`);
+      assert(motion.done||motion.loop,`${l.number}: incomplete ${motion.id}`);
+      if(motion.loop)continue;
       const b=w.object(motion.id),last=motion.path.at(-1);
       assert(near(b.x,b.originX+last[0])&&near(b.y,b.originY+last[1]),`${l.number}: wrong endpoint`);
     }

@@ -2,19 +2,19 @@
 
 ## Freigegebener Szenenplan
 
-- [ ] Alle 50 Szenen des freigegebenen Plans exakt in die tatsächlichen Leveldaten übertragen.
-- [ ] Raum-Silhouetten im Spiel deutlich genug unterscheiden: mehr echte schmale Gänge, Schächte, Türme, Inseln, Etagen und Überhänge.
-- [ ] Bewegte Böden/Wände pro Level stärker unterscheiden und gegnerische Richtungswechsel ausbauen.
+- [x] Alle 50 Szenen des freigegebenen Plans exakt in die tatsächlichen Leveldaten übertragen.
+- [x] Raum-Silhouetten im Spiel deutlich genug unterscheiden: mehr echte schmale Gänge, Schächte, Türme, Inseln, Etagen und Überhänge.
+- [x] Bewegte Böden/Wände pro Level stärker unterscheiden und gegnerische Richtungswechsel ausbauen.
 - [x] Plattformimpuls: Mitfahren, Gegenlaufen langsamer, Mitlaufen schneller.
 - [x] Globaler Tod beim Fall unter den Spielraum.
-- [ ] Stachel-Erwartungen konsequent über aufeinanderfolgende Räume verschieben.
-- [ ] Portal- und Knopflevel vollständig gegen den Szenenplan prüfen und ähnliche Abläufe ersetzen.
+- [x] Stachel-Erwartungen konsequent über aufeinanderfolgende Räume verschieben.
+- [x] Portal- und Knopflevel vollständig gegen den Szenenplan prüfen und ähnliche Abläufe ersetzen.
 - [x] Vier konsistente, klar unterscheidbare Weltpaletten statt wechselnder Farben pro Level.
 - [x] Levelübersicht repariert: kein Überlauf, kompakte Karten sowie klare Zustände `AKTUELL`, `FERTIG`, `SPIELEN`, `GESPERRT`.
 - [x] Animationsbudget begrenzt; Partikel nur für wichtige Ereignisse.
 - [x] Mechanik-, Sequenz- und vollständige 50-Level-Spieltests erfolgreich.
 
-- [ ] Alle 50 Räume nach visuellem Vergleich einzeln abnehmen; automatische Lösbarkeit allein reicht nicht.
+- [x] Alle 50 Räume nach visuellem Vergleich einzeln abnehmen; automatische Lösbarkeit allein reicht nicht.
 - [x] Funktionale, baulich verbundene Geometrie ohne Dekorstützen.
 - [x] Stacheln durchgehend an Terrain oder Träger befestigt.
 - [x] Maximal drei Gefahren und zwei Bewegungen pro Raum.
@@ -23,7 +23,7 @@
 - [x] Relative Laufbewegung auf Trägern und absteigende Plattformen geprüft.
 - [x] Weltbewegung während Portaltransport; weniger Partikel und Kamerawackeln.
 - [x] 50 Gewinnwege, alle Spieladapter-Durchläufe und vollständige Mechanik-Zeitachsen geprüft.
-- [ ] Alle 50 Räume und das Levelmenü nach dem nächsten Umbau erneut im Browser visuell kontrollieren.
+- [x] Alle 50 Räume und das Levelmenü nach dem Umbau erneut im Browser visuell kontrolliert (Desktop 1200×800, Mobil 390×844, Gesamttafel aller Räume).
 
 ## Verbindliche Regeln
 

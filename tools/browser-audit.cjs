@@ -10,10 +10,12 @@ const fs=require('node:fs');
   for(let id=1;id<=50;id++){
     await page.locator('#mapBtn').click();
     await page.locator('.group-tabs button').nth(id<15?0:id<30?1:id<40?2:3).click();
-    await page.locator('#levelGrid > button').filter({hasText:new RegExp('^'+id+'OPEN$')}).click();
+    const number=String(id).padStart(2,'0');
+    await page.locator(`#levelGrid > button[title^="${number} ·"]`).click();
     await page.waitForTimeout(40);
     images.push(await page.locator('#game').evaluate(c=>c.toDataURL()));
   }
+  await page.locator('#mapBtn').click();
   await page.screenshot({path:'/tmp/leveldevil-desktop.png'});
   await page.setViewportSize({width:390,height:844});
   await page.screenshot({path:'/tmp/leveldevil-mobile.png'});
