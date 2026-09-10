@@ -8,7 +8,14 @@ const assert=require('node:assert/strict');
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(process.env.BASE_URL||'http://127.0.0.1:4173');
   assert.equal(await page.locator('#focusBtn, #toast').count(),0,'sonar and level-name toast removed');
+  await page.locator('#settingsBtn').click();
+  assert.equal(await page.locator('#trackingValue').textContent(),'OFF','desktop tracking reads OFF');
+  assert.equal(await page.locator('.about').filter({hasText:'VERSION 1.4.0'}).count(),1,'about version missing');
+  assert.equal(await page.locator('.about').filter({hasText:'BY stoiberrules'}).count(),1,'about credit missing');
+  await page.screenshot({path:'/tmp/leveldevil-settings.png'});
+  await page.locator('#closeSettingsBtn').click();
   await page.locator('#mapBtn').click();
+  assert.deepEqual(await page.locator('.group-tabs button').allTextContents(),['STACHELN','BEWEGUNG','PORTALE','KNÖPFE','FINALE']);
   for(let group=0;group<5;group++){
     await page.locator('.group-tabs button').nth(group).click();
     assert.equal(await page.locator('#levelGrid > button').count(),10,`act ${group+1} has ten rooms`);
@@ -23,6 +30,7 @@ const assert=require('node:assert/strict');
     await page.waitForTimeout(40);
     if(id===30)await page.locator('#game').screenshot({path:'/tmp/leveldevil-portal.png'});
     if(id===40)await page.locator('#game').screenshot({path:'/tmp/leveldevil-button.png'});
+    if(id===50)await page.locator('#game').screenshot({path:'/tmp/leveldevil-finale.png'});
     images.push(await page.locator('#game').evaluate(c=>c.toDataURL()));
   }
   await page.locator('#mapBtn').click();

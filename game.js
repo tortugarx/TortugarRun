@@ -140,13 +140,12 @@
   function finish() {
     if (state !== "playing") return;
     state = "transition";
-    const pixels=[];
-    for(const y of [-6,-2,2])for(const x of [-9,-5,-1,3])pixels.push({x,y,color:y===-6?palette()[2]:palette()[3]});
-    pixels.push(
-      {x:7,y:-3,color:palette()[2]},{x:11,y:-3,color:palette()[2]},
-      {x:7,y:1,color:palette()[2]},{x:11,y:1,color:palette()[0]},
-      {x:-7,y:6,color:palette()[3]},{x:3,y:6,color:palette()[3]},
-    );
+    const pixels=[
+      {x:-8,y:-6,size:8,color:palette()[2]}, {x:0,y:-6,size:8,color:palette()[2]},
+      {x:8,y:-3,size:7,color:palette()[3]}, {x:-8,y:2,size:8,color:palette()[3]},
+      {x:0,y:2,size:8,color:palette()[3]}, {x:8,y:4,size:7,color:palette()[2]},
+      {x:-5,y:9,size:7,color:palette()[3]}, {x:5,y:9,size:7,color:palette()[3]},
+    ];
     doorAnim={start:clock,duration:.82,fromX:P.x+P.w/2,fromY:P.y+P.h/2,toX:R.exit[0]+23,toY:R.exit[1]+48,pixels};
     beep(620, 0.12, "sine");
     unlocked = Math.max(unlocked, Math.min(L.length, li + 2));
@@ -353,12 +352,12 @@
       const delay=index/doorAnim.pixels.length*.28;
       const t=Math.max(0,Math.min(1,(elapsed-delay)/(1-delay)));
       if(t>=1)return;
-      const pull=t*t*(3-2*t),arc=Math.sin(t*Math.PI)*(index%2?1:-1)*(9+index%4*2);
+      const pull=t*t*(3-2*t),arc=Math.sin(t*Math.PI)*(index%2?1:-1)*(6+index%3*3);
       const x=doorAnim.fromX+pixel.x+(doorAnim.toX-doorAnim.fromX-pixel.x)*pull;
       const y=doorAnim.fromY+pixel.y+(doorAnim.toY-doorAnim.fromY-pixel.y)*pull+arc;
-      const size=Math.max(1,Math.round(4*(1-pull*.72)));
+      const size=Math.max(3,Math.round(pixel.size*(1-pull*.58)));
       X.fillStyle=pixel.color;
-      X.fillRect(Math.round(x),Math.round(y),size,size);
+      X.fillRect(Math.round(x/4)*4,Math.round(y/4)*4,size,size);
     });
     X.restore();
   }
@@ -504,7 +503,7 @@
     const available = trackingAvailable();
     $("#trackingSetting").disabled = !available;
     $("#trackingSetting").setAttribute?.("aria-disabled", String(!available));
-    $("#trackingValue").textContent = available ? (tracking ? "ON" : "OFF") : "AUTO OFF";
+    $("#trackingValue").textContent = available ? (tracking ? "ON" : "OFF") : "OFF";
   }
   function trackingAvailable() {
     const screenW = globalThis.innerWidth ?? W;

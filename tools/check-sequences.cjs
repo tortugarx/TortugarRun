@@ -32,6 +32,8 @@ function inspect(w,label){
     for(const b of items.slice(i+1))assert(!hit({...a,x:a.x-16,y:a.y-8,w:a.w+32,h:a.h+16},b),`${label}: crowded items`);
   }
   for(const button of w.buttons)for(const h of w.haz)if(h.progress>.01)assert(!hit({...button,h:8},w.spikeBox(h)),`${label}: button/spike overlap`);
+  if(w.level.number===50)for(const item of items)for(const h of w.haz)if(h.progress>.01)
+    assert(!hit(item,w.spikeBox(h)),`${label}: finale item/spike overlap`);
 }
 for(const l of levels){
   assert(l.spikes.length<=(l.number===50?12:3)&&l.motions.length<=5,`room ${l.number}: overload`);

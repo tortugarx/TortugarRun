@@ -9,11 +9,13 @@ assert(!html.includes('focusBtn')&&!html.includes('focusMeter')&&!html.includes(
 assert(!game.includes('KeyF')&&!game.includes('function focus(')&&!game.includes('toast(L[li]'),'removed reveal mechanic returned');
 assert(game.includes('drawTutorial()')&&game.includes('LAUFEN')&&game.includes('SPRINGEN'),'room-one tutorial missing');
 assert(game.includes('doorAnim={')&&game.includes('drawDoorSuction()'),'door pixel suction missing');
+assert.equal((game.match(/size:[78]/g)||[]).length,8,'door suction must use eight coarse pixel blocks');
 assert.equal(PORTAL_DURATION,.34,'portal timing changed');
 assert(game.includes('landscapeTablet')&&game.includes('return coarse && !landscapeTablet'),'automatic tracking disable missing');
 assert(game.includes('Math.floor(r.x)')&&game.includes('stoneEdges(r)'),'seam-safe terrain rendering missing');
 
 assert.equal(groups.length,5,'level menu must have five equal acts');
+assert.deepEqual(groups,['STACHELN','BEWEGUNG','PORTALE','KNÖPFE','FINALE']);
 assert.deepEqual(groups.map((_,group)=>levels.filter(level=>level.group===group).length),[10,10,10,10,10]);
 assert(style.includes('grid-template-columns: repeat(5, minmax(48px, 1fr))'),'desktop 5x2 grid missing');
 assert(style.includes('.group-tabs { grid-template-columns: repeat(5, 1fr)'),'mobile five-tab layout missing');
@@ -31,6 +33,7 @@ assert.equal(finale.targetMinutes,7);assert.equal(finale.spikes.length,12);
 assert.equal(finale.motions.length,2);assert.equal(finale.portals.length,2);assert.equal(finale.requiredButtons.length,4);
 
 const nixpacks=read('nixpacks.toml'),server=read('tools/serve.cjs');
+assert(html.includes('VERSION 1.4.0')&&html.includes('BY stoiberrules')&&html.includes('NEU:'),'settings about section missing');
 assert(nixpacks.includes('nodejs_22')&&nixpacks.includes('node tools/serve.cjs'),'Nixpacks start configuration missing');
 assert(server.includes('process.env.PORT')&&server.includes("'0.0.0.0'"),'host port binding missing');
 console.log('Verified all chat requirements: UI, tutorial, tracking, seams, spike sensors, five equal acts, reworked rooms, finale and Nixpacks.');
