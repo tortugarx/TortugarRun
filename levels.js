@@ -11,8 +11,8 @@ function r(name,story,spawn,goal,blocks,spikes=[],motions=[],portals=[],buttons=
 // WELT I — spikes and expectation; fourteen unrelated silhouettes.
 r('DER EHRLICHE ZAHN','Drei sichtbare Zähne erzwingen einen sauberen Sprungrhythmus.',[76,440],[866,440],[f(32,440,896)],[h(300,440),h(468,440),h(650,440)]);
 r('NICHT VOR DER TÜR','Der erste Zahn wächst am Absprung; ein zweiter bewacht den langen Zielsteg.',[76,405],[866,405],[f(32,405,350),f(442,405,486)],[h(326,405,27,z(300,360,55,80),{delay:.14}),h(705,405,36)]);
-r('DAS TIEFE U','Im tiefen Treppen-U folgen auf zwei versteckte Fallen noch sichtbare Zähne im Aufstieg.',[74,285],[866,285],[f(32,285,145),f(177,335,105),f(282,385,105),f(387,435,186),f(573,385,105),f(678,335,105),f(783,285,145)],[h(420,435,27,z(380,390,65,65),{delay:.12,duration:.75}),h(520,435,27,z(455,390,65,65),{delay:.5}),h(625,385,27)]);
-r('KOPFSACHE','Im niedrigen Tunnel ist der frühe Sprung die Falle; draußen wartet der Gegentest.',[70,438],[868,438],[f(32,438,760),f(836,438,92),c(245,404,385)],[h(410,404,45,{jump:true},{dir:'down'}),h(720,438,36)]);
+r('DAS TIEFE U','Im tiefen Treppen-U folgen auf zwei versteckte Fallen noch sichtbare Zähne im Aufstieg.',[74,285],[866,285],[f(32,285,145),f(177,335,105),f(282,385,105),f(387,435,186),f(573,385,105),f(678,335,105),f(783,285,145)],[h(420,435,27,z(380,390,65,65),{delay:.12}),h(520,435,27,z(455,390,65,65),{delay:.5}),h(625,385,27)]);
+r('KOPFSACHE','Im niedrigen Tunnel ist der frühe Sprung die Falle; draußen wartet der Gegentest.',[70,438],[868,438],[f(32,438,896),c(245,404,385)],[h(410,404,45,z(350,390,32,48),{dir:'down'}),h(720,438,36),h(820,438,27)]);
 r('DIE INSEL','Die Insel verlangt eine präzise Landung, bevor die weite Zielkurve bestraft wird.',[70,410],[868,370],[f(32,410,215),[390,385,150,24,'island'],f(695,370,233)],[h(455,385,27),h(815,370,36,z(610,250,150,170),{delay:.1})],[],[],[],{functionalFloatIds:['island']});
 r('FALSCHE RICHTUNG','Die auffällige Treppe rechts ist Köder; auch der echte Rückweg hat zwei Zähne.',[440,330],[78,455],[f(32,455,230),f(262,390,120),f(382,330,190),f(572,285,110),f(682,240,246)],[h(682,250,45,z(625,190,80,80),{dir:'left'}),h(315,390,27),h(145,455,27)]);
 r('UM DEN TURM','Der Tunnel warnt früh; sichtbare Zähne sichern beide Ufer des Rückwegs.',[70,450],[870,450],[f(32,450,250),f(282,400,300),f(582,450,346),c(390,350,92)],[h(220,450,27),h(455,400,27,z(290,380,110,70),{delay:.06}),h(690,450,27)]);
@@ -129,7 +129,7 @@ const doors=['right-floor','right-terrace','right-high','right-tunnel','right-ba
 // explicit avoids guessing from an overlapping zone's centre (which used to
 // place room 2's trigger behind the spike).
 const triggerApproaches={
-  2:{0:'left'},3:{0:'left',1:'left'},5:{1:'left'},6:{0:'left'},7:{1:'left'},
+  2:{0:'left'},3:{0:'left',1:'left'},4:{0:'left'},5:{1:'left'},6:{0:'left'},7:{1:'left'},
   8:{1:'right'},9:{2:'left'},10:{1:'left'},11:{2:'right'},
   14:{1:'left'},19:{0:'left'},30:{0:'left'},
   31:{0:'right',1:'right'},32:{1:'left'},33:{0:'left',1:'right'},

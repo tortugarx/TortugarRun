@@ -28,13 +28,15 @@
     localStorage.setItem(progressVersionKey,progressVersion);
   }
   let unlocked=Math.max(1,Math.min(DevilLevels.levels.length,Number(localStorage.getItem("level-devil-unlocked"))||1));
+  const savedTracking=localStorage.getItem("level-devil-tracking");
   let state = "menu",
     li = 0,
     deaths = 0,
     shake = 0,
     muted = localStorage.getItem("level-devil-sound") === "off",
     autoRestart = localStorage.getItem("level-devil-auto-restart") === "on",
-    tracking = localStorage.getItem("level-devil-tracking") !== "off",
+    tracking = savedTracking==null?defaultTracking():savedTracking==="on",
+    trackingOverride = savedTracking!=null,
     last = 0,
     clock = 0,
     audio,
@@ -156,9 +158,9 @@
     if (state !== "playing") return;
     state = "transition";
     const pixels=[
-      [-10,-7,2],[-5,-7,2],[0,-7,2],[5,-4,3],[10,-4,2],
-      [-10,-2,3],[-5,-2,3],[0,-2,3],[5,1,2],[10,1,3],[-7,5,3],[3,5,3],
-    ].map(([x,y,tone])=>({x,y,size:5,color:palette()[tone]}));
+      [-8,-5,-24,-18,2],[0,-5,8,-28,2],[8,-3,28,-15,3],[-8,2,-30,4,3],
+      [0,2,10,18,3],[8,3,30,10,2],[-5,7,-18,26,3],[5,7,22,24,3],
+    ].map(([x,y,vx,vy,tone])=>({x,y,vx,vy,size:5,color:palette()[tone]}));
     doorAnim={start:clock,duration:.82,fromX:P.x+P.w/2,fromY:P.y+P.h/2,toX:R.exit[0]+23,toY:R.exit[1]+48,pixels};
     beep(620, 0.12, "sine");
     unlocked = Math.max(unlocked, Math.min(L.length, li + 2));
@@ -353,10 +355,10 @@
       const delay=index/doorAnim.pixels.length*.28;
       const t=Math.max(0,Math.min(1,(elapsed-delay)/(1-delay)));
       if(t>=1)return;
-      const pull=t*t*(3-2*t),arc=Math.sin(t*Math.PI)*(index%2?1:-1)*(6+index%3*3);
-      const x=doorAnim.fromX+pixel.x+(doorAnim.toX-doorAnim.fromX-pixel.x)*pull;
-      const y=doorAnim.fromY+pixel.y+(doorAnim.toY-doorAnim.fromY-pixel.y)*pull+arc;
-      const size=Math.max(2,Math.round(pixel.size*(1-pull*.5)));
+      const pull=t*t*(3-2*t),scatter=Math.sin(t*Math.PI)*(1-t*.2);
+      const x=doorAnim.fromX+pixel.x+(doorAnim.toX-doorAnim.fromX-pixel.x)*pull+pixel.vx*scatter;
+      const y=doorAnim.fromY+pixel.y+(doorAnim.toY-doorAnim.fromY-pixel.y)*pull+pixel.vy*scatter;
+      const size=t<.78?pixel.size:3;
       X.fillStyle=pixel.color;
       X.fillRect(Math.round(x/5)*5,Math.round(y/5)*5,size,size);
     });
@@ -367,7 +369,7 @@
     const screenH = globalThis.innerHeight ?? H;
     const mobile = globalThis.matchMedia?.("(pointer: coarse)").matches ?? screenW <= 760;
     const portrait = mobile && screenH > screenW;
-    if (!trackingAvailable() || !tracking || !P) { camera.x = camera.y = 0; camera.ready = false; return; }
+    if (!tracking || !P) { camera.x = camera.y = 0; camera.ready = false; return; }
     let focusX = P.x + P.w / 2, focusY = P.y + P.h / 2;
     if (portalAnim) {
       const t = portalAnim.t * portalAnim.t * (3 - 2 * portalAnim.t);
@@ -398,7 +400,7 @@
     X.save();
     X.imageSmoothingEnabled = false;
     const c = palette();
-    X.fillStyle = c[0];
+    X.fillStyle = c[3];
     X.fillRect(0, 0, W, H);
     if (state !== "menu" && R) applyCamera();
     if (shake) {
@@ -406,6 +408,7 @@
       shake *= 0.82;
     }
     if (state !== "menu" && R) {
+      X.fillStyle=c[0];X.fillRect(32,96,896,H-96);
       R.buttons.forEach(drawButton);
       const moving = new Set(R.motions.map(m => m.id));
       const ordered = [...R.solid.filter(r => moving.has(r.id)), ...R.solid.filter(r => !moving.has(r.id))];
@@ -501,12 +504,12 @@
   function updateSettings() {
     $("#soundValue").textContent = muted ? "OFF" : "ON";
     $("#autoRestartValue").textContent = autoRestart ? "ON" : "OFF";
-    const available = trackingAvailable();
-    $("#trackingSetting").disabled = !available;
-    $("#trackingSetting").setAttribute?.("aria-disabled", String(!available));
-    $("#trackingValue").textContent = available ? (tracking ? "ON" : "OFF") : "OFF";
+    if(!trackingOverride)tracking=defaultTracking();
+    $("#trackingSetting").disabled = false;
+    $("#trackingSetting").setAttribute?.("aria-disabled", "false");
+    $("#trackingValue").textContent = tracking ? "ON" : "OFF";
   }
-  function trackingAvailable() {
+  function defaultTracking() {
     const screenW = globalThis.innerWidth ?? W;
     const screenH = globalThis.innerHeight ?? H;
     const coarse = globalThis.matchMedia?.("(pointer: coarse)").matches ?? screenW <= 760;
@@ -547,8 +550,8 @@
   };
   $("#soundSetting").onclick = toggle;
   $("#trackingSetting").onclick = () => {
-    if (!trackingAvailable()) return;
     tracking = !tracking;
+    trackingOverride = true;
     camera.ready = false;
     localStorage.setItem("level-devil-tracking", tracking ? "on" : "off");
     updateSettings();

@@ -10,10 +10,11 @@ assert(!game.includes('KeyF')&&!game.includes('function focus(')&&!game.includes
 assert(game.includes('drawTutorial()')&&html.includes('MOVE')&&html.includes('JUMP')&&html.includes('REACH THE DOOR'),'room-one tutorial missing');
 assert(html.includes('id="tutorialCard"')&&style.includes('.tutorial-card')&&style.includes('--game-font: "Courier New"')&&style.includes('font-family: var(--game-font)'),'shared readable pixel font missing');
 assert(game.includes('doorAnim={')&&game.includes('drawDoorSuction()'),'door pixel suction missing');
-assert(game.includes('size:5')&&game.includes('Math.round(x/5)*5'),'door suction must use death-style five-pixel particles');
+assert(game.includes('size:5')&&game.includes('Math.round(x/5)*5')&&game.includes('pixel.vx*scatter'),'door suction must use a death-style pixel burst');
 assert.equal(PORTAL_DURATION,.34,'portal timing changed');
-assert(game.includes('landscapeTablet')&&game.includes('return coarse && !landscapeTablet'),'automatic tracking disable missing');
+assert(game.includes('defaultTracking()')&&game.includes('trackingOverride')&&game.includes('trackingSetting").disabled = false'),'switchable device-default tracking missing');
 assert(game.includes('Math.floor(r.x)')&&game.includes('stoneEdges(r)'),'seam-safe terrain rendering missing');
+assert(game.includes('X.fillStyle = c[3]')&&game.includes('X.fillRect(32,96,896,H-96)'),'dark shake overscan missing');
 
 assert.equal(groups.length,5,'level menu must have five equal acts');
 assert.deepEqual(groups,['SPIKES','MOTION','PORTALS','BUTTONS','FINAL']);
@@ -25,6 +26,9 @@ assert(levels.every((level,index)=>!index||level.difficulty>levels[index-1].diff
 for(const level of levels)for(const spike of level.spikes)if(spike.when?.zone)assert.equal(spike.when.column,true,`overhead spike sensor missing in room ${level.number}`);
 
 assert(levels[9].blocks.length>=12&&levels[9].spikes.length===3,'room 10 no longer uses the full C route');
+assert.equal(levels[2].spikes[0].duration,undefined,'room 3 first spike must remain extended');
+assert.equal(levels[3].spikes.length,3,'room 4 needs three spikes');
+assert(levels[3].spikes[0].when?.zone&&!levels[3].spikes.some(spike=>spike.when?.jump),'room 4 spike must use a position trigger, not jump input');
 assert(levels[21].motions.length===3,'room 22 lost its three-stage route');
 assert(levels[22].motions.every(m=>m.path[1]?.[2]===.85),'room 23 timing tolerance regressed');
 assert(levels[36].portals.length===2&&levels[36].spikes.length===3,'room 37 lost its full zigzag');
@@ -35,7 +39,7 @@ assert.equal(finale.targetMinutes,7);assert.equal(finale.spikes.length,12);
 assert.equal(finale.motions.length,2);assert.equal(finale.portals.length,2);assert.equal(finale.requiredButtons.length,4);
 
 const nixpacks=read('nixpacks.toml'),server=read('tools/serve.cjs');
-assert(html.includes('<title>Tortuga Trials</title>')&&html.includes('VERSION 1.6.0')&&html.includes('by StoiberRules')&&html.includes('NEW:'),'title or settings about section missing');
+assert(html.includes('<title>Tortuga Trials</title>')&&html.includes('VERSION 1.6.1')&&html.includes('by StoiberRules')&&html.includes('NEW:'),'title or settings about section missing');
 assert(style.includes('border-radius: 6px'),'buttons must have slightly rounded corners');
 assert(game.includes('tortuga-trials-progress')&&game.includes('localStorage.setItem("level-devil-unlocked","1")'),'level progression migration missing');
 assert(html.includes('id="deathMessage"')&&game.includes('world.deathCause')&&game.includes('button-trap'),'cause-specific death messages missing');

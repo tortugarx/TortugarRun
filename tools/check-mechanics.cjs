@@ -96,6 +96,11 @@ assert.equal(smoothCarry.haz[0].y,300);assert(Math.abs(smoothCarry.p.y+smoothCar
 const sensor=new World(base);Object.assign(sensor.p,{x:205,y:245});
 assert(sensor.condition({zone:[200,390,16,30],column:true}));
 assert(!sensor.condition({zone:[200,390,16,30]}));
+// Room three's first spike stays raised after its overhead sensor has fired.
+const roomThree=new World(levels[2]);Object.assign(roomThree.p,{x:360,y:250,vx:0,vy:0});
+roomThree.tick({});assert(roomThree.haz[0].started!=null);
+Object.assign(roomThree.p,{x:levels[2].spawn[0],y:levels[2].spawn[1]-18,vx:0,vy:0});
+advance(roomThree,300);assert.equal(roomThree.haz[0].progress,1);assert.equal(roomThree.haz[0].active,true);
 console.log('Verified permanent retraction, restart restoration, moving spikes, overhead sensors, harmful buttons and smooth carrier attachment.');
 
 // Walking speed is relative to a grounded moving support, not overwritten by
