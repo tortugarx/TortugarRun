@@ -2,6 +2,9 @@
 
 50 vollständig neu entworfene Räume. Hohe Abstiege, Aufzüge, bodenverbundene Fähren, Rückwege und Portalräume mit wenigen gezielten Fallen. Referenzanalyse: [REBUILD.md](REBUILD.md); Raumideen: [LEVEL_DESIGN_STICHPUNKTE.md](LEVEL_DESIGN_STICHPUNKTE.md).
 
+Produktionsversion: https://tortugarr.github.io/tortuga-trials/  
+Das separate öffentliche Repository `Tortugarr/tortuga-trials` enthält ausschließlich die im Browser benötigten Laufzeitdateien; dieses Entwicklungsrepository bleibt privat.
+
 ## Starten
 
 ```sh
