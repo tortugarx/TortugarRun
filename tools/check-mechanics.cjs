@@ -59,6 +59,12 @@ advance(coupled,30);assert.equal(coupled.locked,false);assert(coupled.object('wa
 // Death wins when spike and goal overlap during the same step.
 const finishTrap=new World({...base,spawn:[200,420],exit:[190,356],spikes:[{x:200,y:420,w:27}]});
 advance(finishTrap,2);assert.equal(finishTrap.status,'dead');
+// Once death has happened, mechanisms and emerging spikes finish behind the
+// death animation instead of freezing at the collision frame.
+const aftermath=new World({...base,spawn:[200,420],blocks:[...base.blocks,[500,380,30,40,'wall']],motions:[{id:'wall',path:[[100,0,.5]]}],spikes:[{x:200,y:420,w:27,when:{time:0},speed:12}]});
+advance(aftermath,4);assert.equal(aftermath.status,'dead');
+for(let i=0;i<90;i++)aftermath.aftermathTick();
+assert.equal(aftermath.haz[0].progress,1);assert.equal(aftermath.motions[0].done,true);
 console.log('Verified nonlethal continuous wall pushes, safe carrying, directed portals, re-entry lock, resize, coupled buttons and hazard priority.');
 
 // A visible barrier waits for its trigger, retracts, and remains gone on this run.

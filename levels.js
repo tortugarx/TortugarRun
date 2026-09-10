@@ -43,7 +43,7 @@ r('DAS ZIMMER RUTSCHT','Im festen C-Rahmen verschiebt sich der zusammenhängende
 
 // WELT III — one-way entrances with invisible, freely positioned targets.
 r('MITTELTURM','Das Querportal startet den Einsturz des rechten Ufers; das zweite Portal setzt auf einen Lift, der erst unter dem einsamen Turm hochfährt.',[70,470],[625,215],[f(32,470,200),[390,190,65,350],[455,190,90,24],[545,300,25,240],f(570,215,120),[455,470,90,22,'towerlift'],f(760,470,168,'bank')],[h(590,215,27,z(565,170,50,70)),h(795,470,27,s('arrival:cross'),{attach:'bank'})],[m('bank',s('arrival:cross'),[[0,150,.82]]),m('towerlift',s('arrival:top'),[[0,-255,2.05]],.18)],[p('cross',180,470,790,470),p('top',875,470,500,470,{attach:'bank'})]);
-r('DER SENKRECHTE SCHLITZ','Ein Portal wirft in einen leeren Fallschacht; zwei starre Seitenkolben stoßen während des Falls nacheinander in entgegengesetzte Richtungen.',[430,160],[420,500],[c(32,540,350),c(578,540,350),[382,160,196,20],[382,305,98,20],[480,390,98,20],f(382,500,196),[350,245,32,72,'leftwall'],[578,345,32,72,'rightwall']],[h(525,390,27,z(510,345,42,70)),h(475,500,27,z(460,450,42,70))],[m('leftwall',s('arrival:drop'),[[92,0,.52]],.18),m('rightwall',s('motion:leftwall'),[[-92,0,.52]],.3)],[p('drop',520,160,414,305)]);
+r('DER SENKRECHTE SCHLITZ','Ein Portal wirft in einen leeren Fallschacht; zwei starre Seitenkolben stoßen während des Falls nacheinander in entgegengesetzte Richtungen.',[430,160],[420,500],[c(32,540,350),c(578,540,350),[382,160,196,20],[382,305,98,20],[480,390,98,20],f(382,500,196),[350,245,32,52,'leftwall'],[578,345,32,37,'rightwall']],[h(525,390,27,z(510,345,42,70)),h(475,500,27,z(460,450,42,70))],[m('leftwall',s('arrival:drop'),[[92,0,.52]],.18),m('rightwall',s('motion:leftwall'),[[-92,0,.52]],.3)],[p('drop',520,160,414,305)]);
 r('IMPULSINSEL','Das Portal schleudert auf eine einzelne Hochinsel; erst schiebt die Seitenwand den Absprung zusammen, danach sackt die Insel weg.',[70,460],[860,460],[f(32,460,260),[470,280,150,24,'sky'],f(730,460,198),[438,210,32,70,'skywall']],[h(560,280,27,s('arrival:impulse'),{attach:'sky'}),h(805,460,27,z(790,410,42,70))],[m('skywall',s('arrival:impulse'),[[115,0,.72]],.12),m('sky',s('done:skywall'),[[0,105,1.05]],.08)],[p('impulse',225,460,500,280,{targetVx:220})]);
 r('DOPPELSTOCK','Oben nach rechts, unten ganz zurück und nach dem zweiten Portal wieder oben zur Tür; eine Rückwand jagt durch den unteren Gang.',[70,250],[850,250],[[32,250,680,24],f(260,470,668),[260,274,668,151],[896,400,32,70,'lowerwall']],[h(500,250,27,z(490,200,42,70)),h(610,470,27,z(595,425,42,65))],[m('lowerwall',s('arrival:down'),[[-470,0,2.4]],.1)],[p('down',655,250,850,470),p('back',330,470,760,250)]);
 r('DAS TIEFE PORTAL-U','Im fast leeren U muss der Lift vollständig durchfahren werden; erst oben lässt sich das fahrende Portal hinter dem Zahn treffen.',[80,250],[850,250],[f(32,250,200),[410,500,140,24,'lift'],f(728,250,200),f(232,540,496)],[h(430,500,27,null,{attach:'lift'})],[m('lift',{stand:'lift'},[[0,-80,1.05],[0,-80,.45],[0,-250,1.7]])],[p('lift-entry',500,500,770,250,{attach:'lift'})]);
@@ -62,8 +62,8 @@ r('DER RÜCKWEG','Oben zum Knopf, rechts fallen, unten zurück unter den Start.'
 r('ZWEI KNÖPFE, EINE LÜGE','Im Y-Raum gilt links öffnen, rechts die Platte heben.',[455,455],[468,455],[f(340,455,280),f(230,415,110),f(32,365,198),f(620,415,78),f(698,365,230),f(405,455,150,'lift')],[],[m('lift',s('button:right'),[[0,-185,1.4]])],[],[k('left',125,365,{unlock:true}),k('right',795,365)],{locked:true,exitOn:'lift'});
 r('NICHT NOCH EINMAL','Der erste Größenknopf hilft; der zweite wird ausgelassen, während zwei späte Zähne die große Sprungkurve prüfen.',[70,440],[850,310],[f(32,440,568),f(600,410,110),f(710,360,90),f(800,310,128)],[h(455,440,36,z(440,390,42,70)),h(745,360,36,z(730,310,42,70))],[],[],[k('large',180,440,{size:[1.45,1.45]}),k('small',540,440,{size:[.55,.55]})]);
 r('FAHRENDER SCHALTER','Der Schalter hebt die Fähre aus der unteren Kammer und schickt sie über die Stufenköpfe zum Portal; ein Zahn fährt auf dem Träger mit.',[170,285],[80,285],[f(32,450,215),[300,450,190,24,'ferry'],f(560,400,65),f(625,350,65),f(690,300,238),f(32,285,180)],[h(430,450,36,null,{attach:'ferry'})],[m('ferry',s('button:turn'),[[0,-200,1.2],[225,-200,1.8]])],[p('tower',820,300,105,285)],[k('turn',305,450,{unlock:true,attach:'ferry'})],{locked:true});
-r('DIE TÜR WAR HINTER DIR','Der Knopf unten baut vier Segmente in neuer Reihenfolge zur Rücktreppe.',[70,245],[82,245],[f(32,245,190),f(250,330,150),f(430,395,150),f(610,465,318),f(540,540,130,'r1'),f(410,540,140,'r2'),f(280,540,140,'r3'),f(180,540,110,'r4')],[h(315,540,27,s('button:return'),{delay:.6,attach:'r3'})],[m('r1',s('button:return'),[[0,-125,.9]],.05),m('r3',s('button:return'),[[0,-225,.9]],.25),m('r2',s('button:return'),[[0,-175,.9]],.45),m('r4',s('button:return'),[[0,-275,.9]],.65)],[],[k('return',780,465,{unlock:true})],{locked:true});
-r('DREI GETRENNTE AKTE','Tiefe Knopfkammer, enger Vertikalschacht und hohe Türinsel sind drei getrennte Akte; Lift und Zielinsel tragen getrennte Zähne.',[70,480],[850,235],[f(32,480,230),c(262,430,52),[340,480,190,24,'lift'],c(530,430,52),f(700,235,228)],[h(470,480,36,s('button:lift'),{attach:'lift'}),h(780,235,36,s('arrival:act-three'))],[m('lift',s('button:lift'),[[0,-185,1.05],[0,-185,.62]],1.2)],[p('act-three',455,480,790,235,{attach:'lift'})],[k('lift',135,480)]);
+r('DIE TÜR WAR HINTER DIR','Der Knopf unten setzt drei schmale, bündige Trittsteine in die Lücken der Rücktreppe.',[70,245],[82,245],[f(32,245,190),f(250,330,150),f(430,395,150),f(610,465,318),f(580,540,30,'r1'),f(400,540,30,'r2'),f(222,540,28,'r3')],[h(520,395,27,s('button:return'),{delay:.6})],[m('r1',s('button:return'),[[0,-110,.75]],.05),m('r2',s('button:return'),[[0,-175,.75]],.3),m('r3',s('button:return'),[[0,-245,.75]],.55)],[],[k('return',780,465,{unlock:true})],{locked:true});
+r('DREI GETRENNTE AKTE','Tiefe Knopfkammer, enger Vertikalschacht und hohe Türinsel sind drei getrennte Akte; Lift und Zielinsel tragen getrennte Zähne.',[70,480],[850,235],[f(32,480,230),c(262,430,52),[340,480,190,24,'lift'],c(530,430,52),f(700,235,228)],[h(470,480,36,s('button:lift'),{delay:1.1,attach:'lift'}),h(780,235,36,s('arrival:act-three'))],[m('lift',s('button:lift'),[[0,-185,1.05],[0,-185,.62]],1.2)],[p('act-three',455,480,790,235,{attach:'lift'})],[k('lift',135,480)]);
 r('DIE LETZTE GESCHICHTE','Fall ins U, Knopf, umkehrender Lift, Portal und sichtbarer Zahn.',[790,210],[290,250],[f(32,455,230,'lift'),f(262,455,405),f(667,210,261),[262,250,270,28],c(520,250,12)],[h(170,455,27,null,{attach:'lift'})],[m('lift',s('button:final'),[[0,-205,1.6],[0,-205,.7],[0,-100,.8]],1.6)],[p('final',220,455,400,250,{attach:'lift'})],[k('final',500,455,{unlock:true})],{locked:true});
 
 const guides={10:[[770,462],[820,412],[860,362],[900,312]],11:[[690,252],[760,430]],20:[['done:stream']],24:[['motion:helper']],30:[['arrival:cross'],['arrival:top']],31:[['arrival:drop'],[540,390],[420,500]],32:[['arrival:impulse']],33:[['arrival:down'],['arrival:back']],34:[['arrival:lift-entry']],35:[['arrival:across'],['arrival:return']],36:[['arrival:mirror']],37:[['arrival:middle'],['arrival:lower']],38:[['arrival:moving']],39:[[700,280],[600,307]],40:[['button:open']],41:[['button:swap']],42:[['button:small'],['button:normal']],43:[['button:move']],44:[['button:return'],[750,230],[760,437]],45:[['button:left'],['button:right']],46:[['button:large']],47:[['button:turn'],['arrival:tower']],48:[['button:return']],49:[['button:lift'],['arrival:act-three']],50:[['button:final'],['arrival:final']]};
@@ -80,15 +80,22 @@ for(const [i,l] of levels.entries()){
   for(const hazard of l.spikes){
     hazard.baseX=hazard.x;hazard.baseY=hazard.y;
     if(hazard.when&&!hazard.initial){
-      hazard.delay=Math.min(hazard.delay||0,.02);
-      hazard.speed=hazard.speed||7.5;
+      hazard.speed=12;
       if(hazard.when.zone){
+        hazard.delay=0;
         const q=hazard.when.zone;
         if((hazard.dir||'up')==='up'||hazard.dir==='down'){
           const center=q[0]+q[2]/2;
           hazard.when.zone=center<=hazard.x
-            ?[Math.max(32,hazard.x-18),q[1],10,q[3]]
-            :[Math.min(918,hazard.x+hazard.w+8),q[1],10,q[3]];
+            ?[Math.max(32,hazard.x-50),q[1],16,q[3]]
+            :[Math.min(912,hazard.x+hazard.w+34),q[1],16,q[3]];
+        } else {
+          const center=q[0]+q[2]/2;
+          const leftTip=hazard.x-(hazard.dir==='left'?9:0);
+          const rightTip=hazard.x+(hazard.dir==='right'?9:0);
+          hazard.when.zone=center<=hazard.x
+            ?[Math.max(32,leftTip-50),q[1],16,q[3]]
+            :[Math.min(912,rightTip+34),q[1],16,q[3]];
         }
       }
     }

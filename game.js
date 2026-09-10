@@ -138,7 +138,7 @@
       }
       state = "deathmenu";
       $("#deathScreen").classList.remove("hidden");
-    }, 780);
+    }, 900);
   }
   function finish() {
     if (state !== "playing") return;
@@ -198,6 +198,14 @@
     clock += dt;
     particles.forEach(p => { p.x += p.vx*dt; p.y += p.vy*dt; p.vy += 430*dt; p.life -= dt*1.7; });
     particles = particles.filter(p => p.life > 0);
+    if (state === "dying") {
+      accumulator += dt;
+      while (accumulator + 1e-9 >= DevilWorld.STEP) {
+        world.aftermathTick();
+        accumulator = Math.max(0, accumulator - DevilWorld.STEP);
+      }
+      return;
+    }
     if (state !== "playing") return;
     accumulator += dt;
     while (accumulator + 1e-9 >= DevilWorld.STEP && state === "playing") {

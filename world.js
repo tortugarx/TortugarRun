@@ -24,6 +24,17 @@
       this.jumpNow = false;
     }
     object(id) { return this.solid.find(s => s.id === id); }
+    aftermathTick() {
+      if (this.status !== "dead") return;
+      const saved = { ...this.p }, supportId = this.supportId;
+      this.status = "playing";
+      this.p.x = this.p.y = -10000;
+      this.tick({});
+      Object.assign(this.p, saved);
+      this.supportId = supportId;
+      this.status = "dead";
+      this.events = [];
+    }
     condition(c) {
       if (!c) return true;
       if (this.teleport && (c.zone || c.stand || c.jump)) return false;

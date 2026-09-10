@@ -83,15 +83,18 @@ for(let i=0;i<detailed.length;i++)for(let j=i+1;j<detailed.length;j++){
   assert(distance>=15,`terrain silhouettes too similar: ${i+1}/${j+1} (${distance})`);
 }
 for(const l of levels)for(const hazard of l.spikes)if(hazard.when&&!hazard.initial){
-  assert(hazard.delay<=.02,`early hidden hazard: ${l.number}`);
-  assert(hazard.speed>=5.55&&hazard.speed<=8.34,`hidden hazard outside 120-180ms: ${l.number}`);
+  assert(hazard.speed>=10&&hazard.speed<=14,`hidden hazard outside 70-100ms: ${l.number}`);
   const collisionLatency=(hazard.delay||0)+.25/hazard.speed;
-  assert(collisionLatency>=.025&&collisionLatency<=.08,`hazard collision starts too early or late: ${l.number}`);
   if(hazard.duration!==undefined)assert(hazard.duration>collisionLatency,`hazard retracts before it can collide: ${l.number}`);
-  if(hazard.when.zone&&((hazard.dir||'up')==='up'||hazard.dir==='down')){
+  if(hazard.when.zone){
     const q=hazard.when.zone;
-    const edgeGap=Math.min(Math.abs(q[0]+q[2]-hazard.x),Math.abs(q[0]-(hazard.x+hazard.w)));
-    assert(edgeGap<=10,`hazard trigger is not last-moment: ${l.number}`);
+    const horizontal=hazard.dir==='left'||hazard.dir==='right';
+    const left=horizontal?hazard.x-(hazard.dir==='left'?9:0):hazard.x;
+    const right=horizontal?hazard.x+(hazard.dir==='right'?9:0):hazard.x+hazard.w;
+    const edgeGap=Math.min(Math.abs(q[0]+q[2]-left),Math.abs(q[0]-right));
+    assert.equal(hazard.delay,0,`position trigger has a second hidden delay: ${l.number}`);
+    assert(edgeGap>=32&&edgeGap<=36,`hazard trigger is not at the shared last-moment distance: ${l.number}`);
+    assert(edgeGap/220>1/hazard.speed,`full-speed player can outrun spike animation: ${l.number}`);
   }
 }
 console.log(`Checked ${levels.length} rooms: categories, spawns, portal destinations, deterministic replay.`);

@@ -18,6 +18,8 @@ Auf Handys nutzt das Spielfeld im Hochformat die gesamte Bildschirmhöhe oberhal
 
 Räume 1–14: Stacheln; ab 15: bewegliche Mapteile; ab 30: Portale; ab 40: Knöpfe. Pro Raum maximal drei Stachelfelder und zwei bewegliche Bauteile. Portalziele sind fest und farblich nicht verraten. Steine schieben und tragen, verursachen aber keinen Kontaktschaden.
 
+Versteckte ortsabhängige Stacheln reagieren in jeder Richtung an einer festen Linie 34 Pixel vor ihrer Spitze und fahren in rund 83 ms vollständig aus. Damit sind sie bei voller Laufgeschwindigkeit knapp, aber nicht überspringbar, nur weil ihre Animation noch nicht fertig ist. Nach einem Treffer laufen Spike-, Mechanik- und Todesanimationen 900 ms sichtbar weiter, bevor der Dialog erscheint.
+
 Auf einer Plattform addieren sich ihre Verschiebung und die eigene Laufbewegung. Gegenlaufen reduziert den Weg in Fahrtrichtung, Mitlaufen vergrößert ihn. Auch sinkende Plattformen tragen. Bewegte Wände stoppen nicht am Spieler und schieben ihn weiter; tödlich wird erst die echte Gefahr dahinter. Kurze Portalreisen unterbrechen die übrigen Mechaniken nicht.
 
 ## Prüfen

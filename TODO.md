@@ -1,3 +1,12 @@
+# Timing-, Animations- und Nahtpass vom 10. September 2026
+
+- [x] Gezeigte Balkenüberschneidung in Raum 31 beseitigen.
+- [x] Alle Bewegungsbahnen auf vergleichbare sichtbare Kreuzungen und unsaubere Endnähte prüfen.
+- [x] Ortsabhängige Spikes in allen 50 Räumen auf einen einheitlichen, nicht überspringbaren Auslöseabstand bringen.
+- [x] Signal- und Sprung-Spikes separat auf zu frühe Sichtbarkeit prüfen.
+- [x] Todes-, Spike- und Mechanikanimation bis vor den Respawn-Dialog weiterlaufen lassen.
+- [x] Alle 50 Gewinnwege und sämtliche Browseransichten erneut prüfen.
+
 # Hochformat-Vollbildpass vom 9. September 2026
 
 - [x] Schwarze Leerflächen der Mobilansicht entfernen und die gesamte Hochkanthöhe nutzen.
