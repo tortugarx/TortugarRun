@@ -15,7 +15,10 @@ for (const [i,l] of levels.entries()) {
   assert.equal(l.number,i+1);
   assert.equal(l.group,i<14?0:i<29?1:i<39?2:3);
   assert(l.identity?.silhouette&&l.identity?.direction&&l.identity?.trigger&&l.identity?.door,`missing identity matrix row: ${i+1}`);
-  if(i<14) assert.equal(l.motions.length,0);
+  if(i<14) {
+    assert.equal(l.motions.length,0);
+    assert(l.spikes.length>=2,`spike world room needs multiple hazards: ${i+1}`);
+  }
   if(i<29) assert.equal(l.portals.length,0);
   if(i<39) assert.equal(l.buttons.length,0);
   const world=new World(l);
