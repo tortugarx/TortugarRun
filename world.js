@@ -12,6 +12,7 @@
       this.challenge = clamp(((level.number || 1) - 1) / 49, 0, 1);
       this.time = 0;
       this.status = "playing";
+      this.deathCause = null;
       this.signals = {};
       this.events = [];
       this.p = { x: level.spawn[0], y: level.spawn[1] - 18, w: 24, h: 18, vx: 0, vy: 0, face: 1, ground: false, held: false, coyote: 0, buffer: 0 };
@@ -228,7 +229,16 @@
         this.exit = [this.level.exit[0] + b.x - b.originX, this.level.exit[1] + b.y - b.originY];
       }
       // Hazards take priority over a simultaneous door contact.
-      if (p.y > 585 || this.haz.some(h => h.progress > 0.25 && hit(p, this.spikeBox(h)))) { this.status = "dead"; return; }
+      if (p.y > 585) { this.deathCause = "fall"; this.status = "dead"; return; }
+      const lethal = this.haz.find(h => h.progress > 0.25 && hit(p, this.spikeBox(h)));
+      if (lethal) {
+        this.deathCause = lethal.when?.signal?.startsWith("button:") ? "button-trap" :
+          lethal.path || lethal.attach ? "moving-spike" :
+          lethal.when ? "hidden-spike" :
+          lethal.dir === "down" ? "ceiling-spike" :
+          lethal.dir === "left" || lethal.dir === "right" ? "side-spike" : "spike";
+        this.status = "dead"; return;
+      }
       if (!this.locked && hit(p, this.exitBox())) { this.status = "won"; return; }
       for (const portal of this.portals) {
         const inside = hit(p, this.portalBox(portal));

@@ -123,6 +123,16 @@
     state = "dying";
     deaths++;
     UI.deaths.textContent = String(deaths).padStart(2, "0");
+    const messages={
+      fall:"DER ABGRUND GEWINNT.",
+      "button-trap":"DER KNOPF WAR EINE FALLE.",
+      "moving-spike":"DER SPIKE WAR SCHNELLER.",
+      "hidden-spike":"DER BODEN HAT SICH GEWEHRT.",
+      "ceiling-spike":"KOPF HOCH. NICHT SO HOCH.",
+      "side-spike":"VON DER SEITE ERWISCHT.",
+      spike:"ZU SPITZ GELANDET.",
+    };
+    $("#deathMessage").textContent=messages[world.deathCause]||"NICHT DIESES MAL.";
     shake = 4;
     burst(P.x + 12, P.y + 9, "#333", 6);
     beep(75, 0.24, "sawtooth");
@@ -141,11 +151,9 @@
     if (state !== "playing") return;
     state = "transition";
     const pixels=[
-      {x:-8,y:-6,size:8,color:palette()[2]}, {x:0,y:-6,size:8,color:palette()[2]},
-      {x:8,y:-3,size:7,color:palette()[3]}, {x:-8,y:2,size:8,color:palette()[3]},
-      {x:0,y:2,size:8,color:palette()[3]}, {x:8,y:4,size:7,color:palette()[2]},
-      {x:-5,y:9,size:7,color:palette()[3]}, {x:5,y:9,size:7,color:palette()[3]},
-    ];
+      [-10,-7,2],[-5,-7,2],[0,-7,2],[5,-4,3],[10,-4,2],
+      [-10,-2,3],[-5,-2,3],[0,-2,3],[5,1,2],[10,1,3],[-7,5,3],[3,5,3],
+    ].map(([x,y,tone])=>({x,y,size:5,color:palette()[tone]}));
     doorAnim={start:clock,duration:.82,fromX:P.x+P.w/2,fromY:P.y+P.h/2,toX:R.exit[0]+23,toY:R.exit[1]+48,pixels};
     beep(620, 0.12, "sine");
     unlocked = Math.max(unlocked, Math.min(L.length, li + 2));
@@ -328,20 +336,25 @@
   }
   function drawTutorial() {
     if (li !== 0 || !R || R.time > 18) return;
-    const c = palette(), labels = [
-      { x: 72, y: 356, text: "←  →  LAUFEN" },
-      { x: 252, y: 356, text: "↑  SPRINGEN" },
-    ];
+    const c = palette(), w=224, h=136;
+    const screenW=globalThis.innerWidth??W,screenH=globalThis.innerHeight??H;
+    const portrait=screenH>screenW,cameraFollowing=trackingAvailable()&&tracking;
+    const x=cameraFollowing?48:portrait?Math.round((W-w)/2):48, y=150;
+    const rows = ["1   ← →   LAUFEN", "2    ↑    SPRINGEN", "3    →    ERREICHE DIE TÜR"];
     X.save();
-    X.font = "bold 14px Courier New";
-    X.textBaseline = "middle";
-    for (const label of labels) {
-      const width = label.text.length * 9 + 16;
-      X.fillStyle = c[3];
-      X.fillRect(label.x, label.y, width, 28);
-      X.fillStyle = c[0];
-      X.fillText(label.text, label.x + 8, label.y + 15);
-    }
+    X.fillStyle="#000";X.fillRect(x+6,y+6,w,h);
+    X.fillStyle=c[0];X.fillRect(x,y,w,h);
+    X.fillStyle=c[3];X.fillRect(x,y,w,4);X.fillRect(x,y+h-4,w,4);X.fillRect(x,y,4,h);X.fillRect(x+w-4,y,4,h);
+    X.fillStyle=c[2];X.fillRect(x+8,y+8,w-16,24);
+    X.fillStyle=c[0];X.font="bold 13px Courier New";X.textBaseline="middle";X.fillText("SO GEHT'S",x+74,y+20);
+    X.font="bold 12px Courier New";
+    rows.forEach((text,index)=>{
+      const rowY=y+40+index*28;
+      X.fillStyle=index===2?c[2]:c[3];X.fillRect(x+12,rowY,22,20);
+      X.fillStyle=c[0];X.fillText(String(index+1),x+19,rowY+11);
+      X.fillStyle=c[3];X.fillText(text.slice(4),x+42,rowY+11);
+    });
+    X.fillStyle=c[2];X.fillRect(x+12,y+h-12,w-24,4);
     X.restore();
   }
   function drawDoorSuction() {
@@ -355,9 +368,9 @@
       const pull=t*t*(3-2*t),arc=Math.sin(t*Math.PI)*(index%2?1:-1)*(6+index%3*3);
       const x=doorAnim.fromX+pixel.x+(doorAnim.toX-doorAnim.fromX-pixel.x)*pull;
       const y=doorAnim.fromY+pixel.y+(doorAnim.toY-doorAnim.fromY-pixel.y)*pull+arc;
-      const size=Math.max(3,Math.round(pixel.size*(1-pull*.58)));
+      const size=Math.max(2,Math.round(pixel.size*(1-pull*.5)));
       X.fillStyle=pixel.color;
-      X.fillRect(Math.round(x/4)*4,Math.round(y/4)*4,size,size);
+      X.fillRect(Math.round(x/5)*5,Math.round(y/5)*5,size,size);
     });
     X.restore();
   }

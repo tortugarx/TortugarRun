@@ -59,6 +59,7 @@ advance(coupled,30);assert.equal(coupled.locked,false);assert(coupled.object('wa
 // Death wins when spike and goal overlap during the same step.
 const finishTrap=new World({...base,spawn:[200,420],exit:[190,356],spikes:[{x:200,y:420,w:27}]});
 advance(finishTrap,2);assert.equal(finishTrap.status,'dead');
+assert.equal(finishTrap.deathCause,'spike');
 // Once death has happened, mechanisms and emerging spikes finish behind the
 // death animation instead of freezing at the collision frame.
 const aftermath=new World({...base,spawn:[200,420],blocks:[...base.blocks,[500,380,30,40,'wall']],motions:[{id:'wall',path:[[100,0,.5]]}],spikes:[{x:200,y:420,w:27,when:{time:0},speed:12}]});
@@ -77,12 +78,16 @@ assert.equal(new World(disappearing.level).haz[0].progress,1);
 // Moving spikes cross the player's route and stop at a fixed destination.
 const chasing=new World({...base,spikes:[{x:340,y:420,w:27,path:[[-170,0,1]]}]});
 advance(chasing,150);assert.equal(chasing.status,'dead');
+assert.equal(chasing.deathCause,'moving-spike');
 const moving=new World({...base,spawn:[32,420],spikes:[{x:340,y:420,w:27,path:[[100,0,0.5],[-50,0,0.5]]}]});
 advance(moving,200);assert.equal(moving.haz[0].x,290);
 
 // Buttons can cause harm as well as open routes, always via hazards, not stone.
 const betrayal=new World({...base,buttons:[{id:'trap',x:180,y:412}],spikes:[{x:180,y:420,w:27,when:{signal:'button:trap'},delay:0.1}]});
 advance(betrayal,30);assert.equal(betrayal.status,'dead');
+assert.equal(betrayal.deathCause,'button-trap');
+const fallen=new World({...base,spawn:[100,620],blocks:[]});advance(fallen,2);
+assert.equal(fallen.deathCause,'fall');
 const smoothCarry=new World({...base,spawn:[230,400],blocks:[[200,400,120,24,'lift']],motions:[{id:'lift',ease:true,when:{stand:'lift'},path:[[0,-100,0.6]]}],spikes:[{x:285,y:400,w:18,attach:'lift'}]});
 advance(smoothCarry,100);assert.equal(smoothCarry.status,'playing');
 assert.equal(smoothCarry.haz[0].y,300);assert(Math.abs(smoothCarry.p.y+smoothCarry.p.h-300)<0.001);

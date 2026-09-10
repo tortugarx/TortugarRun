@@ -67,6 +67,7 @@ delayed.touches[1].listeners.touchstart({changedTouches:[{identifier:2}],prevent
 for(let t=0;t<500&&delayed.$('#deathLabel').textContent!=='01';t++)delayed.frame();
 delayed.touches[1].listeners.touchend({changedTouches:[{identifier:2}],preventDefault(){}});
 assert.equal(delayed.$('#deathLabel').textContent,'01');
+assert.equal(delayed.$('#deathMessage').textContent,'ZU SPITZ GELANDET.');
 for(let t=0;t<100;t++)delayed.frame();
 assert(delayed.$('#deathScreen').classList.contains('hidden'),'death animation remains unobstructed');
 for(let t=0;t<12;t++)delayed.frame();
