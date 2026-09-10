@@ -22,8 +22,12 @@
     ["#f1dddd", "#d59a98", "#a34f50", "#4f252b"],
   ];
   const palette = () => PAL[L[Math.min(li, L.length - 1)]?.group || 0];
-  let unlocked = DevilLevels.levels.length;
-  localStorage.setItem("level-devil-unlocked", String(unlocked));
+  const progressVersionKey="tortuga-trials-progress",progressVersion="1";
+  if(localStorage.getItem(progressVersionKey)!==progressVersion){
+    localStorage.setItem("level-devil-unlocked","1");
+    localStorage.setItem(progressVersionKey,progressVersion);
+  }
+  let unlocked=Math.max(1,Math.min(DevilLevels.levels.length,Number(localStorage.getItem("level-devil-unlocked"))||1));
   let state = "menu",
     li = 0,
     deaths = 0,
@@ -124,15 +128,16 @@
     deaths++;
     UI.deaths.textContent = String(deaths).padStart(2, "0");
     const messages={
-      fall:"DER ABGRUND GEWINNT.",
-      "button-trap":"DER KNOPF WAR EINE FALLE.",
-      "moving-spike":"DER SPIKE WAR SCHNELLER.",
-      "hidden-spike":"DER BODEN HAT SICH GEWEHRT.",
-      "ceiling-spike":"KOPF HOCH. NICHT SO HOCH.",
-      "side-spike":"VON DER SEITE ERWISCHT.",
-      spike:"ZU SPITZ GELANDET.",
+      fall:["GRAVITY FILED A COMPLAINT.","THE VOID SAYS HI.","YOU MISSED THE FLOOR.","SHELL WE TRY THAT AGAIN?"],
+      "button-trap":["THAT BUTTON HAD TRUST ISSUES.","PRESS HERE, REGRET EVERYWHERE.","THE BUTTON PRESSED BACK.","CURIOUS TURTLE, CLASSIC RESULT."],
+      "moving-spike":["THE SPIKE HAD PLACES TO BE.","OUTRUN BY STATIONERY'S COUSIN.","THAT SPIKE KNOWS CARDIO.","MOVING HAZARD, STATIONARY PLAN."],
+      "hidden-spike":["SURPRISE! THE FLOOR HAS TEETH.","THE GROUND REMEMBERED YOU.","STEALTH SPIKE: 1. TURTLE: 0.","TRUST ISSUES UNLOCKED."],
+      "ceiling-spike":["HEADS UP. LESS UP.","THE CEILING BIT BACK.","TOO MUCH SHELL ALTITUDE.","AIRSPACE DENIED."],
+      "side-spike":["FLANKED BY ARCHITECTURE.","THE WALL CHOSE VIOLENCE.","SIDE QUEST FAILED.","LOOK BOTH WAYS. EVEN INDOORS."],
+      spike:["SPIKES: 1. TURTLE: 0.","A VERY POINTED ARGUMENT.","THE SPIKE MAKES A FAIR POINT.","SHELL MEETS SHARP."],
     };
-    $("#deathMessage").textContent=messages[world.deathCause]||"NICHT DIESES MAL.";
+    const pool=messages[world.deathCause]||["NOT THIS TIME."];
+    $("#deathMessage").textContent=pool[(deaths-1)%pool.length];
     shake = 4;
     burst(P.x + 12, P.y + 9, "#333", 6);
     beep(75, 0.24, "sawtooth");
@@ -335,27 +340,10 @@
     X.restore();
   }
   function drawTutorial() {
-    if (li !== 0 || !R || R.time > 18) return;
-    const c = palette(), w=224, h=136;
-    const screenW=globalThis.innerWidth??W,screenH=globalThis.innerHeight??H;
-    const portrait=screenH>screenW,cameraFollowing=trackingAvailable()&&tracking;
-    const x=cameraFollowing?48:portrait?Math.round((W-w)/2):48, y=150;
-    const rows = ["1   ← →   LAUFEN", "2    ↑    SPRINGEN", "3    →    ERREICHE DIE TÜR"];
-    X.save();
-    X.fillStyle="#000";X.fillRect(x+6,y+6,w,h);
-    X.fillStyle=c[0];X.fillRect(x,y,w,h);
-    X.fillStyle=c[3];X.fillRect(x,y,w,4);X.fillRect(x,y+h-4,w,4);X.fillRect(x,y,4,h);X.fillRect(x+w-4,y,4,h);
-    X.fillStyle=c[2];X.fillRect(x+8,y+8,w-16,24);
-    X.fillStyle=c[0];X.font="bold 13px Courier New";X.textBaseline="middle";X.fillText("SO GEHT'S",x+74,y+20);
-    X.font="bold 12px Courier New";
-    rows.forEach((text,index)=>{
-      const rowY=y+40+index*28;
-      X.fillStyle=index===2?c[2]:c[3];X.fillRect(x+12,rowY,22,20);
-      X.fillStyle=c[0];X.fillText(String(index+1),x+19,rowY+11);
-      X.fillStyle=c[3];X.fillText(text.slice(4),x+42,rowY+11);
-    });
-    X.fillStyle=c[2];X.fillRect(x+12,y+h-12,w-24,4);
-    X.restore();
+    const card=$("#tutorialCard");
+    if(!card)return;
+    const show=li===0&&R&&R.time<=18&&state==="playing";
+    card.classList[show?"remove":"add"]("hidden");
   }
   function drawDoorSuction() {
     if(!doorAnim)return;

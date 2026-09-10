@@ -1,7 +1,7 @@
 // Exercise the real game adapter, canvas draw calls and input listeners in a
 // minimal DOM. Room physics are separately covered by the winning replays.
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-function boot(innerWidth=960,innerHeight=540,coarse=innerWidth<=760) {
+function boot(innerWidth=960,innerHeight=540,coarse=innerWidth<=760,savedUnlocked='50',savedProgress='1') {
   const nodes=new Map(),handlers={},timers=new Map(),transforms=[];let raf,time=0,timerId=0;
   const context2d=new Proxy({scale:(x,y)=>transforms.push(['scale',x,y]),translate:(x,y)=>transforms.push(['translate',x,y])}, {get:(o,k)=>k in o?o[k]:(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
   function node() {
@@ -13,7 +13,9 @@ function boot(innerWidth=960,innerHeight=540,coarse=innerWidth<=760) {
   }
   const $=id=>{if(!nodes.has(id))nodes.set(id,node());return nodes.get(id);};
   const touches=['left','right','jump'].map(key=>Object.assign(node(),{dataset:{key}}));
-  const data=new Map([['level-devil-sound','off'],['level-devil-unlocked','50']]);
+  const data=new Map([['level-devil-sound','off']]);
+  if(savedUnlocked!==null)data.set('level-devil-unlocked',savedUnlocked);
+  if(savedProgress!==null)data.set('tortuga-trials-progress',savedProgress);
   const env={console,URLSearchParams,Math,innerWidth,innerHeight,DevilLevels:require('../levels.js'),DevilWorld:require('../world.js'),
     document:{querySelector:$,querySelectorAll:()=>touches,createElement:node,documentElement:node()},
     localStorage:{getItem:k=>data.get(k),setItem:(k,v)=>data.set(k,String(v))},location:{search:''},
@@ -31,6 +33,9 @@ function boot(innerWidth=960,innerHeight=540,coarse=innerWidth<=760) {
   return {$,frame,key,select,touches,transforms};
 }
 const app=boot();
+const fresh=boot(960,540,false,'50',null);fresh.frame();fresh.$('#mapBtn').onclick();
+assert.equal(fresh.$('#levelGrid').children[2].disabled,false,'room one must be available');
+assert.equal(fresh.$('#levelGrid').children[3].disabled,true,'room two must start locked');
 for(const id of [1,6,15,24,30,38,40,43,50]) {
   app.select(id);app.frame();
   assert.equal(app.$('#levelLabel').textContent,String(id).padStart(2,'0')+' / 50');
@@ -67,7 +72,7 @@ delayed.touches[1].listeners.touchstart({changedTouches:[{identifier:2}],prevent
 for(let t=0;t<500&&delayed.$('#deathLabel').textContent!=='01';t++)delayed.frame();
 delayed.touches[1].listeners.touchend({changedTouches:[{identifier:2}],preventDefault(){}});
 assert.equal(delayed.$('#deathLabel').textContent,'01');
-assert.equal(delayed.$('#deathMessage').textContent,'ZU SPITZ GELANDET.');
+assert.equal(delayed.$('#deathMessage').textContent,'SPIKES: 1. TURTLE: 0.');
 for(let t=0;t<100;t++)delayed.frame();
 assert(delayed.$('#deathScreen').classList.contains('hidden'),'death animation remains unobstructed');
 for(let t=0;t<12;t++)delayed.frame();

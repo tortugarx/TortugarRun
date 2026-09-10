@@ -8,12 +8,18 @@
     />
     <meta name="theme-color" content="#071b22" />
     <title>Tortuga Trials</title>
-    <link rel="stylesheet" href="style.css?v=40" />
+    <link rel="stylesheet" href="style.css?v=41" />
   </head>
   <body>
     <main class="shell">
       <section class="game-wrap" aria-label="Tortuga Trials game">
         <canvas id="game" width="960" height="540"></canvas>
+        <aside id="tutorialCard" class="tutorial-card hidden" aria-label="Tutorial">
+          <strong>SO GEHT'S</strong>
+          <div><i>1</i><b>← →</b><span>LAUFEN</span></div>
+          <div><i>2</i><b>↑</b><span>SPRINGEN</span></div>
+          <div class="tutorial-goal"><i>3</i><b>→</b><span>ERREICHE DIE TÜR</span></div>
+        </aside>
         <div id="winScreen" class="overlay hidden">
           <p class="eyebrow">COMPLETE</p>
           <h1>You made it.</h1>
@@ -54,8 +60,8 @@
             </button>
             <section class="about" aria-labelledby="aboutTitle">
               <h3 id="aboutTitle">ABOUT</h3>
-              <div class="about-meta"><strong>VERSION 1.5.0</strong><span>BY StoiberRules</span></div>
-              <p>NEU: Tortuga Trials, Pixel-Tutorial, ursachenabhängige Todesnachrichten, gröbere Türpixel und ein neues Finale.</p>
+              <div class="about-meta"><strong>VERSION 1.5.1</strong><span>by StoiberRules</span></div>
+              <p>NEU: Scharfes Tutorial, echte Level-Freischaltung, ursachenabhängige Todesnachrichten, gröbere Türpixel und ein neues Finale.</p>
             </section>
             <button id="closeSettingsBtn" class="secondary">BACK</button>
           </div>
@@ -78,8 +84,8 @@
         </nav>
       </section>
     </main>
-    <script src="levels.js?v=40"></script>
-    <script src="world.js?v=40"></script>
-    <script src="game.js?v=40"></script>
+    <script src="levels.js?v=41"></script>
+    <script src="world.js?v=41"></script>
+    <script src="game.js?v=41"></script>
   </body>
 </html>
