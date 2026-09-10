@@ -1,8 +1,10 @@
 # Verbindlicher Masterplan für 50 Level
 
-Status: **Portal- und Schwierigkeitsüberarbeitung nach Spielerfeedback am 9. September 2026 technisch, spielmechanisch und visuell abgenommen.** Die Zielzeit von ungefähr einer Minute einschließlich echter Fehlversuche bleibt bewusst ein Spieler-Testwert und wird nicht künstlich errechnet. Dieser Plan ersetzt frühere grobe Szenenlisten.
+Status: **Gesamtabgleich nach dem Spielerfeedback vom 10. September 2026 technisch, spielmechanisch und visuell abgenommen.** Die Schwierigkeit steigt über den linearen Levelwert und zunehmend kombinierte Mechaniken. Für Level 50 sind ungefähr sieben Minuten einschließlich echter Fehlversuche das Spieler-Testziel; automatische Bestzeiten werden nicht als menschliche Spielzeit ausgegeben. Dieser Plan ersetzt frühere grobe Szenenlisten.
 
-**Mobile-/Bahn-Nachtrag:** Bewegte Bauteile werden über ihre vollständige Zeitachse geprüft; ein Teil darf nicht durch statisches Terrain fahren und auf dessen Rückseite wieder erscheinen. Auf Displays bis 760 px folgt eine 1,55-fach vergrößerte Kamera der Schildkröte beziehungsweise der Portalspur. Level 37, 41, 43, 46, 47 und 49 kombinieren nun zusätzliche verpflichtende Timingmomente; Level 40 bleibt als ehrliche Knopfeinführung unangetastet. Versteckte Fallen beginnen nach ihrem späten Raumtrigger innerhalb von 25–80 ms zu kollidieren und fahren in 120–180 ms vollständig aus.
+**Mobile-/Bahn-Nachtrag:** Bewegte Bauteile werden über ihre vollständige Zeitachse geprüft; ein Teil darf nicht durch statisches Terrain fahren und auf dessen Rückseite wieder erscheinen. Auf unterstützten Mobilgeräten folgt die vergrößerte Kamera der Schildkröte beziehungsweise der Portalspur; auf Computern und Tablets im Querformat ist Tracking automatisch aus. Versteckte Fallen kollidieren abhängig vom Level nach ungefähr 16–24 ms und fahren in ungefähr 63–94 ms vollständig aus. Ihr Sensor reicht als vertikale Linie über die Bodenzone, damit auch ein gemerkter Sprung über die Position zuverlässig auslöst.
+
+**UI-/Finale-Nachtrag:** Die Levelauswahl besteht aus fünf gleich großen Akten mit je zehn Räumen. Jeder Akt zeigt genau zwei vollständige Reihen mit fünf Karten; dieselbe Anordnung passt ohne abgeschnittene oder einzelne Restkarte in die Mobilansicht. Levelnamen werden beim Raumstart nicht mehr eingeblendet. Die Sonar-/Fokusfunktion einschließlich Taste, HUD-Leiste und Tastenkürzel wurde entfernt. Level 1 zeigt stattdessen direkt im Raum ein Lauf- und Sprungtutorial. Level 50 wurde als asymmetrischer Aufstieg aus Lift, zwei Portalflanken, vier Pflichtschaltern, zwölf Fallen und fahrender Türplattform vollständig neu gebaut. Die Tür zieht beim Betreten die Spielerpixel ein; die Portalreise dauert lesbare 0,34 s. Zusammenhängende Steinflächen werden überlappend auf ganze Pixel gerendert, sodass keine weißen Haarrisse entstehen. Eine `nixpacks.toml` startet den Assetserver auf dem vom Host vorgegebenen Port.
 
 ## Auswertung des Chats
 
@@ -45,7 +47,7 @@ Die **Portalzeichnung** besteht nach dem jüngsten Spielerfeedback verbindlich a
 
 Vor der Umsetzung erhält jeder Raum vier Kennwerte: `Silhouette`, `Hauptrichtung`, `Haupttrigger`, `Türlage`. Keine Kombination darf zweimal vorkommen. Zusätzlich dürfen zwei Level nicht dieselbe Abfolge aus Startfläche, Hauptbewegung und Zielannäherung besitzen.
 
-Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterrasse; 03 tiefes Treppen-U; 04 niedriger Tunnel; 05 Drei-Insel-Sprung; 06 Mittelsockel mit Seitenarm; 07 Mittelturm mit Ober-/Unterroute; 08 isolierter Hochturm; 09 drei ungleiche Pfeiler; 10 großes C; 11 Doppelstock-Rückweg; 12 enger Vertikalschacht; 13 einzelner Schwebesteg; 14 absteigendes Zickzack; 15 Bodenklappe im Saal; 16 Liftgrube; 17 Zwei-Ufer-Fähre; 18 diagonaler Abstieg; 19 Dreifeld-Korridor; 20 Gegenstromsteg; 21 versetzte Doppeletage; 22 fliehende Türinsel; 23 Segmentbrücke; 24 L-Schacht mit Schubwand; 25 Drei-Haltestellen-Archipel; 26 Domino-Treppe; 27 Zangenhalle; 28 dreistufige Fluchtstrecke; 29 bewegter Innenkern im C-Rahmen; 30 zwei ungleiche Portalräume; 31 Turm mit unterer Nische; 32 Anlauftunnel in offene Kammer; 33 drei Räume in S-Anordnung; 34 Portal über Liftgrube; 35 asymmetrisches Portal-U; 36 gespiegelte Doppel-C-Kammer; 37 Turm mit Fallschlitz; 38 Ufer mit fahrendem Eintrittsportal; 39 hohe Direktabkürzung; 40 Knopfinsel und Brückenschacht; 41 sinkende Mittelhalle; 42 Kriechtunnel plus Schlucht; 43 Balkonzimmer mit fahrender Türinsel; 44 umlaufender Doppelgang; 45 Y-Kammer; 46 langer Größensteg; 47 Doppelturm mit Schalterfähre; 48 rückwärts steigendes Zickzack; 49 drei getrennte Akträume; 50 Turm-U-Nischen-Raum.
+Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterrasse; 03 tiefes Treppen-U; 04 niedriger Tunnel; 05 Drei-Insel-Sprung; 06 Mittelsockel mit Seitenarm; 07 Mittelturm mit Ober-/Unterroute; 08 isolierter Hochturm; 09 drei ungleiche Pfeiler; 10 großes C; 11 Doppelstock-Rückweg; 12 enger Vertikalschacht; 13 einzelner Schwebesteg; 14 absteigendes Zickzack; 15 Bodenklappe im Saal; 16 Liftgrube; 17 Zwei-Ufer-Fähre; 18 diagonaler Abstieg; 19 Dreifeld-Korridor; 20 Gegenstromsteg; 21 versetzte Doppeletage; 22 fliehende Türinsel; 23 Segmentbrücke; 24 L-Schacht mit Schubwand; 25 Drei-Haltestellen-Archipel; 26 Domino-Treppe; 27 Zangenhalle; 28 dreistufige Fluchtstrecke; 29 bewegter Innenkern im C-Rahmen; 30 zwei ungleiche Portalräume; 31 Turm mit unterer Nische; 32 Anlauftunnel in offene Kammer; 33 drei Räume in S-Anordnung; 34 Portal über Liftgrube; 35 asymmetrisches Portal-U; 36 gespiegelte Doppel-C-Kammer; 37 Turm mit Fallschlitz; 38 Ufer mit fahrendem Eintrittsportal; 39 hohe Direktabkürzung; 40 Knopfinsel und Brückenschacht; 41 sinkende Mittelhalle; 42 Kriechtunnel plus Schlucht; 43 Balkonzimmer mit fahrender Türinsel; 44 umlaufender Doppelgang; 45 Y-Kammer; 46 langer Größensteg; 47 Doppelturm mit Schalterfähre; 48 rückwärts steigendes Zickzack; 49 drei getrennte Akträume; 50 asymmetrischer Portalaufstieg.
 
 **Verbindlicher Portalwelt-Override vom 9. September 2026:** 30 einsamer Mittelturm; 31 senkrechter Schlitz; 32 Impulsinsel im Leerraum; 33 gestapelter Doppelstock; 34 tiefes Portal-U; 35 dreibändige Hinweg–Gegenlauf–Flucht-Folge; 36 gegeneinander gedrehte C-Arme; 37 Fall-Zickzack; 38 diagonale Portal-Fähre; 39 hohe Direktabkürzung. Diese jüngere Liste ersetzt für Level 30–39 die ältere Silhouettenzeile oben.
 
@@ -56,7 +58,7 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 - Normale sichere Landefläche mindestens 70 px. Präzisionsflächen 42–60 px, höchstens einmal pro Raum.
 - Zwischen Portal und Knopf mindestens 140 px; zwischen unsichtbarem Portal-Zielpunkt und unmittelbarer Gefahr mindestens 90 px Reaktionsraum.
 - Portal-Daten bestehen aus `x`, `y`, `targetX`, `targetY`, optional `targetVx` und `targetVy`. Es gibt keine Portalpaare und keine Zielportal-ID.
-- Versteckte Stacheln fahren in 120–180 ms aus einer bündigen Nut. Bewegte Wände kündigen Bewegung 100–180 ms durch eine Fuge oder ein kurzes Anfahren an.
+- Versteckte Stacheln fahren je nach Schwierigkeitswert in ungefähr 63–94 ms aus einer bündigen Nut. Ortsauslöser erfassen auch die Flugbahn oberhalb der ursprünglichen Bodenzone. Bewegte Wände kündigen Bewegung 100–180 ms durch eine Fuge oder ein kurzes Anfahren an.
 - Plattformen beschleunigen und bremsen mit Ease-in/out. Richtungswechsel enthalten 250–500 ms Haltezeit, außer der Richtungswechsel selbst ist die klar angekündigte Hauptfalle.
 - Offene Unterkante: Tod, sobald die Figur vollständig unter y=585 liegt. Es gibt keine unsichtbaren Rettungsböden.
 
@@ -64,9 +66,9 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 
 ### 01 · DER EHRLICHE ZAHN
 
-- **Bild:** Eine einzige flache Bodenlinie bei y≈440; Start links, Tür rechts, ein sichtbarer Stachel mittig.
-- **Ablauf:** Keine Trigger, keine versteckten Elemente. Ein normaler Sprung reicht.
-- **Psychologie/Lösung:** Das Spiel verdient zuerst Vertrauen und kalibriert Lauf und Sprung.
+- **Bild:** Eine einzige flache Bodenlinie bei y≈440; Start links, Tür rechts, drei sichtbare Stacheln mit großzügigem Abstand.
+- **Ablauf:** Keine Trigger, keine versteckten Elemente. Direkt im Raum erklären zwei Pixeltafeln Laufen und Springen; sie verschwinden nach 18 Sekunden.
+- **Psychologie/Lösung:** Das Spiel verdient zuerst Vertrauen und kalibriert Lauf sowie mehrere sichere Sprünge.
 - **Abgrenzung:** Einziger vollständig gerader und vollständig ehrlicher Raum der Welt.
 
 ### 02 · NICHT VOR DER TÜR
@@ -127,10 +129,10 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 
 ### 10 · DAS GROSSE C
 
-- **Bild:** Eine einzige große C-förmige Masse, Start innen unten, Tür außen oben am kurzen Schenkel.
-- **Trigger:** Ein Sprung entlang der direkten Innenkante löst einen Deckenstachel aus.
-- **Lösung:** Erst aus dem C herauslaufen, außen über seinen Rücken zur Tür.
-- **Psychologie:** Die Tür ist nah sichtbar, der sichere Weg räumlich lang.
+- **Bild:** Eine große C-förmige Masse füllt die Mitte; der Start liegt außen links, die Tür oben am rechten Schenkel.
+- **Trigger:** Zwei Bodenzähne sichern den langen unteren Lauf, ein Deckenstachel kontrolliert die obere Rückroute.
+- **Lösung:** Die linke Leerfläche vollständig nutzen, unten durch das C laufen, rechts über vier Stufen aufsteigen und über das Dach zurück zur Tür.
+- **Psychologie:** Der zunächst leere linke Bereich wird zum notwendigen Anlauf; die gesamte Silhouette gehört zur Route.
 
 ### 11 · ZURÜCK ZUM ANFANG
 
@@ -213,15 +215,15 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 
 ### 22 · DIE TÜR FLIEHT
 
-- **Bild:** Großes linkes Festland, kleine Mittelplatte, Tür auf isolierter rechter Insel.
-- **Trigger:** Beim Anlauf fährt die Türinsel 110 px weiter weg und stoppt weich.
-- **Lösung:** Nicht blind abspringen; nach Bewegung die nun notwendige Mittelplatte verwenden.
-- **Psychologie:** Das Ziel selbst ändert die vermeintliche Sprungweite.
+- **Bild:** Linkes Startufer, ein eingelassener Fahrträger, breite Mittelinsel, schmaler Hubtritt und Türinsel in einer oberen rechten Nische.
+- **Trigger:** Der Träger dockt zuerst an der Mittelinsel. Danach steigen Tritt und Türinsel zeitlich versetzt.
+- **Lösung:** Den ersten Träger mitfahren, auf der Mitte neu orientieren und die beiden angehobenen Endstufen benutzen.
+- **Psychologie:** Nicht nur das Ziel flieht; die zuvor leere Strecke baut sich als dreistufige Route um.
 
 ### 23 · BRÜCKE AUF ZEIT
 
 - **Bild:** Zwei massive Ufer und vier unsichtbar tief versenkte Brückensegmente.
-- **Bewegung:** Segmente steigen als Welle bündig hoch; 500 ms später sinken sie von hinten nach vorn.
+- **Bewegung:** Segmente steigen mit 140-ms-Versatz als Welle bündig hoch, bleiben 850 ms offen und sinken kontrolliert. Das Fenster verlangt Rhythmus, aber keine Pixelperfektion.
 - **Lösung:** Mit der Welle laufen, ohne auf einem Segment zu warten.
 - **Abgrenzung:** Mehrteilige Bewegung mit einem einzigen klaren Rhythmus.
 
@@ -315,7 +317,7 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 ### 37 · FALL-ZICKZACK
 
 - **Bild:** Zwei riesige Deckenmassen bilden einen horizontal-vertikalen Zickzack mit drei stark versetzten Höhen.
-- **Portal:** Zwei Eingänge schneiden die unüberspringbaren Höhenwechsel ab; beide Absätze brechen weg, jede Ankunft ändert die Laufrichtung und unten jagt eine einseitige Wand nach.
+- **Portal:** Zwei Eingänge schneiden die unüberspringbaren Höhenwechsel ab und setzen jeweils am entfernten Rand auf. Dadurch muss die volle Breite des nächsten Absatzes gelaufen werden; beide Absätze brechen weg und unten jagt eine einseitige Wand nach.
 - **Psychologie:** Späte Stacheln bestrafen den gewohnten Geradeauslauf nach jeder Ankunft.
 
 ### 38 · BEWEGTE ADRESSE
@@ -343,10 +345,10 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 
 ### 41 · BRÜCKE GEGEN BODEN
 
-- **Bild:** Flache Halle, Knopf links, Tür rechts hinter einer Lücke.
-- **Wirkung:** Zuerst steigt die Brücke samt spätem Mittelzahn; 300 ms später sinkt das bisher sichere Mittelfeld.
-- **Lösung:** Direkt von altem Boden auf neue Brücke wechseln.
-- **Abgrenzung:** Knopf hilft und nimmt zugleich eine frühere Option.
+- **Bild:** Startboden links, tiefe Brückentasche, Mittelinsel, Hubtritt und hohe Türnische rechts.
+- **Wirkung:** Der Anlauf ruft die Brücke. Ihr mitfahrender Schalter versenkt den Startboden und hebt zeitversetzt den letzten Tritt; drei Zähne teilen die Route.
+- **Lösung:** Auf die steigende Brücke wechseln, den Schalter während der Fahrt drücken und ohne Rückzug über Mittelinsel und Hubtritt zur Tür.
+- **Abgrenzung:** Der Knopf hilft in zwei Stufen und nimmt zugleich die frühere Startfläche.
 
 ### 42 · KLEINER WEG, GROSSER SPRUNG
 
@@ -404,17 +406,18 @@ Die 50 Silhouetten sind verbindlich verschieden: 01 flache Linie; 02 Doppelterra
 - **Lösung:** Drücken, den Liftzahn überspringen, Portal betreten und den Ankunftszahn sofort lesen.
 - **Abgrenzung:** Drei Mechaniken, aber zeitlich vollständig getrennt und nie gleichzeitig animiert.
 
-### 50 · DIE LETZTE GESCHICHTE
+### 50 · DER LETZTE AUFSTIEG
 
-- **Bild:** Monumentaler Raum aus hohem Startturm rechts, tiefem U im Zentrum und schmaler Türgalerie links oben; der Lift dockt nur an ihrer Außenkante.
-- **Akt 1:** Kontrollierter Fall ins U. Der erwartete Stachel vor dem Knopf bleibt aus; Knopf öffnet ehrlich die Tür und startet den Lift links.
-- **Akt 2:** Lift fährt zum hoch liegenden einzelnen Portal, bremst davor und kehrt um. Gegenlaufen und im Zeitfenster eintreten.
-- **Akt 3:** Das Portal setzt die Figur frei auf der mittleren Türgalerie ab; dort steht kein zweites Portal. Die Tür liegt links, während der sichtbare Liftzahn zurückbleibt.
-- **Finale:** Alle gelernten Fähigkeiten werden abgefragt. Nach dem letzten sichtbaren Hindernis gibt es keine nachträgliche Todesfalle.
+- **Bild:** Asymmetrische, über die gesamte Fläche verteilte Route mit linkem Startufer, fahrendem Lift, hoher Portalgalerie, zwei rechten Laufbändern und einer freistehenden Türplattform.
+- **Akt 1:** Den ersten Pflichtschalter holen, zwei Startzähne lesen und auf den Lift wechseln. Der Lift startet erst mit sicherem Stand und trägt einen eigenen Zahn.
+- **Akt 2:** Auf der linken Galerie den zweiten Schalter zwischen zwei Fallen erreichen und das erste Portal zur unteren rechten Flanke nehmen.
+- **Akt 3:** Drei weitere Zähne, den dritten Schalter und das zweite Portal zur oberen Gegenlaufrichtung bewältigen.
+- **Finale:** Gegen die Laufrichtung über drei Fallen zur Türplattform, vierten Schalter drücken und die erst vertikal, dann diagonal steigende Plattform mitfahren. Die Tür bleibt bis zu allen vier Signalen verriegelt und fährt mit.
+- **Abgrenzung:** Keine kopierten Parallelkorridore; Lift, Richtungswechsel, Portale, Schalter und zwölf Fallen werden in vier räumlich getrennten Akten kombiniert.
 
 ## Levelübersicht
 
-Die Auswahl erhält vier gleich breite Tabs und in jeder Kategorie dasselbe kompakte Fünf-Spalten-Raster. Karten zeigen nur zweistellige Nummer und Zustand; lange Namen oder Miniaturbilder kommen in einen separaten Detailbereich, damit nichts übersteht. Der aktuelle Level trägt einen doppelten Rahmen und den Text `AKTUELL`. Weitere Zustände sind `FERTIG`, `SPIELEN` und `GESPERRT`. Beim Öffnen wird automatisch die aktuelle Kategorie gewählt. Auf Mobilgeräten wird das gesamte Menü innerhalb der Bildschirmhöhe gescrollt; kein Inhalt darf den Panelrand überdecken.
+Die Auswahl erhält fünf gleich breite Tabs: `AKT I`, `AKT II`, `AKT III`, `AKT IV` und `FINALE`. Jeder Tab enthält exakt zehn Räume in einem vollständigen Raster aus fünf Spalten und zwei Zeilen. Karten zeigen zweistellige Nummer und Zustand; der aktuelle Level trägt einen doppelten Rahmen und den Text `AKTUELL`. Weitere Zustände sind `FERTIG`, `SPIELEN` und `GESPERRT`. Beim Öffnen wird automatisch der aktuelle Akt gewählt. Auf Mobilgeräten bleiben alle fünf Spalten erhalten, das Panel passt sich der Bildschirmbreite an und kann innerhalb der Bildschirmhöhe scrollen; kein Inhalt darf den Panelrand überdecken.
 
 ## Abnahme je Level
 

@@ -16,7 +16,7 @@ Eigene Raumgeometrie und eigene Abläufe; keine übernommenen Assets.
 - Jede Fläche hat eine Aufgabe: Start, Ziel, Landung, Passage, Fahrbahn oder Gefahrenbett.
 - Bewegungen aus verdeckten Taschen, glatte Beschleunigung, exakte Endpositionen.
 - Spielerbewegung relativ zum Träger plus Trägerbewegung; Abspringen und Gegenlaufen bleiben möglich.
-- Keine Steinschäden. Keine zufälligen Fallen. Kategorien 1/15/30/40 beibehalten.
+- Keine Steinschäden. Keine zufälligen Fallen. Mechanikeinführungen 1/15/30/40 beibehalten; die sichtbare Auswahl nutzt fünf gleich große Akte zu je zehn Räumen.
 - Vollständige Raumabläufe und räumliche Abstände prüfen; Gewinnwege allein reichen nicht.
 
 ## Arbeitsstand

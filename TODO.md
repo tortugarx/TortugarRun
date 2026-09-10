@@ -73,6 +73,6 @@
 
 ## Verbindliche Regeln
 
-Feste Auslöser und Portalziele, kein Zufall zwischen Versuchen. Stein tötet nie durch bloßen Kontakt. Bewegte Wände stoppen nicht am Spieler, sondern schieben ihn entlang ihrer festen Bahn in Stacheln, Schluchten oder andere echte Gefahren. Mechaniken ab Raum 1/15/30/40: Stacheln, bewegte Mapteile, Portale, Knöpfe. Keine verräterischen Portalfarben. Bestehender Pixelstil.
+Feste Auslöser und Portalziele, kein Zufall zwischen Versuchen. Stein tötet nie durch bloßen Kontakt. Bewegte Wände stoppen nicht am Spieler, sondern schieben ihn entlang ihrer festen Bahn in Stacheln, Schluchten oder andere echte Gefahren. Mechanikeinführungen ab Raum 1/15/30/40: Stacheln, bewegte Mapteile, Portale, Knöpfe. Die Auswahl gruppiert die 50 Räume unabhängig davon in fünf gleich große Akte. Keine verräterischen Portalfarben. Bestehender Pixelstil.
 
 Automatische Lösbarkeit ersetzt keine persönliche Bewertung des Schwierigkeitsgrads. Weiteres Spielerfeedback bleibt maßgeblich.

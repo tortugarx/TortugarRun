@@ -1,6 +1,6 @@
-# Neue 50 Räume
+# Neue 50 Räume – archivierte Ideensammlung
 
-Vollständiger Neuaufbau vom 8. September 2026. Verbindliche Geometrie und Auslöser stehen in `levels.js`. Referenzanalyse: [REBUILD.md](REBUILD.md).
+Ursprüngliche Ideensammlung vom 8. September 2026. Sie ist nicht mehr verbindlich; aktueller Plan und spätere Spielerfeedback-Änderungen stehen in [LEVEL_MASTERPLAN.md](LEVEL_MASTERPLAN.md), die ausgeführte Geometrie in `levels.js`.
 
 1. **VERTRAUEN AUF PROBE** — Erster Zahn ehrlich, Landung dahinter falsch.
 2. **ZU FRÜH GEFEIERT** — Oben starten: Die erste Landung, nicht die Tür, ist gefährlich.
@@ -51,4 +51,4 @@ Vollständiger Neuaufbau vom 8. September 2026. Verbindliche Geometrie und Ausl�
 47. **FALSCHE SICHERHEIT** — Klein durch den Tunnel; der Zahn dahinter zieht sich verspätet zurück.
 48. **MITTELSTATION** — Mittig starten, links den Knopf holen, rechts den hohen Ausgang erreichen.
 49. **ERST ANKOMMEN** — Portal und Schalter haben getrennten Freiraum; der Schalter hebt den Zielweg.
-50. **DIE LETZTE GESCHICHTE** — Vom hohen Start hinab, Schalter holen, Portal zurück nach oben: letzter ehrlicher Sprung.
+50. **DER LETZTE AUFSTIEG** — Vier Pflichtschalter über Lift und zwei Portalflanken; die Türplattform steigt erst senkrecht, dann diagonal zum Finale.

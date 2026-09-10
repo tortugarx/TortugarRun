@@ -10,15 +10,19 @@ node tools/serve.cjs
 
 Port 4173. Der Server liefert ausschließlich Spielassets aus und deaktiviert Browsercaching. Keine externen Laufzeitbibliotheken.
 
-A/D oder Pfeile: laufen. W/↑/Leertaste: springen. R: Neustart. F: Fokus. M: Ton. Alle Räume sind freigeschaltet. Touch-Tasten stehen unter der Spielfläche.
+A/D oder Pfeile: laufen. W/↑/Leertaste: springen. R: Neustart. M: Ton. Alle Räume sind freigeschaltet. Touch-Tasten stehen unter der Spielfläche. Der frühere Fokus-/Sonarbutton wurde entfernt.
 
 Auf Handys nutzt das Spielfeld im Hochformat die gesamte Bildschirmhöhe oberhalb der Touch-Tasten. Die unverzerrte Folge-Kamera zeigt einen schmaleren Raumausschnitt und folgt der Schildkröte sowie während eines Portalflugs dessen Pixelspur. Im Querformat arbeitet weiterhin die 1,55-fache Folge-Kamera.
 
 ## Regeln
 
-Räume 1–14: Stacheln; ab 15: bewegliche Mapteile; ab 30: Portale; ab 40: Knöpfe. Pro Raum maximal drei Stachelfelder und zwei bewegliche Bauteile. Portalziele sind fest und farblich nicht verraten. Steine schieben und tragen, verursachen aber keinen Kontaktschaden.
+Die Mechaniken werden weiterhin in der Reihenfolge Stacheln, bewegliche Mapteile, Portale und Knöpfe eingeführt. Die Auswahl gruppiert unabhängig davon in fünf gleich große Akte mit je zehn Räumen und zeigt pro Akt ein vollständiges 5×2-Raster. Normale Räume besitzen höchstens drei Stachelfelder; das neue Finale kombiniert bewusst zwölf. Portalziele sind fest und farblich nicht verraten. Steine schieben und tragen, verursachen aber keinen Kontaktschaden.
 
-Versteckte ortsabhängige Stacheln reagieren in jeder Richtung an einer festen Linie 34 Pixel vor ihrer Spitze und fahren in rund 83 ms vollständig aus. Damit sind sie bei voller Laufgeschwindigkeit knapp, aber nicht überspringbar, nur weil ihre Animation noch nicht fertig ist. Nach einem Treffer laufen Spike-, Mechanik- und Todesanimationen 900 ms sichtbar weiter, bevor der Dialog erscheint.
+Versteckte ortsabhängige Stacheln reagieren an einer festen Linie vor ihrer Spitze. Der Sensor reicht vertikal über die Bodenzone, sodass ein gemerkter hoher Sprung die Auslösung nicht umgeht. Je nach Level fahren sie in ungefähr 63–94 ms vollständig aus. Nach einem Treffer laufen Spike-, Mechanik- und Todesanimationen 900 ms sichtbar weiter, bevor der Dialog erscheint.
+
+Level 1 blendet direkt im Raum ein kurzes Lauf- und Sprungtutorial ein. Levelnamen erscheinen beim Start eines Raums nicht mehr als Popup. Auf Computern und Tablets im Querformat ist der Trackingmodus automatisch deaktiviert; auf unterstützten Mobilgeräten lässt er sich in den Einstellungen umschalten.
+
+Für Nixpacks liegt eine `nixpacks.toml` bei. Der Startbefehl ist `node tools/serve.cjs`; der Server bindet sich an `0.0.0.0` und übernimmt die vom Host gesetzte Variable `PORT`.
 
 Auf einer Plattform addieren sich ihre Verschiebung und die eigene Laufbewegung. Gegenlaufen reduziert den Weg in Fahrtrichtung, Mitlaufen vergrößert ihn. Auch sinkende Plattformen tragen. Bewegte Wände stoppen nicht am Spieler und schieben ihn weiter; tödlich wird erst die echte Gefahr dahinter. Kurze Portalreisen unterbrechen die übrigen Mechaniken nicht.
 
@@ -30,6 +34,7 @@ node tools/check-sequences.cjs
 node tools/check-mechanics.cjs
 node tools/check-challenge.cjs
 node tools/check-game.cjs
+node tools/check-chat-requirements.cjs
 ```
 
 50 gespeicherte Gewinnwege, 50 tatsächlich verschiedene Terrain-Silhouetten, späte Fallenfenster, kontinuierliche Wandbewegungen, Start- und Laufzeitkollisionen, Neustart-Determinismus, Trägerphysik, Portaltransport, Körpergröße und alle Wege durch die tatsächliche Spielanbindung werden geprüft. Die Herausforderungsauswertung verwendet ausschließlich gemessene Eigenschaften der echten Gewinnwege; sie erfindet weder Fehlversuche noch Spielzeit. Die Ablaufprüfung löst Mechaniken gleichzeitig und versetzt aus und prüft bei 120 Hz die kompletten 15-Sekunden-Abläufe einschließlich Befestigungen, Objektabständen und Endpunkten.

@@ -1,6 +1,6 @@
 # Szenenplan: kompletter Level-Neuaufbau
 
-Status: **Freigegeben; Umsetzung begonnen, aber noch nicht vollständig abgenommen.**
+Status: **Archivierter Szenenentwurf. Für den abgenommenen Ist-Stand und spätere Spielerfeedback-Änderungen gilt ausschließlich `LEVEL_MASTERPLAN.md`.**
 
 ## Referenzanalyse und Leitplanken
 
@@ -172,20 +172,20 @@ Absteigender Zickzackweg, Knopf unten rechts, Tür hoch beim Start. Danach steig
 ### 49 – DREI GETRENNTE AKTE
 Startkammer, hohe Portalhalle, Türinsel – räumlich klar getrennt. Knopf bewegt in der Portalhalle eine Plattform auf Portalhöhe; das Portal führt zur Insel, dort folgt nur ein ehrlicher Sprung. Bewegung arbeitet leicht gegen den Spieler.
 
-### 50 – DIE LETZTE GESCHICHTE
-Monumentaler Raum aus hohem Startturm rechts, tiefem U und linker Türnische; nur vier große Flächen. Kontrollierter Fall zum ehrlichen Knopf. Der aktivierte Lift trägt zum Portal, kehrt kurz davor um: gegenlaufen und eintreten. Ausgang auf linkem Dach mit sicherem Abstand; ein sichtbarer Stachel schützt den letzten Sprung, die Tür bleibt fair.
+### 50 – DER LETZTE AUFSTIEG
+Asymmetrischer Vier-Akt-Parcours über die ganze Raumfläche: Startufer mit Pflichtschalter, fahrender Zahnlift, linke Portalgalerie, zwei rechte Gegenlaufbänder und eine fliegende Türplattform. Vier Schalter, zwei Portale und zwölf sichtbare beziehungsweise versteckte Fallen verlangen die zuvor gelernten Mechaniken in einer neuen Reihenfolge.
 
 ## Levelübersicht – neues einheitliches System
 
-- Vier gleich breite Tabs: **STACHELN 01–14**, **BEWEGUNG 15–29**, **PORTALE 30–39**, **KNÖPFE 40–50**.
-- In jeder Kategorie dasselbe Fünf-Spalten-Raster, dieselben Kartenmaße und dieselbe Typografie; Weltfarben nur als Akzent, nicht als anderes Layout.
-- Karten zeigen zweistellige Nummer, kurzen Namen und eine kleine Pixel-Silhouette der Raumform. So unterscheiden sich die Levels schon in der Auswahl.
-- Beim Öffnen wird automatisch die aktuelle Kategorie gewählt. Der aktuelle Level erhält Doppelrahmen, Spielerpunkt und den Text **AKTUELL** – nicht nur eine andere Farbe.
+- Fünf gleich breite Tabs: **AKT I**, **AKT II**, **AKT III**, **AKT IV**, **FINALE**, jeweils exakt zehn Räume.
+- In jeder Kategorie dasselbe 5×2-Raster, dieselben Kartenmaße und dieselbe Typografie; keine unvollständige Restzeile.
+- Karten zeigen zweistellige Nummer und Zustand; Namen bleiben als zugänglicher Titel verfügbar, ohne die Karte zu überladen.
+- Beim Öffnen wird automatisch die aktuelle Kategorie gewählt. Der aktuelle Level erhält Doppelrahmen und den Text **AKTUELL** – nicht nur eine andere Farbe.
 - Abgeschlossen: dezentes Häkchen. Offen: **SPIELEN**. Gesperrt: Schloss plus Voraussetzung.
-- Über dem Raster bleibt `WELT II · BEWEGUNG` sowie `LEVEL 18 / 50` sichtbar, auch wenn ein anderer Tab angesehen wird.
-- Hover, Tastaturfokus und aktueller Level sind klar verschiedene Zustände. Mobil bricht das Raster auf zwei oder drei Spalten um.
+- Über dem Raster stehen der gewählte Akt und sein fester Nummernbereich.
+- Hover, Tastaturfokus und aktueller Level sind klar verschiedene Zustände. Mobil bleibt das vollständige 5×2-Raster erhalten und passt sich in Breite und Höhe an.
 
-Der momentane Stand zeigt nur Nummer und `OPEN/LOCKED`; eine Markierung des laufenden Levels, Namen, Mini-Silhouetten und Abschlussstatus fehlen.
+Der aktuelle Stand zeigt Nummer, Abschlussstatus und die eindeutige Markierung des laufenden Levels.
 
 ## Abnahme nach dem Go
 
