@@ -8,17 +8,17 @@
     />
     <meta name="theme-color" content="#071b22" />
     <title>Tortuga Trials</title>
-    <link rel="stylesheet" href="style.css?v=41" />
+    <link rel="stylesheet" href="style.css?v=42" />
   </head>
   <body>
     <main class="shell">
       <section class="game-wrap" aria-label="Tortuga Trials game">
         <canvas id="game" width="960" height="540"></canvas>
         <aside id="tutorialCard" class="tutorial-card hidden" aria-label="Tutorial">
-          <strong>SO GEHT'S</strong>
-          <div><i>1</i><b>← →</b><span>LAUFEN</span></div>
-          <div><i>2</i><b>↑</b><span>SPRINGEN</span></div>
-          <div class="tutorial-goal"><i>3</i><b>→</b><span>ERREICHE DIE TÜR</span></div>
+          <strong>HOW TO PLAY</strong>
+          <div><i>1</i><b>← →</b><span>MOVE</span></div>
+          <div><i>2</i><b>↑</b><span>JUMP</span></div>
+          <div class="tutorial-goal"><i>3</i><b>→</b><span>REACH THE DOOR</span></div>
         </aside>
         <div id="winScreen" class="overlay hidden">
           <p class="eyebrow">COMPLETE</p>
@@ -29,7 +29,7 @@
         <div id="levelScreen" class="overlay hidden">
           <div class="panel">
             <p class="eyebrow">LEVELS</p>
-            <h2>Raum wählen</h2>
+            <h2>Choose a room</h2>
             <div id="levelGrid" class="level-grid"></div>
             <button id="closeLevelsBtn" class="secondary">BACK</button>
           </div>
@@ -60,8 +60,8 @@
             </button>
             <section class="about" aria-labelledby="aboutTitle">
               <h3 id="aboutTitle">ABOUT</h3>
-              <div class="about-meta"><strong>VERSION 1.5.1</strong><span>by StoiberRules</span></div>
-              <p>NEU: Scharfes Tutorial, echte Level-Freischaltung, ursachenabhängige Todesnachrichten, gröbere Türpixel und ein neues Finale.</p>
+              <div class="about-meta"><strong>VERSION 1.6.0</strong><span>by StoiberRules</span></div>
+              <p>NEW: Fully English interface, smoother buttons, crisp tutorial, real level progression, cause-specific death jokes and a rebuilt finale.</p>
             </section>
             <button id="closeSettingsBtn" class="secondary">BACK</button>
           </div>
@@ -73,9 +73,9 @@
           </div>
         </div>
         <div class="game-actions">
-          <button id="mapBtn" aria-label="Level select" title="Level auswählen"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h6v6H1zM9 1h6v6H9zM1 9h6v6H1zM9 9h6v6H9z"/></svg></button>
-          <button id="restartBtn" aria-label="Restart room" title="Neustart (R)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h7v2h3v3h2v6h-2v3H5v-3h7V6h-2V4H5v3H0V1h2v3h2z"/></svg></button>
-          <button id="settingsBtn" aria-label="Settings" title="Einstellungen"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M6 0h4v3h3V1h2v4h-2v1h3v4h-3v1h2v4h-2v-2h-3v3H6v-3H3v2H1v-4h2v-1H0V6h3V5H1V1h2v2h3zM6 6v4h4V6z"/></svg></button>
+          <button id="mapBtn" aria-label="Level select" title="Choose a level"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h6v6H1zM9 1h6v6H9zM1 9h6v6H1zM9 9h6v6H9z"/></svg></button>
+          <button id="restartBtn" aria-label="Restart room" title="Restart (R)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h7v2h3v3h2v6h-2v3H5v-3h7V6h-2V4H5v3H0V1h2v3h2z"/></svg></button>
+          <button id="settingsBtn" aria-label="Settings" title="Settings"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M6 0h4v3h3V1h2v4h-2v1h3v4h-3v1h2v4h-2v-2h-3v3H6v-3H3v2H1v-4h2v-1H0V6h3V5H1V1h2v2h3zM6 6v4h4V6z"/></svg></button>
         </div>
         <nav class="touch-controls" aria-label="Touch controls">
           <button data-key="left" aria-label="Move left"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 1h3v3H6v3h9v3H6v3h3v3H6v-3H3v-3H0V7h3V4h3z"/></svg></button>
@@ -84,8 +84,8 @@
         </nav>
       </section>
     </main>
-    <script src="levels.js?v=41"></script>
-    <script src="world.js?v=41"></script>
-    <script src="game.js?v=41"></script>
+    <script src="levels.js?v=42"></script>
+    <script src="world.js?v=42"></script>
+    <script src="game.js?v=42"></script>
   </body>
 </html>

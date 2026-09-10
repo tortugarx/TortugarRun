@@ -41,7 +41,7 @@ for(const id of [1,6,15,24,30,38,40,43,50]) {
   assert.equal(app.$('#levelLabel').textContent,String(id).padStart(2,'0')+' / 50');
   app.$('#mapBtn').onclick();
   const current=app.$('#levelGrid').children.find(n=>n.className==='current');
-  assert(current?.innerHTML.includes('AKTUELL'),`current room marker ${id}`);
+  assert(current?.innerHTML.includes('CURRENT'),`current room marker ${id}`);
   app.$('#closeLevelsBtn').onclick();
 }
 // Every recorded route also passes through the production update/draw adapter.

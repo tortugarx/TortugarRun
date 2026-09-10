@@ -99,7 +99,7 @@
       if (level.group !== selectedGroup) return;
       const b = document.createElement("button");
       b.disabled = i + 1 > unlocked;
-      const status = i === li ? "AKTUELL" : b.disabled ? "GESPERRT" : i + 1 < unlocked ? "FERTIG" : "SPIELEN";
+      const status = i === li ? "CURRENT" : b.disabled ? "LOCKED" : i + 1 < unlocked ? "CLEARED" : "PLAY";
       b.className = i === li ? "current" : i + 1 < unlocked ? "complete" : "";
       b.setAttribute?.("aria-current", i === li ? "level" : "false");
       b.title = `${String(level.number).padStart(2,"0")} · ${level.name}`;

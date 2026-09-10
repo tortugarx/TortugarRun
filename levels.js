@@ -66,6 +66,60 @@ r('DIE TÜR WAR HINTER DIR','Der Knopf unten setzt drei schmale, bündige Tritts
 r('DREI GETRENNTE AKTE','Tiefe Knopfkammer, enger Vertikalschacht und hohe Türinsel sind drei getrennte Akte; Lift und Zielinsel tragen getrennte Zähne.',[70,480],[850,235],[f(32,480,230),c(262,430,52),[340,480,190,24,'lift'],c(530,430,52),f(700,235,228)],[h(470,480,36,s('button:lift'),{delay:1.1,attach:'lift'}),h(780,235,36,s('arrival:act-three'))],[m('lift',s('button:lift'),[[0,-185,1.05],[0,-185,.62]],1.2)],[p('act-three',455,480,790,235,{attach:'lift'})],[k('lift',135,480)]);
 r('DER LETZTE AUFSTIEG','Vier Pflichtschalter führen über einen fahrenden Lift, zwei Portalflanken und eine fliegende Türplattform.',[70,480],[650,340],[f(32,480,238),[270,480,160,24,'lift'],[430,350,150,24],[430,374,4,166],[600,400,60,140],[700,460,228,24],[700,340,228,24],[580,340,120,24,'goal'],c(300,210,80)],[h(180,480,27,z(140,390,55,90)),h(220,480),h(380,480,27,null,{attach:'lift'}),h(445,350,27,z(405,260,55,90)),h(305,210,27,null,{dir:'down'}),h(750,460,27,z(710,370,55,90)),h(825,460),h(855,460,27,z(815,370,55,90)),h(840,340),h(780,340,27,z(805,250,55,90)),h(720,340),h(350,210,27,null,{dir:'down'})],[m('lift',{stand:'lift'},[[0,-130,1.45]],.08),m('goal',s('button:ride'),[[0,-30,.35],[120,-120,1.9]],.12)],[p('lower',545,350,730,460),p('upper',900,460,880,340)],[k('launch',110,480),k('left',480,350),k('lower',790,460),k('ride',590,340,{attach:'goal'})],{locked:true,requiredButtons:['launch','left','lower','ride'],exitOn:'goal',targetMinutes:7});
 
+const englishCopy=[
+['HONEST TEETH','Three visible spikes demand a clean jumping rhythm.'],
+['NOT BY THE DOOR','The first spike rises at takeoff; another guards the long path to the door.'],
+['THE DEEP U','Two hidden traps and a visible spike wait along the climb out of the deep U.'],
+['HEADROOM','An early jump is the trap inside the low tunnel; another test waits outside.'],
+['THE ISLAND','Land precisely on the island before the long curve toward the goal punishes haste.'],
+['WRONG WAY','The obvious stairs are bait; the real route back carries two more spikes.'],
+['AROUND THE TOWER','The tunnel warns early while visible spikes guard both sides of the return.'],
+['DROP LINE','A narrow drop from the high tower threads between three offset spikes.'],
+['THREE PILLARS','Three pillars and three differently placed spikes demand one continuous run.'],
+['THE BIG C','Start outside, cross the bottom, climb the right side and return across the roof.'],
+['BACK TO START','Run away from the goal above, descend right and return below through two spike lines.'],
+['THE SHAFT','Three side spikes force left-right-left corrections during the fall.'],
+['NOTHING HAPPENS','The long floating bridge holds, but three visible spikes prevent an easy sprint.'],
+['LESSON LEARNED','Three spikes mix visibility, safe height and a treacherous takeoff edge.'],
+['THE FLOOR LEAVES','The moment you enter, the center floor sinks out of the framed hall.'],
+['THE POLITE LIFT','The lift pauses at door height before continuing into the ceiling slot.'],
+['THE FERRY TURNS BACK','A thin ferry crosses the void, slows near the goal and then heads back.'],
+['GOING DOWN','An honest elevator carries you diagonally into the lower corridor.'],
+['RETURN BLOCKED','A floor panel shoots up behind you and seals the narrow upper corridor.'],
+['AGAINST THE CURRENT','The high bridge reverses first, then dives diagonally into the goal corridor.'],
+['TWO FLOORS','Two lift platforms exchange heights on staggered timings.'],
+['THE DOOR ESCAPES','A moving carrier docks at the island before the step and door platform rise together.'],
+['TIMED BRIDGE','Sunken segments rise in a wave with enough time for a precise, fair crossing.'],
+['THE HELPFUL WALL','The platform lifts through the L-shaped shaft and pushes toward the upper alcove.'],
+['LAST STOP','The ferry docks at the center island; the remaining gap must be crossed alone.'],
+['DOMINO FLOOR','Five descending steps collapse in the order 2-4-1-3-5.'],
+['THE PINCERS','Two solid side walls push toward the zigzag tower from one direction.'],
+['THE HUNTER LIES','A relentless wall climbs three narrowing terraces and pushes toward the gaps.'],
+['THE SLIDING ROOM','The connected inner core shifts inside a fixed C-shaped frame.'],
+['CENTRAL TOWER','One portal drops the right bank; another lands on the lift below the lonely tower.'],
+['THE VERTICAL SLOT','A portal drops you into a shaft while two side pistons strike in opposite directions.'],
+['IMPULSE ISLAND','The portal launches you onto a high island before a wall closes in and the island sinks.'],
+['DOUBLE DECKER','Run right above, all the way back below, then return upstairs through the second portal.'],
+['THE DEEP PORTAL U','Ride the lift through its full route before reaching the moving portal behind the spike.'],
+['SENT BACK','Three separate lanes form an outward run, a return run and a final escape corridor.'],
+['THE MIRROR','The portal launches into the second C-arm as its inner floor moves right and then up.'],
+['DROP ZIGZAG','Every arrival demands the full ledge while the floor and pursuing wall already move.'],
+['MOVING ADDRESS','The ferry starts underfoot; its spike and portal can only be reached during the ride.'],
+['THE LAST SHORTCUT','Two portal alcoves are bait; the deep return route holds two late spikes.'],
+['THE HONEST BUTTON','A small button balcony raises a bridge from a monumental shaft.'],
+['BRIDGE VERSUS FLOOR','The bridge answers your approach; its switch sinks the start and raises the next step.'],
+['SMALL PATH, BIG JUMP','Shrink for the 26-pixel tunnel, then return to normal size for the gorge.'],
+['THE BUTTON MOVES','The button moves the entire door island down and left while a spike rides along.'],
+['THE WAY BACK','Reach the button above, fall on the right and return below the starting point.'],
+['TWO BUTTONS, ONE LIE','In the Y-shaped room, the left button opens while the right one raises the platform.'],
+['NOT AGAIN','The first size button helps; skip the second while two late spikes test the long jump.'],
+['THE MOVING SWITCH','The switch lifts a ferry from below and sends it across the steps toward the portal.'],
+['THE DOOR WAS BEHIND YOU','The lower button places three narrow steps into the gaps of the return staircase.'],
+['THREE SEPARATE ACTS','A deep button chamber, tight shaft and high door island form three distinct acts.'],
+['THE FINAL ASCENT','Four required switches lead across a moving lift, two portal flanks and a flying door platform.'],
+];
+englishCopy.forEach(([name,story],index)=>Object.assign(levels[index],{name,story}));
+
 const guides={10:[[770,462],[820,412],[860,362],[900,312]],11:[[690,252],[760,430]],20:[['done:stream']],22:[['done:runner']],24:[['motion:helper']],30:[['arrival:cross'],['arrival:top']],31:[['arrival:drop'],[540,390],[420,500]],32:[['arrival:impulse']],33:[['arrival:down'],['arrival:back']],34:[['arrival:lift-entry']],35:[['arrival:across'],['arrival:return']],36:[['arrival:mirror']],37:[['arrival:middle'],['arrival:lower']],38:[['arrival:moving']],39:[[700,280],[600,307]],40:[['button:open']],41:[['motion:bridge'],['button:swap'],['done:step']],42:[['button:small'],['button:normal']],43:[['button:move']],44:[['button:return'],[750,230],[760,437]],45:[['button:left'],['button:right']],46:[['button:large']],47:[['button:turn'],['arrival:tower']],48:[['button:return']],49:[['button:lift'],['arrival:act-three']],50:[['button:launch'],['motion:lift'],['button:left'],['arrival:lower'],['button:lower'],['arrival:upper'],['button:ride'],['done:goal']]};
 const silhouettes=['flat-line','double-terrace','deep-step-u','low-tunnel','three-island','side-arm-plinth','tower-choice','isolated-high-tower','unequal-pillars','large-c','double-floor-return','vertical-shaft','single-bridge','descending-zigzag','hall-floor-hatch','lift-pit','two-bank-ferry','diagonal-descent','three-field-corridor','counterflow-bridge','offset-double-floor','fleeing-door-island','segment-wave','l-shaft-pusher','three-stop-archipelago','domino-stair','pincer-hall','three-rise-chase','moving-core-c','unequal-portal-rooms','tower-lower-niche','runup-open-chamber','three-s-rooms','portal-lift-pit','asymmetric-portal-u','mirrored-double-c','tower-fall-slot','moving-entry-bank','high-direct-shortcut','button-bridge-shaft','sinking-middle-hall','crawl-tunnel-gorge','balcony-door-island','looping-double-corridor','y-chamber','long-size-bridge','double-tower-ferry','reverse-rising-zigzag','three-act-rooms','tower-u-niche-finale'];
 const directions=['east-flat','east-gap','down-up','east-low','island-east','west-drop','choice-over','fall-west','pillar-east','out-and-over','east-down-west','vertical-down','east-calm','up-down-east','east-sink','up-east','ferry-east','down-west','east-locked-back','west-then-east','up-switch','receding-east','wave-east','up-then-east','middle-transfer','stair-east','center-up','chase-up-east','core-east-up','teleport-east','portal-up-down','impulse-east','portal-s-east','portal-lift-up','portal-return-down','mirror-east','fall-slot-east','timed-portal-east','direct-west','button-east','bridge-swap-east','small-east-jump','door-down-left','east-down-west','left-right-up','size-east-up','ferry-right-portal-left','down-right-return','button-portal-east','fall-lift-portal-west'];
@@ -109,5 +163,5 @@ for(const [i,l] of levels.entries()){
     }
   }
 }
-const api={levels,groups:['STACHELN','BEWEGUNG','PORTALE','KNÖPFE','FINALE']};if(typeof module!=='undefined')module.exports=api;else root.DevilLevels=api;
+const api={levels,groups:['SPIKES','MOTION','PORTALS','BUTTONS','FINAL']};if(typeof module!=='undefined')module.exports=api;else root.DevilLevels=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
