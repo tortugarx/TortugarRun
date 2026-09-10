@@ -34,7 +34,7 @@ function inspect(w,label){
   for(const button of w.buttons)for(const h of w.haz)if(h.progress>.01)assert(!hit({...button,h:8},w.spikeBox(h)),`${label}: button/spike overlap`);
 }
 for(const l of levels){
-  assert(l.spikes.length<=3&&l.motions.length<=5,`room ${l.number}: overload`);
+  assert(l.spikes.length<=(l.number===50?12:3)&&l.motions.length<=5,`room ${l.number}: overload`);
   for(const order of ['together','staggered']){
     const w=new World(l);
     const overlaps=new Map();

@@ -108,3 +108,8 @@ advance(transitMotion,2);assert(transitMotion.teleport);
 const beforeTransit=transitMotion.object('lift').y;
 advance(transitMotion,15);assert(transitMotion.teleport);
 assert(transitMotion.object('lift').y<beforeTransit,'world animation must continue during teleport');
+
+// Portal transit is deliberately readable, but still well below half a second.
+const measuredPortal=new World(portalLevel);advance(measuredPortal,2);assert(measuredPortal.teleport);
+advance(measuredPortal,36);assert(measuredPortal.teleport,'portal animation ended too quickly');
+advance(measuredPortal,8);assert(!measuredPortal.teleport,'portal animation became sluggish');

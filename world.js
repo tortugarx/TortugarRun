@@ -2,12 +2,14 @@
 (function (root) {
   "use strict";
   const STEP = 1 / 120;
+  const PORTAL_DURATION = 0.34;
   const hit = (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
   const rect = (a) => ({ x: a[0], y: a[1], w: a[2], h: a[3] });
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   class World {
     constructor(level) {
       this.level = level;
+      this.challenge = clamp(((level.number || 1) - 1) / 49, 0, 1);
       this.time = 0;
       this.status = "playing";
       this.signals = {};
@@ -116,8 +118,10 @@
       const support = p.vy >= 0 ? this.solid.find(b => Math.abs(p.y+p.h-b.y)<1.5 && p.x+p.w>b.x && p.x<b.x+b.w) : null;
       this.supportId = support?.id || null;
       this.time += dt;
-      p.coyote = p.ground ? 0.075 : Math.max(0, p.coyote - dt);
-      p.buffer = keys.jump && !p.held ? 0.08 : Math.max(0, p.buffer - dt);
+      const coyoteWindow = 0.105 - this.challenge * 0.045;
+      const bufferWindow = 0.105 - this.challenge * 0.035;
+      p.coyote = p.ground ? coyoteWindow : Math.max(0, p.coyote - dt);
+      p.buffer = keys.jump && !p.held ? bufferWindow : Math.max(0, p.buffer - dt);
       this.jumpNow = !this.teleport && p.buffer > 0 && p.coyote > 0;
       p.held = !!keys.jump;
       if (this.jumpNow) { p.vy = -365; p.ground = false; this.supportId=null; p.coyote = 0; p.buffer = 0; this.emit("jump"); }
@@ -125,8 +129,9 @@
         if (!m.started && this.condition(m.when)) { m.started = true; this.signal(`motion:${m.id}`); }
         if (!m.started || m.done) continue;
         const b = this.object(m.id);
-        let t = m.t + dt - (m.delay || 0), prevX = 0, prevY = 0, dx = 0, dy = 0;
-        if (t < 0) { m.t += dt; continue; }
+        const motionStep = dt * (1 + this.challenge * 0.12);
+        let t = m.t + motionStep - (m.delay || 0), prevX = 0, prevY = 0, dx = 0, dy = 0;
+        if (t < 0) { m.t += motionStep; continue; }
         let ended = true;
         for (const frame of m.path) {
           if (t <= frame[2]) {
@@ -139,7 +144,7 @@
           t -= frame[2]; prevX = dx = frame[0]; prevY = dy = frame[1];
         }
         if (this.moveBlock(b, b.originX + dx, b.originY + dy)) {
-          m.t += dt;
+          m.t += motionStep;
           if (ended) { if (m.loop) m.t = m.delay || 0; else { m.done = true; this.signal(`done:${m.id}`); } }
         }
       }
@@ -180,7 +185,7 @@
       }
       // Mechanisms keep running during the short portal transition.
       if (this.teleport) {
-        this.teleport.t = Math.min(1, this.teleport.t + dt / 0.28);
+        this.teleport.t = Math.min(1, this.teleport.t + dt / PORTAL_DURATION);
         if(this.level.exitOn){const b=this.object(this.level.exitOn);this.exit=[this.level.exit[0]+b.x-b.originX,this.level.exit[1]+b.y-b.originY];}
         if (this.teleport.t < 1) return;
         const entry = this.portals.find(v => v.id === this.teleport.from);
@@ -194,7 +199,8 @@
         return;
       }
       const target = (keys.right ? 220 : 0) - (keys.left ? 220 : 0);
-      p.vx += clamp(target - p.vx, -(p.ground ? 1500 : 850) * dt, (p.ground ? 1500 : 850) * dt);
+      const acceleration = p.ground ? 1500 : 950 - this.challenge * 180;
+      p.vx += clamp(target - p.vx, -acceleration * dt, acceleration * dt);
       if (p.vx) p.face = Math.sign(p.vx);
       if (!keys.jump && p.vy < -120) p.vy += 900 * dt;
       p.vy = Math.min(720, p.vy + 1100 * dt);
@@ -206,6 +212,7 @@
         if (b.size && !this.resize(b.size, b.anchor)) continue;
         b.pressed = true; this.signal(`button:${b.id}`);
         if (b.unlock) this.locked = false;
+        if (this.level.requiredButtons) this.locked = this.level.requiredButtons.some(id => !this.buttons.find(v => v.id === id)?.pressed);
         this.emit("button");
       }
       if (this.level.exitOn) {
@@ -226,7 +233,7 @@
     }
   }
   World.prototype.exitBox = function () { return { x: this.exit[0] + 11, y: this.exit[1] + 26, w: 24, h: 38 }; };
-  const api = { World, STEP, hit };
+  const api = { World, STEP, PORTAL_DURATION, hit };
   if (typeof module !== "undefined") module.exports = api;
   else root.DevilWorld = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

@@ -41,6 +41,7 @@
     levelReturnState = "menu",
     settingsReturnState = "menu",
     portalAnim = null,
+    doorAnim = null,
     camera = { x: 0, y: 0, ready: false },
     P,
     R,
@@ -54,7 +55,7 @@
     world = new DevilWorld.World(L[li]);
     P = world.p;
     R = world;
-    energy = 100; pulse = 0; particles = []; portalAnim = null;
+    energy = 100; pulse = 0; particles = []; portalAnim = null; doorAnim = null;
     camera.ready = false;
     accumulator = 0;
     clock = 0;
@@ -144,7 +145,14 @@
   function finish() {
     if (state !== "playing") return;
     state = "transition";
-    burst(P.x + 12, P.y + 9, "#777", 6);
+    const pixels=[];
+    for(const y of [-6,-2,2])for(const x of [-9,-5,-1,3])pixels.push({x,y,color:y===-6?palette()[2]:palette()[3]});
+    pixels.push(
+      {x:7,y:-3,color:palette()[2]},{x:11,y:-3,color:palette()[2]},
+      {x:7,y:1,color:palette()[2]},{x:11,y:1,color:palette()[0]},
+      {x:-7,y:6,color:palette()[3]},{x:3,y:6,color:palette()[3]},
+    );
+    doorAnim={start:clock,duration:.82,fromX:P.x+P.w/2,fromY:P.y+P.h/2,toX:R.exit[0]+23,toY:R.exit[1]+48,pixels};
     beep(620, 0.12, "sine");
     unlocked = Math.max(unlocked, Math.min(L.length, li + 2));
     localStorage.setItem("level-devil-unlocked", unlocked);
@@ -157,7 +165,7 @@
           `${deaths} deaths. All ${L.length} rooms cleared.`;
         UI.win.classList.remove("hidden");
       } else reset();
-    }, 650);
+    }, 900);
   }
   function focus() {
     if (state !== "playing" || energy < 40 || pulse) return;
@@ -339,6 +347,23 @@
     X.fillRect(10, -2 + b, 1, 1);
     X.restore();
   }
+  function drawDoorSuction() {
+    if(!doorAnim)return;
+    const elapsed=(clock-doorAnim.start)/doorAnim.duration;
+    X.save();
+    doorAnim.pixels.forEach((pixel,index)=>{
+      const delay=index/doorAnim.pixels.length*.28;
+      const t=Math.max(0,Math.min(1,(elapsed-delay)/(1-delay)));
+      if(t>=1)return;
+      const pull=t*t*(3-2*t),arc=Math.sin(t*Math.PI)*(index%2?1:-1)*(9+index%4*2);
+      const x=doorAnim.fromX+pixel.x+(doorAnim.toX-doorAnim.fromX-pixel.x)*pull;
+      const y=doorAnim.fromY+pixel.y+(doorAnim.toY-doorAnim.fromY-pixel.y)*pull+arc;
+      const size=Math.max(1,Math.round(4*(1-pull*.72)));
+      X.fillStyle=pixel.color;
+      X.fillRect(Math.round(x),Math.round(y),size,size);
+    });
+    X.restore();
+  }
   function applyCamera() {
     const screenW = globalThis.innerWidth ?? W;
     const screenH = globalThis.innerHeight ?? H;
@@ -393,6 +418,7 @@
       drawTeleport();
       gate(R.exit[0], R.exit[1], R.locked);
       if (P && state === "playing" && !portalAnim) drawHero();
+      if (state === "transition") drawDoorSuction();
       particles.forEach((p) => {
         X.globalAlpha = p.life;
         X.fillStyle = p.color;

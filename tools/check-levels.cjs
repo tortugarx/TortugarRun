@@ -13,6 +13,8 @@ function supported(level,h,x,y) {
 }
 for (const [i,l] of levels.entries()) {
   assert.equal(l.number,i+1);
+  assert.equal(l.difficulty,1+9*i/49,`nonlinear difficulty score: ${i+1}`);
+  if(i) assert(l.difficulty>levels[i-1].difficulty,`difficulty must rise every room: ${i+1}`);
   assert.equal(l.group,i<14?0:i<29?1:i<39?2:3);
   assert(l.identity?.silhouette&&l.identity?.direction&&l.identity?.trigger&&l.identity?.door,`missing identity matrix row: ${i+1}`);
   if(i<14) {
@@ -65,6 +67,10 @@ for (const [i,l] of levels.entries()) {
 }
 assert.equal(new Set(levels.map(l=>l.identity.silhouette)).size,50,'duplicate silhouette');
 assert.equal(new Set(levels.map(l=>Object.values(l.identity).join('|'))).size,50,'duplicate identity combination');
+const finale=levels.at(-1);
+assert.equal(finale.targetMinutes,7,'finale playtime target');
+assert.equal(finale.requiredButtons.length,4,'finale must retain all four acts');
+assert(finale.spikes.length>=12,'finale needs enough learned hazards for repeated attempts');
 // Identity labels are not enough: the authored terrain itself must produce 50
 // different coarse silhouettes when rendered as black masses.
 const terrainSignature=l=>{
@@ -86,7 +92,7 @@ for(let i=0;i<detailed.length;i++)for(let j=i+1;j<detailed.length;j++){
   assert(distance>=15,`terrain silhouettes too similar: ${i+1}/${j+1} (${distance})`);
 }
 for(const l of levels)for(const hazard of l.spikes)if(hazard.when&&!hazard.initial){
-  assert(hazard.speed>=10&&hazard.speed<=14,`hidden hazard outside 70-100ms: ${l.number}`);
+  assert.equal(hazard.speed,10+l.difficulty*.6,`hidden hazard ignores difficulty curve: ${l.number}`);
   const collisionLatency=(hazard.delay||0)+.25/hazard.speed;
   if(hazard.duration!==undefined)assert(hazard.duration>collisionLatency,`hazard retracts before it can collide: ${l.number}`);
   if(hazard.when.zone){
@@ -97,7 +103,7 @@ for(const l of levels)for(const hazard of l.spikes)if(hazard.when&&!hazard.initi
       const left=hazard.x-(hazard.dir==='left'?9:0);
       const right=hazard.x+hazard.w+(hazard.dir==='right'?9-hazard.w:0);
       const edgeGap=hazard.triggerFrom==='left'?left-(q[0]+q[2]):q[0]-right;
-      assert(edgeGap>=32&&edgeGap<=36,`hazard trigger is on the wrong approach side: ${l.number}`);
+      assert.equal(edgeGap,Math.round(46-l.difficulty*1.8),`hazard trigger ignores reaction curve: ${l.number}`);
       assert((edgeGap+q[2])/220>1/hazard.speed,`full-speed player can outrun spike animation: ${l.number}`);
     } else {
       assert(q[0]<hazard.x+hazard.w&&q[0]+q[2]>hazard.x,`overhead trigger misses spike: ${l.number}`);

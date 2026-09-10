@@ -6,7 +6,7 @@ const h=(x,y,w=27,when=null,more={})=>({x,y,w,when,...more});
 const m=(id,when,path,delay=0,more={})=>({id,when,path,delay,ease:true,...more});
 const p=(id,x,y,targetX,targetY,more={})=>({id,x,y,targetX,targetY,...more});
 const k=(id,x,y,more={})=>({id,x,y:y-8,...more});
-function r(name,story,spawn,goal,blocks,spikes=[],motions=[],portals=[],buttons=[],more={}){const number=levels.length+1;levels.push({number,name,story,group:number<15?0:number<30?1:number<40?2:3,spawn,exit:[goal[0]-11,goal[1]-64],blocks:[[0,0,32,900],[928,0,32,900],c(32,96,896),...blocks],spikes,motions,portals,buttons,...more});}
+function r(name,story,spawn,goal,blocks,spikes=[],motions=[],portals=[],buttons=[],more={}){const number=levels.length+1;levels.push({number,difficulty:1+9*(number-1)/49,name,story,group:number<15?0:number<30?1:number<40?2:3,spawn,exit:[goal[0]-11,goal[1]-64],blocks:[[0,0,32,900],[928,0,32,900],c(32,96,896),...blocks],spikes,motions,portals,buttons,...more});}
 
 // WELT I — spikes and expectation; fourteen unrelated silhouettes.
 r('DER EHRLICHE ZAHN','Drei sichtbare Zähne erzwingen einen sauberen Sprungrhythmus.',[76,440],[866,440],[f(32,440,896)],[h(300,440),h(468,440),h(650,440)]);
@@ -64,9 +64,9 @@ r('NICHT NOCH EINMAL','Der erste Größenknopf hilft; der zweite wird ausgelasse
 r('FAHRENDER SCHALTER','Der Schalter hebt die Fähre aus der unteren Kammer und schickt sie über die Stufenköpfe zum Portal; ein Zahn fährt auf dem Träger mit.',[170,285],[80,285],[f(32,450,215),[300,450,190,24,'ferry'],f(560,400,65),f(625,350,65),f(690,300,238),f(32,285,180)],[h(430,450,36,null,{attach:'ferry'})],[m('ferry',s('button:turn'),[[0,-200,1.2],[225,-200,1.8]])],[p('tower',820,300,105,285)],[k('turn',305,450,{unlock:true,attach:'ferry'})],{locked:true});
 r('DIE TÜR WAR HINTER DIR','Der Knopf unten setzt drei schmale, bündige Trittsteine in die Lücken der Rücktreppe.',[70,245],[82,245],[f(32,245,190),f(250,330,150),f(430,395,150),f(610,465,318),f(580,540,30,'r1'),f(400,540,30,'r2'),f(222,540,28,'r3')],[h(520,395,27,s('button:return'),{delay:.6})],[m('r1',s('button:return'),[[0,-110,.75]],.05),m('r2',s('button:return'),[[0,-175,.75]],.3),m('r3',s('button:return'),[[0,-245,.75]],.55)],[],[k('return',780,465,{unlock:true})],{locked:true});
 r('DREI GETRENNTE AKTE','Tiefe Knopfkammer, enger Vertikalschacht und hohe Türinsel sind drei getrennte Akte; Lift und Zielinsel tragen getrennte Zähne.',[70,480],[850,235],[f(32,480,230),c(262,430,52),[340,480,190,24,'lift'],c(530,430,52),f(700,235,228)],[h(470,480,36,s('button:lift'),{delay:1.1,attach:'lift'}),h(780,235,36,s('arrival:act-three'))],[m('lift',s('button:lift'),[[0,-185,1.05],[0,-185,.62]],1.2)],[p('act-three',455,480,790,235,{attach:'lift'})],[k('lift',135,480)]);
-r('DIE LETZTE GESCHICHTE','Fall ins U, Knopf, umkehrender Lift, Portal und sichtbarer Zahn.',[790,210],[290,250],[f(32,455,230,'lift'),f(262,455,405),f(667,210,261),[262,250,270,28],c(520,250,12)],[h(170,455,27,null,{attach:'lift'})],[m('lift',s('button:final'),[[0,-205,1.6],[0,-205,.7],[0,-100,.8]],1.6)],[p('final',220,455,400,250,{attach:'lift'})],[k('final',500,455,{unlock:true})],{locked:true});
+r('DIE LETZTE GESCHICHTE','Vier Etagen, vier Pflichtschalter und zwölf versteckte Zähne bilden den längsten Lernlauf des Spiels.',[70,190],[820,190],[[32,190,896,24],[32,300,896,24],[32,410,896,24],f(32,520,896)],[h(220,190,27,z(180,140,80,70)),h(520,190,27,z(480,140,80,70)),h(740,190,27,z(700,140,80,70)),h(740,300,27,z(700,250,80,70)),h(520,300,27,z(480,250,80,70)),h(220,300,27,z(180,250,80,70)),h(220,410,27,z(180,360,80,70)),h(520,410,27,z(480,360,80,70)),h(740,410,27,z(700,360,80,70)),h(740,520,27,z(700,470,80,70)),h(520,520,27,z(480,470,80,70)),h(220,520,27,z(180,470,80,70))],[],[p('p1',890,190,870,300),p('p2',70,300,90,410),p('p3',890,410,870,520),p('p4',70,520,90,190)],[k('top',380,190),k('middle-a',380,300),k('middle-b',380,410),k('bottom',380,520)],{locked:true,requiredButtons:['top','middle-a','middle-b','bottom'],targetMinutes:7});
 
-const guides={10:[[770,462],[820,412],[860,362],[900,312]],11:[[690,252],[760,430]],20:[['done:stream']],24:[['motion:helper']],30:[['arrival:cross'],['arrival:top']],31:[['arrival:drop'],[540,390],[420,500]],32:[['arrival:impulse']],33:[['arrival:down'],['arrival:back']],34:[['arrival:lift-entry']],35:[['arrival:across'],['arrival:return']],36:[['arrival:mirror']],37:[['arrival:middle'],['arrival:lower']],38:[['arrival:moving']],39:[[700,280],[600,307]],40:[['button:open']],41:[['button:swap']],42:[['button:small'],['button:normal']],43:[['button:move']],44:[['button:return'],[750,230],[760,437]],45:[['button:left'],['button:right']],46:[['button:large']],47:[['button:turn'],['arrival:tower']],48:[['button:return']],49:[['button:lift'],['arrival:act-three']],50:[['button:final'],['arrival:final']]};
+const guides={10:[[770,462],[820,412],[860,362],[900,312]],11:[[690,252],[760,430]],20:[['done:stream']],24:[['motion:helper']],30:[['arrival:cross'],['arrival:top']],31:[['arrival:drop'],[540,390],[420,500]],32:[['arrival:impulse']],33:[['arrival:down'],['arrival:back']],34:[['arrival:lift-entry']],35:[['arrival:across'],['arrival:return']],36:[['arrival:mirror']],37:[['arrival:middle'],['arrival:lower']],38:[['arrival:moving']],39:[[700,280],[600,307]],40:[['button:open']],41:[['button:swap']],42:[['button:small'],['button:normal']],43:[['button:move']],44:[['button:return'],[750,230],[760,437]],45:[['button:left'],['button:right']],46:[['button:large']],47:[['button:turn'],['arrival:tower']],48:[['button:return']],49:[['button:lift'],['arrival:act-three']],50:[['button:top'],['arrival:p1'],['button:middle-a'],['arrival:p2'],['button:middle-b'],['arrival:p3'],['button:bottom'],['arrival:p4']]};
 const silhouettes=['flat-line','double-terrace','deep-step-u','low-tunnel','three-island','side-arm-plinth','tower-choice','isolated-high-tower','unequal-pillars','large-c','double-floor-return','vertical-shaft','single-bridge','descending-zigzag','hall-floor-hatch','lift-pit','two-bank-ferry','diagonal-descent','three-field-corridor','counterflow-bridge','offset-double-floor','fleeing-door-island','segment-wave','l-shaft-pusher','three-stop-archipelago','domino-stair','pincer-hall','three-rise-chase','moving-core-c','unequal-portal-rooms','tower-lower-niche','runup-open-chamber','three-s-rooms','portal-lift-pit','asymmetric-portal-u','mirrored-double-c','tower-fall-slot','moving-entry-bank','high-direct-shortcut','button-bridge-shaft','sinking-middle-hall','crawl-tunnel-gorge','balcony-door-island','looping-double-corridor','y-chamber','long-size-bridge','double-tower-ferry','reverse-rising-zigzag','three-act-rooms','tower-u-niche-finale'];
 const directions=['east-flat','east-gap','down-up','east-low','island-east','west-drop','choice-over','fall-west','pillar-east','out-and-over','east-down-west','vertical-down','east-calm','up-down-east','east-sink','up-east','ferry-east','down-west','east-locked-back','west-then-east','up-switch','receding-east','wave-east','up-then-east','middle-transfer','stair-east','center-up','chase-up-east','core-east-up','teleport-east','portal-up-down','impulse-east','portal-s-east','portal-lift-up','portal-return-down','mirror-east','fall-slot-east','timed-portal-east','direct-west','button-east','bridge-swap-east','small-east-jump','door-down-left','east-down-west','left-right-up','size-east-up','ferry-right-portal-left','down-right-return','button-portal-east','fall-lift-portal-west'];
 const triggers=['triple-visible-spike','edge-zone','u-sequence','jump','flight-arc','wrong-way-zone','tunnel-probe','tower-leave','target-land','inner-jump','far-end','visible-fall-zigzag','triple-bridge','last-edge','stand-sink','stand-lift','stand-ferry','stand-drop','mid-zone','stand-current','entry-zone','run-zone','shore-zone-wave','stand-helper','stand-stop','step-zone-order','climb-zone','chase-zone','core-zone','portal-entry','portal-height','portal-momentum','two-portals','portal-arrival-motion','return-arrival','mirror-arrival','portal-decoy','moving-portal-time','ignore-portals','button-honest','button-swap','two-size-buttons','button-move-goal','button-return','button-order','optional-button','moving-button','button-return-stair','button-lift-portal','button-lift-portal-final'];
@@ -80,7 +80,8 @@ const triggerApproaches={
   14:{1:'left'},19:{0:'left'},30:{0:'left'},
   31:{0:'right',1:'right'},32:{1:'left'},33:{0:'left',1:'right'},
   35:{1:'left'},36:{0:'left'},37:{0:'right',1:'left'},39:{0:'right',1:'right'},
-  46:{0:'left',1:'left'}
+  46:{0:'left',1:'left'},
+  50:{0:'left',1:'left',2:'left',3:'right',4:'right',5:'right',6:'left',7:'left',8:'left',9:'right',10:'right',11:'right'}
 };
 silhouettes.splice(29,10,'lone-center-monolith','needle-vertical-shaft','impulse-sky-island','stacked-return-corridors','deep-portal-lift-u','three-band-return-run','opposed-c-arms','portal-fall-zigzag','diagonal-moving-portal','high-direct-decoys');
 directions.splice(29,10,'portal-bank-lift-east','fall-right-left','impulse-drop-east','east-west-east-chase','lift-up-portal-east','east-west-drop-east','portal-left-floor-up-east','east-west-east-collapse','ferry-up-portal','direct-west');
@@ -91,16 +92,17 @@ for(const [i,l] of levels.entries()){
   for(const [hazardIndex,hazard] of l.spikes.entries()){
     hazard.baseX=hazard.x;hazard.baseY=hazard.y;
     if(hazard.when&&!hazard.initial){
-      hazard.speed=12;
+      hazard.speed=10+l.difficulty*.6;
       if(hazard.when.zone){
         hazard.delay=0;
         hazard.triggerFrom=triggerApproaches[l.number]?.[hazardIndex];
         if(hazard.triggerFrom!=='overhead'){
           const leftTip=hazard.x-(hazard.dir==='left'?9:0);
           const rightTip=hazard.x+hazard.w+(hazard.dir==='right'?9-hazard.w:0);
+          const edgeGap=Math.round(46-l.difficulty*1.8);
           hazard.when.zone=hazard.triggerFrom==='left'
-            ?[Math.max(32,leftTip-50),hazard.when.zone[1],16,hazard.when.zone[3]]
-            :[Math.min(912,rightTip+34),hazard.when.zone[1],16,hazard.when.zone[3]];
+            ?[Math.max(32,leftTip-edgeGap-16),hazard.when.zone[1],16,hazard.when.zone[3]]
+            :[Math.min(912,rightTip+edgeGap),hazard.when.zone[1],16,hazard.when.zone[3]];
         }
       }
     }

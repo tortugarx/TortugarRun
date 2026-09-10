@@ -49,7 +49,7 @@ for(const id of Array.from({length:50},(_,i)=>i+1)) {
     previous=mask;for(let t=0;t<ticks;t++)a.frame();
   }
   a.key('ArrowRight',false);a.key('ArrowLeft',false);a.key('Space',false);
-  for(let t=0;t<100;t++)a.frame();
+  for(let t=0;t<130;t++)a.frame();
   if(id===50)assert(!a.$('#winScreen').classList.contains('hidden'),'final win overlay');
   else assert.equal(a.$('#levelLabel').textContent,String(id+1).padStart(2,'0')+' / 50',`game route ${id}`);
 }
