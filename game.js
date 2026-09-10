@@ -10,8 +10,6 @@
     win: $("#winScreen"),
     level: $("#levelLabel"),
     deaths: $("#deathLabel"),
-    meter: $("#focusMeter"),
-    toast: $("#toast"),
   };
   const K = { left: 0, right: 0, jump: 0 };
   // One unmistakable visual identity per world; rooms no longer cycle through
@@ -21,6 +19,7 @@
     ["#f0e0c9", "#d3aa77", "#9a643d", "#4b2d22"],
     ["#dce9f4", "#9ebed8", "#537fa5", "#263f63"],
     ["#eee0ef", "#c69bc9", "#8d5b92", "#472c52"],
+    ["#f1dddd", "#d59a98", "#a34f50", "#4f252b"],
   ];
   const palette = () => PAL[L[Math.min(li, L.length - 1)]?.group || 0];
   let unlocked = DevilLevels.levels.length;
@@ -28,8 +27,6 @@
   let state = "menu",
     li = 0,
     deaths = 0,
-    energy = 100,
-    pulse = 0,
     shake = 0,
     muted = localStorage.getItem("level-devil-sound") === "off",
     autoRestart = localStorage.getItem("level-devil-auto-restart") === "on",
@@ -37,7 +34,6 @@
     last = 0,
     clock = 0,
     audio,
-    toastTimer,
     levelReturnState = "menu",
     settingsReturnState = "menu",
     portalAnim = null,
@@ -49,13 +45,13 @@
   const L = DevilLevels.levels;
   const GROUPS = DevilLevels.groups;
   let world, accumulator = 0, runId = 0;
-  function reset(hint = true) {
+  function reset() {
     runId++;
     li = Math.max(0, Math.min(L.length - 1, li));
     world = new DevilWorld.World(L[li]);
     P = world.p;
     R = world;
-    energy = 100; pulse = 0; particles = []; portalAnim = null; doorAnim = null;
+    particles = []; portalAnim = null; doorAnim = null;
     camera.ready = false;
     accumulator = 0;
     clock = 0;
@@ -67,7 +63,6 @@
     document.documentElement.style.setProperty("--level-mid", colors[2]);
     document.documentElement.style.setProperty("--level-dark", colors[3]);
     UI.level.textContent = String(li + 1).padStart(2,"0") + " / " + L.length;
-    if (hint) toast(L[li].name, 1800);
   }
   function start() {
     li = 0;
@@ -91,10 +86,10 @@
       tabs.appendChild(tab);
     });
     grid.appendChild(tabs);
-    const current = L[li];
     const overview = document.createElement("div");
     overview.className = "level-overview";
-    overview.innerHTML = `<strong>WELT ${current.group + 1} · ${GROUPS[current.group]}</strong><span>LEVEL ${String(li + 1).padStart(2,"0")} / ${L.length}</span>`;
+    const first = selectedGroup * 10 + 1;
+    overview.innerHTML = `<strong>${GROUPS[selectedGroup]}</strong><span>LEVEL ${String(first).padStart(2,"0")}–${first + 9}</span>`;
     grid.appendChild(overview);
     L.forEach((level, i) => {
       if (level.group !== selectedGroup) return;
@@ -167,18 +162,6 @@
       } else reset();
     }, 900);
   }
-  function focus() {
-    if (state !== "playing" || energy < 40 || pulse) return;
-    energy -= 40;
-    pulse = 1;
-    beep(760, 0.12, "sine");
-  }
-  function toast(s, ms = 1600) {
-    UI.toast.textContent = s;
-    UI.toast.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => UI.toast.classList.remove("show"), ms);
-  }
   function beep(f, d = 0.06, type = "square") {
     if (muted) return;
     audio ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -233,9 +216,6 @@
       const from = R.portals.find(p => p.id === world.teleport.from);
       portalAnim = { t: world.teleport.t, from: {x:from.x,y:from.y-20}, to:{x:from.targetX,y:from.targetY-20} };
     } else portalAnim = null;
-    pulse = Math.max(0, pulse - dt*0.74);
-    energy = Math.min(100, energy + dt*7);
-    UI.meter.style.width = energy + "%";
   }
   function platform(r, crumb = false) {
     const c = palette();
@@ -261,10 +241,10 @@
     }
   }
   function hazard(h) {
-    if (!h.progress && !pulse) return;
+    if (!h.progress) return;
     X.save();
-    const c = palette(), raised = Math.round(9 * (h.progress || (pulse ? 1 : 0)));
-    X.globalAlpha = h.progress ? 1 : pulse * 0.5;
+    const c = palette(), raised = Math.round(9 * h.progress);
+    X.globalAlpha = 1;
     X.fillStyle = c[3];
     X.translate(h.x,h.y);
     if (h.dir === "down") { X.translate(h.w,0); X.rotate(Math.PI); }
@@ -347,6 +327,24 @@
     X.fillRect(10, -2 + b, 1, 1);
     X.restore();
   }
+  function drawTutorial() {
+    if (li !== 0 || !R || R.time > 18) return;
+    const c = palette(), labels = [
+      { x: 72, y: 356, text: "←  →  LAUFEN" },
+      { x: 252, y: 356, text: "↑  SPRINGEN" },
+    ];
+    X.save();
+    X.font = "bold 14px Courier New";
+    X.textBaseline = "middle";
+    for (const label of labels) {
+      const width = label.text.length * 9 + 16;
+      X.fillStyle = c[3];
+      X.fillRect(label.x, label.y, width, 28);
+      X.fillStyle = c[0];
+      X.fillText(label.text, label.x + 8, label.y + 15);
+    }
+    X.restore();
+  }
   function drawDoorSuction() {
     if(!doorAnim)return;
     const elapsed=(clock-doorAnim.start)/doorAnim.duration;
@@ -418,6 +416,7 @@
       drawTeleport();
       gate(R.exit[0], R.exit[1], R.locked);
       if (P && state === "playing" && !portalAnim) drawHero();
+      drawTutorial();
       if (state === "transition") drawDoorSuction();
       particles.forEach((p) => {
         X.globalAlpha = p.life;
@@ -425,13 +424,6 @@
         X.fillRect(Math.round(p.x / 4) * 4, Math.round(p.y / 4) * 4, 5, 5);
         X.globalAlpha = 1;
       });
-      if (pulse) {
-        X.strokeStyle = `rgba(40,40,40,${pulse * 0.5})`;
-        X.lineWidth = 2;
-        X.beginPath();
-        X.arc(P.x + 18, P.y + 15, (1 - pulse) * 550, 0, Math.PI * 2);
-        X.stroke();
-      }
     }
     X.restore();
   }
@@ -456,7 +448,6 @@
       K[map[e.code]] = 1;
       e.preventDefault();
     }
-    if (e.code === "KeyF" || e.code === "ShiftLeft") focus();
     if (e.code === "KeyR" && state !== "menu") reset(false);
     if (e.code === "KeyM") toggle();
   });
@@ -471,19 +462,14 @@
         if (e.pointerType === "touch") return;
         e.preventDefault();
         b.setPointerCapture?.(e.pointerId);
-        if (k === "focus") focus();
-        else {
-          activePointers[k].add(e.pointerId);
-          K[k] = 1;
-        }
+        activePointers[k].add(e.pointerId);
+        K[k] = 1;
       },
       up = (e) => {
         if (e.pointerType === "touch") return;
         e.preventDefault();
-        if (k !== "focus") {
-          activePointers[k].delete(e.pointerId);
-          K[k] = activePointers[k].size ? 1 : 0;
-        }
+        activePointers[k].delete(e.pointerId);
+        K[k] = activePointers[k].size ? 1 : 0;
       };
     b.addEventListener("pointerdown", down);
     b.addEventListener("pointerup", up);
@@ -492,7 +478,6 @@
       "touchstart",
       (e) => {
         e.preventDefault();
-        if (k === "focus") return focus();
         for (const touch of e.changedTouches)
           activeTouches[k].add(touch.identifier);
         K[k] = 1;
@@ -501,7 +486,6 @@
     );
     const touchUp = (e) => {
       e.preventDefault();
-      if (k === "focus") return;
       for (const touch of e.changedTouches)
         activeTouches[k].delete(touch.identifier);
       K[k] = activeTouches[k].size || activePointers[k].size ? 1 : 0;
@@ -539,7 +523,6 @@
   if ($("#startBtn")) $("#startBtn").onclick = start;
   if ($("#levelsBtn")) $("#levelsBtn").onclick = openLevels;
   $("#mapBtn").onclick = openLevels;
-  $("#focusBtn").onclick = focus;
   $("#closeLevelsBtn").onclick = () => {
     $("#levelScreen").classList.add("hidden");
     state = levelReturnState;

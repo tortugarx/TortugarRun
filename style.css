@@ -63,7 +63,7 @@ canvas {
   z-index: 2;
   inset: 14px 16px auto;
   display: grid;
-  grid-template-columns: 1fr 110px 1fr;
+  grid-template-columns: 1fr 1fr;
   pointer-events: none;
   font-size: 10px;
   color: #222;
@@ -80,20 +80,6 @@ canvas {
 }
 .hud .right {
   text-align: right;
-}
-.focus-wrap {
-  text-align: center;
-}
-.meter {
-  height: 2px;
-  margin-top: 5px;
-  background: #aaa;
-}
-.meter i {
-  display: block;
-  height: 100%;
-  width: 100%;
-  background: #222;
 }
 .overlay {
   position: absolute;
@@ -129,7 +115,7 @@ canvas {
   padding: 16px;
 }
 #levelScreen .panel {
-  width: min(390px, calc(100vw - 32px));
+  width: min(540px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);
   overflow: auto;
 }
@@ -232,7 +218,7 @@ canvas {
 }
 .level-grid {
   display: grid;
-  grid-template-columns: repeat(5, 58px);
+  grid-template-columns: repeat(5, minmax(48px, 1fr));
   gap: 7px;
   margin-bottom: 14px;
   padding: 10px;
@@ -241,7 +227,7 @@ canvas {
   box-shadow: 6px 6px 0 #000;
 }
 .level-grid button {
-  width: 58px;
+  width: 100%;
   height: 50px;
   box-shadow:
     2px 2px 0 #000,
@@ -296,7 +282,7 @@ canvas {
 .group-tabs {
   grid-column: 1/-1;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 5px;
   margin-bottom: 4px;
 }
@@ -317,25 +303,6 @@ kbd {
   margin-right: 3px;
   border: 1px solid #555;
   color: #bbb;
-}
-.toast {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  bottom: 18px;
-  transform: translate(-50%, 8px);
-  padding: 7px 10px;
-  background: #111;
-  border: 1px solid #555;
-  color: #bbb;
-  font-size: 9px;
-  opacity: 0;
-  transition: 0.15s;
-  white-space: nowrap;
-}
-.toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0);
 }
 .game-actions {
   position: absolute;
@@ -473,13 +440,12 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
     align-items: center;
   }
   .hud {
-    width: 58%;
+    width: 46%;
     gap: 5px;
-    grid-template-columns: .8fr 1.15fr .8fr;
+    grid-template-columns: 1fr 1fr;
   }
   .hud small { font-size: 8px; }
   .hud strong { font-size: 10px; }
-  .meter { height: 4px; }
   .game-actions button {
     width: 32px;
     height: 32px;
@@ -499,12 +465,22 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   .level-grid {
     grid-template-columns: repeat(5, minmax(42px, 1fr));
     gap: 5px;
+    padding: 7px;
   }
   .level-grid button {
     width: 100%;
     height: 46px;
   }
-  .group-tabs { grid-template-columns: repeat(2, 1fr); }
+  #levelScreen { padding: 7px; }
+  #levelScreen .panel {
+    width: calc(100vw - 14px);
+    max-height: calc(100dvh - 14px);
+    padding: 11px;
+    border-width: 4px;
+  }
+  #levelScreen .panel h2 { margin-bottom: 10px; }
+  .group-tabs { grid-template-columns: repeat(5, 1fr); gap: 3px; }
+  .group-tabs button { height: 28px; padding: 0 2px; font-size: 7px; }
   .level-overview { align-items: flex-start; gap: 4px; flex-direction: column; }
 }
 @media (max-height: 500px) {

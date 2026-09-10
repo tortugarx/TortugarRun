@@ -15,7 +15,7 @@ for (const [i,l] of levels.entries()) {
   assert.equal(l.number,i+1);
   assert.equal(l.difficulty,1+9*i/49,`nonlinear difficulty score: ${i+1}`);
   if(i) assert(l.difficulty>levels[i-1].difficulty,`difficulty must rise every room: ${i+1}`);
-  assert.equal(l.group,i<14?0:i<29?1:i<39?2:3);
+  assert.equal(l.group,Math.floor(i/10));
   assert(l.identity?.silhouette&&l.identity?.direction&&l.identity?.trigger&&l.identity?.door,`missing identity matrix row: ${i+1}`);
   if(i<14) {
     assert.equal(l.motions.length,0);
@@ -68,6 +68,7 @@ for (const [i,l] of levels.entries()) {
 assert.equal(new Set(levels.map(l=>l.identity.silhouette)).size,50,'duplicate silhouette');
 assert.equal(new Set(levels.map(l=>Object.values(l.identity).join('|'))).size,50,'duplicate identity combination');
 const finale=levels.at(-1);
+assert.deepEqual(levels.reduce((counts,l)=>(counts[l.group]=(counts[l.group]||0)+1,counts),[]),[10,10,10,10,10],'five equal acts');
 assert.equal(finale.targetMinutes,7,'finale playtime target');
 assert.equal(finale.requiredButtons.length,4,'finale must retain all four acts');
 assert(finale.spikes.length>=12,'finale needs enough learned hazards for repeated attempts');

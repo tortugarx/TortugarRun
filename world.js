@@ -41,7 +41,15 @@
       if (!c) return true;
       if (this.teleport && (c.zone || c.stand || c.jump)) return false;
       const p = this.p;
-      if (c.zone && !hit(p, rect(c.zone))) return false;
+      if (c.zone) {
+        const zone = rect(c.zone);
+        const inZone = hit(p, zone);
+        // A hidden spike uses its trigger as a vertical sensor as well. This
+        // keeps a memorised full-height jump from silently skipping the trap.
+        const crossedAbove = c.column && p.x + p.w > zone.x && p.x < zone.x + zone.w &&
+          p.y + p.h <= zone.y + zone.h && p.y + p.h >= zone.y - 190;
+        if (!inZone && !crossedAbove) return false;
+      }
       if (c.jump && !this.jumpNow) return false;
       if (c.stand) {
         const b = this.object(c.stand);

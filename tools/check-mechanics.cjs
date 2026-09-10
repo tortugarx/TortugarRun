@@ -86,7 +86,12 @@ advance(betrayal,30);assert.equal(betrayal.status,'dead');
 const smoothCarry=new World({...base,spawn:[230,400],blocks:[[200,400,120,24,'lift']],motions:[{id:'lift',ease:true,when:{stand:'lift'},path:[[0,-100,0.6]]}],spikes:[{x:285,y:400,w:18,attach:'lift'}]});
 advance(smoothCarry,100);assert.equal(smoothCarry.status,'playing');
 assert.equal(smoothCarry.haz[0].y,300);assert(Math.abs(smoothCarry.p.y+smoothCarry.p.h-300)<0.001);
-console.log('Verified permanent retraction, restart restoration, moving spikes, harmful buttons and smooth carrier attachment.');
+// Position traps also notice a memorised jump that crosses above the original
+// floor-height box, while ordinary zones keep their authored rectangle.
+const sensor=new World(base);Object.assign(sensor.p,{x:205,y:245});
+assert(sensor.condition({zone:[200,390,16,30],column:true}));
+assert(!sensor.condition({zone:[200,390,16,30]}));
+console.log('Verified permanent retraction, restart restoration, moving spikes, overhead sensors, harmful buttons and smooth carrier attachment.');
 
 // Walking speed is relative to a grounded moving support, not overwritten by
 // it. Same-direction motion is faster; counter-walking offsets the carrier.

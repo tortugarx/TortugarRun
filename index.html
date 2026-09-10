@@ -8,7 +8,7 @@
     />
     <meta name="theme-color" content="#071b22" />
     <title>Level Devil</title>
-    <link rel="stylesheet" href="style.css?v=36" />
+    <link rel="stylesheet" href="style.css?v=37" />
   </head>
   <body>
     <main class="shell">
@@ -23,7 +23,7 @@
         <div id="levelScreen" class="overlay hidden">
           <div class="panel">
             <p class="eyebrow">LEVELS</p>
-            <h2>Choose a room</h2>
+            <h2>Raum wählen</h2>
             <div id="levelGrid" class="level-grid"></div>
             <button id="closeLevelsBtn" class="secondary">BACK</button>
           </div>
@@ -57,17 +57,11 @@
         </div>
         <div class="hud">
           <div><small>ROOM</small><strong id="levelLabel">01 / 50</strong></div>
-          <div class="focus-wrap">
-            <small>FOKUS</small>
-            <div class="meter"><i id="focusMeter"></i></div>
-          </div>
           <div class="right">
             <small>DEATHS</small><strong id="deathLabel">00</strong>
           </div>
         </div>
-        <div id="toast" class="toast"></div>
         <div class="game-actions">
-          <button id="focusBtn" aria-label="Reveal spikes" title="Fokus (F)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2h4v8H6zM6 12h4v3H6z"/></svg></button>
           <button id="mapBtn" aria-label="Level select" title="Level auswählen"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h6v6H1zM9 1h6v6H9zM1 9h6v6H1zM9 9h6v6H9z"/></svg></button>
           <button id="restartBtn" aria-label="Restart room" title="Neustart (R)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h7v2h3v3h2v6h-2v3H5v-3h7V6h-2V4H5v3H0V1h2v3h2z"/></svg></button>
           <button id="settingsBtn" aria-label="Settings" title="Einstellungen"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M6 0h4v3h3V1h2v4h-2v1h3v4h-3v1h2v4h-2v-2h-3v3H6v-3H3v2H1v-4h2v-1H0V6h3V5H1V1h2v2h3zM6 6v4h4V6z"/></svg></button>
@@ -79,8 +73,8 @@
         </nav>
       </section>
     </main>
-    <script src="levels.js?v=36"></script>
-    <script src="world.js?v=36"></script>
-    <script src="game.js?v=36"></script>
+    <script src="levels.js?v=37"></script>
+    <script src="world.js?v=37"></script>
+    <script src="game.js?v=37"></script>
   </body>
 </html>

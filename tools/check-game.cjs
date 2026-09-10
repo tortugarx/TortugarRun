@@ -24,7 +24,7 @@ function boot(innerWidth=960,innerHeight=540,coarse=innerWidth<=760) {
   const key=(code,down)=>handlers[down?'keydown':'keyup']({code,preventDefault(){}});
   function select(id) {
     $('#mapBtn').onclick();let grid=$('#levelGrid');
-    const group=id<15?0:id<30?1:id<40?2:3;
+    const group=Math.floor((id-1)/10);
     grid.children[0].children[group].onclick();
     grid.children.find(n=>n.innerHTML?.startsWith(id+'<')).onclick();
   }

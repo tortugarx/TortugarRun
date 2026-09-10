@@ -7,10 +7,17 @@ const assert=require('node:assert/strict');
   const page=await browser.newPage({viewport:{width:1200,height:800}});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(process.env.BASE_URL||'http://127.0.0.1:4173');
+  assert.equal(await page.locator('#focusBtn, #toast').count(),0,'sonar and level-name toast removed');
+  await page.locator('#mapBtn').click();
+  for(let group=0;group<5;group++){
+    await page.locator('.group-tabs button').nth(group).click();
+    assert.equal(await page.locator('#levelGrid > button').count(),10,`act ${group+1} has ten rooms`);
+  }
+  await page.locator('#closeLevelsBtn').click();
   const images=[];
   for(let id=1;id<=50;id++){
     await page.locator('#mapBtn').click();
-    await page.locator('.group-tabs button').nth(id<15?0:id<30?1:id<40?2:3).click();
+    await page.locator('.group-tabs button').nth(Math.floor((id-1)/10)).click();
     const number=String(id).padStart(2,'0');
     await page.locator(`#levelGrid > button[title^="${number} ·"]`).click();
     await page.waitForTimeout(40);
@@ -46,12 +53,12 @@ const assert=require('node:assert/strict');
   assert.deepEqual(mobileLayout,{width:390,height:758,fit:'cover'});
   for(let id=1;id<=50;id++){
     await mobilePage.locator('#mapBtn').click();
-    await mobilePage.locator('.group-tabs button').nth(id<15?0:id<30?1:id<40?2:3).click();
+    await mobilePage.locator('.group-tabs button').nth(Math.floor((id-1)/10)).click();
     await mobilePage.locator(`#levelGrid > button[title^="${String(id).padStart(2,'0')} ·"]`).click();
     await mobilePage.waitForTimeout(20);
   }
   await mobilePage.locator('#mapBtn').click();
-  await mobilePage.locator('.group-tabs button').nth(2).click();
+  await mobilePage.locator('.group-tabs button').nth(3).click();
   await mobilePage.locator('#levelGrid > button[title^="36 ·"]').click();
   await mobilePage.keyboard.down('ArrowRight');
   await mobilePage.waitForTimeout(720);
