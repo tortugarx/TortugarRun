@@ -71,31 +71,36 @@ const silhouettes=['flat-line','double-terrace','deep-step-u','low-tunnel','thre
 const directions=['east-flat','east-gap','down-up','east-low','island-east','west-drop','choice-over','fall-west','pillar-east','out-and-over','east-down-west','vertical-down','east-calm','up-down-east','east-sink','up-east','ferry-east','down-west','east-locked-back','west-then-east','up-switch','receding-east','wave-east','up-then-east','middle-transfer','stair-east','center-up','chase-up-east','core-east-up','teleport-east','portal-up-down','impulse-east','portal-s-east','portal-lift-up','portal-return-down','mirror-east','fall-slot-east','timed-portal-east','direct-west','button-east','bridge-swap-east','small-east-jump','door-down-left','east-down-west','left-right-up','size-east-up','ferry-right-portal-left','down-right-return','button-portal-east','fall-lift-portal-west'];
 const triggers=['none-visible-spike','edge-zone','u-sequence','jump','flight-arc','wrong-way-zone','tunnel-probe','tower-leave','target-land','inner-jump','far-end','fall-zones','none-calm','last-edge','stand-sink','stand-lift','stand-ferry','stand-drop','mid-zone','stand-current','entry-zone','run-zone','shore-zone-wave','stand-helper','stand-stop','step-zone-order','climb-zone','chase-zone','core-zone','portal-entry','portal-height','portal-momentum','two-portals','portal-arrival-motion','return-arrival','mirror-arrival','portal-decoy','moving-portal-time','ignore-portals','button-honest','button-swap','two-size-buttons','button-move-goal','button-return','button-order','optional-button','moving-button','button-return-stair','button-lift-portal','button-lift-portal-final'];
 const doors=['right-floor','right-terrace','right-high','right-tunnel','right-bank-high','left-low','right-low','left-low-niche','right-pillar','right-upper','left-lower','right-niche','right-bridge','right-low','right-hall','right-high','right-bank','left-low','right-step','right-bank','right-upper','right-moving-island','right-bank-wave','right-upper-niche','right-bank-overhang','right-bottom-step','top-center','right-top','right-anchor','right-room','right-lower-niche','right-open','right-island','right-lift-height','u-bottom','right-mirror','right-bottom','right-target-bank','left-low','right-bank','right-hall','right-gorge','moving-island','left-lower','top-center-y','right-high-niche','left-tower','left-start-high','right-island','left-upper-niche'];
+// Reviewed approach direction for every position-triggered spike. Keeping this
+// explicit avoids guessing from an overlapping zone's centre (which used to
+// place room 2's trigger behind the spike).
+const triggerApproaches={
+  2:{0:'left'},3:{0:'left',1:'left'},5:{0:'left'},6:{0:'left'},7:{0:'left'},
+  8:{0:'right'},9:{0:'left'},10:{0:'left'},11:{0:'right'},
+  12:{0:'right',1:'left',2:'right'},14:{1:'left'},19:{0:'left'},30:{0:'left'},
+  31:{0:'right',1:'right'},32:{1:'left'},33:{0:'left',1:'right'},
+  35:{1:'left'},36:{0:'left'},37:{0:'right',1:'left'},39:{0:'right',1:'right'},
+  46:{0:'left',1:'left'}
+};
 silhouettes.splice(29,10,'lone-center-monolith','needle-vertical-shaft','impulse-sky-island','stacked-return-corridors','deep-portal-lift-u','three-band-return-run','opposed-c-arms','portal-fall-zigzag','diagonal-moving-portal','high-direct-decoys');
 directions.splice(29,10,'portal-bank-lift-east','fall-right-left','impulse-drop-east','east-west-east-chase','lift-up-portal-east','east-west-drop-east','portal-left-floor-up-east','east-west-east-collapse','ferry-up-portal','direct-west');
 triggers.splice(29,10,'arrival-bank-then-lift','arrival-alternating-walls','arrival-sink-and-wall','arrival-chaser','stand-two-phase-lift','arrival-hatch-and-wall','arrival-moving-mirror','arrival-double-collapse','stand-moving-portal','ignore-portals');
 for(const [i,l] of levels.entries()){
   l.guide=guides[l.number]||[];
   l.identity={silhouette:silhouettes[i],direction:directions[i],trigger:triggers[i],door:doors[i]};
-  for(const hazard of l.spikes){
+  for(const [hazardIndex,hazard] of l.spikes.entries()){
     hazard.baseX=hazard.x;hazard.baseY=hazard.y;
     if(hazard.when&&!hazard.initial){
       hazard.speed=12;
       if(hazard.when.zone){
         hazard.delay=0;
-        const q=hazard.when.zone;
-        if((hazard.dir||'up')==='up'||hazard.dir==='down'){
-          const center=q[0]+q[2]/2;
-          hazard.when.zone=center<=hazard.x
-            ?[Math.max(32,hazard.x-50),q[1],16,q[3]]
-            :[Math.min(912,hazard.x+hazard.w+34),q[1],16,q[3]];
-        } else {
-          const center=q[0]+q[2]/2;
+        hazard.triggerFrom=triggerApproaches[l.number]?.[hazardIndex];
+        if(hazard.triggerFrom!=='overhead'){
           const leftTip=hazard.x-(hazard.dir==='left'?9:0);
-          const rightTip=hazard.x+(hazard.dir==='right'?9:0);
-          hazard.when.zone=center<=hazard.x
-            ?[Math.max(32,leftTip-50),q[1],16,q[3]]
-            :[Math.min(912,rightTip+34),q[1],16,q[3]];
+          const rightTip=hazard.x+hazard.w+(hazard.dir==='right'?9-hazard.w:0);
+          hazard.when.zone=hazard.triggerFrom==='left'
+            ?[Math.max(32,leftTip-50),hazard.when.zone[1],16,hazard.when.zone[3]]
+            :[Math.min(912,rightTip+34),hazard.when.zone[1],16,hazard.when.zone[3]];
         }
       }
     }

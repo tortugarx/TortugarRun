@@ -88,13 +88,17 @@ for(const l of levels)for(const hazard of l.spikes)if(hazard.when&&!hazard.initi
   if(hazard.duration!==undefined)assert(hazard.duration>collisionLatency,`hazard retracts before it can collide: ${l.number}`);
   if(hazard.when.zone){
     const q=hazard.when.zone;
-    const horizontal=hazard.dir==='left'||hazard.dir==='right';
-    const left=horizontal?hazard.x-(hazard.dir==='left'?9:0):hazard.x;
-    const right=horizontal?hazard.x+(hazard.dir==='right'?9:0):hazard.x+hazard.w;
-    const edgeGap=Math.min(Math.abs(q[0]+q[2]-left),Math.abs(q[0]-right));
     assert.equal(hazard.delay,0,`position trigger has a second hidden delay: ${l.number}`);
-    assert(edgeGap>=32&&edgeGap<=36,`hazard trigger is not at the shared last-moment distance: ${l.number}`);
-    assert(edgeGap/220>1/hazard.speed,`full-speed player can outrun spike animation: ${l.number}`);
+    assert(['left','right','overhead'].includes(hazard.triggerFrom),`missing reviewed spike approach: ${l.number}`);
+    if(hazard.triggerFrom!=='overhead'){
+      const left=hazard.x-(hazard.dir==='left'?9:0);
+      const right=hazard.x+hazard.w+(hazard.dir==='right'?9-hazard.w:0);
+      const edgeGap=hazard.triggerFrom==='left'?left-(q[0]+q[2]):q[0]-right;
+      assert(edgeGap>=32&&edgeGap<=36,`hazard trigger is on the wrong approach side: ${l.number}`);
+      assert((edgeGap+q[2])/220>1/hazard.speed,`full-speed player can outrun spike animation: ${l.number}`);
+    } else {
+      assert(q[0]<hazard.x+hazard.w&&q[0]+q[2]>hazard.x,`overhead trigger misses spike: ${l.number}`);
+    }
   }
 }
 console.log(`Checked ${levels.length} rooms: categories, spawns, portal destinations, deterministic replay.`);

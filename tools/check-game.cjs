@@ -1,7 +1,7 @@
 // Exercise the real game adapter, canvas draw calls and input listeners in a
 // minimal DOM. Room physics are separately covered by the winning replays.
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-function boot(innerWidth=960,innerHeight=540) {
+function boot(innerWidth=960,innerHeight=540,coarse=innerWidth<=760) {
   const nodes=new Map(),handlers={},timers=new Map(),transforms=[];let raf,time=0,timerId=0;
   const context2d=new Proxy({scale:(x,y)=>transforms.push(['scale',x,y]),translate:(x,y)=>transforms.push(['translate',x,y])}, {get:(o,k)=>k in o?o[k]:(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
   function node() {
@@ -17,7 +17,7 @@ function boot(innerWidth=960,innerHeight=540) {
   const env={console,URLSearchParams,Math,innerWidth,innerHeight,DevilLevels:require('../levels.js'),DevilWorld:require('../world.js'),
     document:{querySelector:$,querySelectorAll:()=>touches,createElement:node,documentElement:node()},
     localStorage:{getItem:k=>data.get(k),setItem:(k,v)=>data.set(k,String(v))},location:{search:''},
-    addEventListener:(key,f)=>handlers[key]=f,requestAnimationFrame:f=>raf=f,
+    addEventListener:(key,f)=>handlers[key]=f,matchMedia:()=>({matches:coarse}),requestAnimationFrame:f=>raf=f,
     setTimeout:(f,delay)=>{const id=++timerId;timers.set(id,{f,at:time+delay});return id;},clearTimeout:id=>timers.delete(id)};
   env.window=env;vm.runInNewContext(fs.readFileSync(require.resolve('../game.js'),'utf8'),env);
   const frame=()=>{time+=1000/120;raf(time);for(const [id,t]of timers)if(t.at<=time){timers.delete(id);t.f();}};
@@ -74,4 +74,16 @@ assert(!delayed.$('#deathScreen').classList.contains('hidden'),'dialog appears a
 const mobile=boot(390,844);mobile.frame();mobile.select(36);mobile.frame();
 assert(mobile.transforms.some(t=>t[0]==='translate'&&t[2]===0),'portrait camera pan');
 assert(!mobile.transforms.some(t=>t[0]==='scale'&&t[1]===1.55&&t[2]===1.55),'portrait camera preserves geometry');
-console.log('Verified game rendering adapter, category selection, all 50 complete game routes, final screen, touch input and restart timers.');
+mobile.$('#settingsBtn').onclick();
+assert.equal(mobile.$('#trackingValue').textContent,'ON');
+mobile.$('#trackingSetting').onclick();
+assert.equal(mobile.$('#trackingValue').textContent,'OFF');
+mobile.transforms.length=0;mobile.frame();
+assert(!mobile.transforms.some(t=>t[0]==='translate'&&t[2]===0),'disabled tracking leaves the full room fixed');
+const tablet=boot(1024,768,true);tablet.frame();tablet.$('#settingsBtn').onclick();
+assert.equal(tablet.$('#trackingSetting').disabled,true);
+assert.equal(tablet.$('#trackingValue').textContent,'AUTO OFF');
+const desktop=boot(1200,800,false);desktop.frame();desktop.$('#settingsBtn').onclick();
+assert.equal(desktop.$('#trackingSetting').disabled,true);
+assert.equal(desktop.$('#trackingValue').textContent,'AUTO OFF');
+console.log('Verified game rendering adapter, all 50 routes, touch input, restart timers, tracking toggle and automatic desktop/tablet-landscape disablement.');

@@ -33,6 +33,7 @@
     shake = 0,
     muted = localStorage.getItem("level-devil-sound") === "off",
     autoRestart = localStorage.getItem("level-devil-auto-restart") === "on",
+    tracking = localStorage.getItem("level-devil-tracking") !== "off",
     last = 0,
     clock = 0,
     audio,
@@ -231,9 +232,11 @@
   function platform(r, crumb = false) {
     const c = palette();
     X.fillStyle = crumb ? c[2] : c[3];
-    X.beginPath();
-    X.rect(r.x, r.y, r.w, r.h);
-    X.fill();
+    // Moving blocks often sit on fractional coordinates. Drawing every block
+    // out to the surrounding whole pixels makes touching stone overlap by at
+    // most one pixel instead of exposing a hairline of the light background.
+    const left = Math.floor(r.x), top = Math.floor(r.y);
+    X.fillRect(left, top, Math.ceil(r.x + r.w) - left, Math.ceil(r.y + r.h) - top);
   }
   function stoneEdges(r) {
     // Draw only exposed edges, so adjoining stone reads as one solid wall.
@@ -339,9 +342,9 @@
   function applyCamera() {
     const screenW = globalThis.innerWidth ?? W;
     const screenH = globalThis.innerHeight ?? H;
-    const mobile = screenW <= 760 || globalThis.matchMedia?.("(pointer: coarse)").matches;
+    const mobile = globalThis.matchMedia?.("(pointer: coarse)").matches ?? screenW <= 760;
     const portrait = mobile && screenH > screenW;
-    if (!mobile || !P) { camera.x = camera.y = 0; camera.ready = false; return; }
+    if (!trackingAvailable() || !tracking || !P) { camera.x = camera.y = 0; camera.ready = false; return; }
     let focusX = P.x + P.w / 2, focusY = P.y + P.h / 2;
     if (portalAnim) {
       const t = portalAnim.t * portalAnim.t * (3 - 2 * portalAnim.t);
@@ -488,6 +491,17 @@
   function updateSettings() {
     $("#soundValue").textContent = muted ? "OFF" : "ON";
     $("#autoRestartValue").textContent = autoRestart ? "ON" : "OFF";
+    const available = trackingAvailable();
+    $("#trackingSetting").disabled = !available;
+    $("#trackingSetting").setAttribute?.("aria-disabled", String(!available));
+    $("#trackingValue").textContent = available ? (tracking ? "ON" : "OFF") : "AUTO OFF";
+  }
+  function trackingAvailable() {
+    const screenW = globalThis.innerWidth ?? W;
+    const screenH = globalThis.innerHeight ?? H;
+    const coarse = globalThis.matchMedia?.("(pointer: coarse)").matches ?? screenW <= 760;
+    const landscapeTablet = coarse && screenW >= screenH && Math.min(screenW, screenH) > 500;
+    return coarse && !landscapeTablet;
   }
   function openSettings() {
     if (state === "dying" || state === "transition") return;
@@ -523,6 +537,13 @@
     state = settingsReturnState;
   };
   $("#soundSetting").onclick = toggle;
+  $("#trackingSetting").onclick = () => {
+    if (!trackingAvailable()) return;
+    tracking = !tracking;
+    camera.ready = false;
+    localStorage.setItem("level-devil-tracking", tracking ? "on" : "off");
+    updateSettings();
+  };
   $("#autoRestartSetting").onclick = () => {
     autoRestart = !autoRestart;
     localStorage.setItem(
@@ -535,6 +556,7 @@
     K.left = K.right = K.jump = 0;
     for (const set of [...Object.values(activePointers), ...Object.values(activeTouches)]) set.clear();
   });
+  addEventListener("resize", updateSettings);
   updateSettings();
   start();
   requestAnimationFrame(loop);

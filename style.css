@@ -164,6 +164,10 @@ canvas {
 .setting-row strong {
   color: var(--level-mid, #aaa);
 }
+.setting-row:disabled {
+  cursor: not-allowed;
+  opacity: .62;
+}
 .death-actions {
   display: flex;
   justify-content: center;
