@@ -1,4 +1,4 @@
-# Level Devil – eigener Ragebait-Plattformer
+# Tortuga Trials – Pixel-Plattformer mit fiesen Fallen
 
 50 vollständig neu entworfene Räume. Hohe Abstiege, Aufzüge, bodenverbundene Fähren, Rückwege und Portalräume mit wenigen gezielten Fallen. Referenzanalyse: [REBUILD.md](REBUILD.md); Raumideen: [LEVEL_DESIGN_STICHPUNKTE.md](LEVEL_DESIGN_STICHPUNKTE.md).
 
@@ -20,7 +20,7 @@ Die Mechaniken werden weiterhin in der Reihenfolge Stacheln, bewegliche Mapteile
 
 Versteckte ortsabhängige Stacheln reagieren an einer festen Linie vor ihrer Spitze. Der Sensor reicht vertikal über die Bodenzone, sodass ein gemerkter hoher Sprung die Auslösung nicht umgeht. Je nach Level fahren sie in ungefähr 63–94 ms vollständig aus. Nach einem Treffer laufen Spike-, Mechanik- und Todesanimationen 900 ms sichtbar weiter, bevor der Dialog erscheint.
 
-Level 1 zeigt eine hoch platzierte Pixeltafel für Laufen, Springen und das Ziel, die Tür zu erreichen. Sie liegt außerhalb der Sprunghöhe und bleibt im mobilen Kamerafenster sichtbar. Levelnamen erscheinen beim Start eines Raums nicht mehr als Popup. Todesnachrichten unterscheiden die konkrete Ursache; die Tür löst die Figur in dieselben groben Pixelpartikel wie die Todesanimation auf. Die fünf Auswahlkategorien heißen `STACHELN`, `BEWEGUNG`, `PORTALE`, `KNÖPFE` und `FINALE`. Auf Computern und Tablets im Querformat ist der Trackingmodus automatisch deaktiviert und wird als `OFF` angezeigt; auf unterstützten Mobilgeräten lässt er sich zwischen `ON` und `OFF` umschalten. Unter den Optionen zeigt `ABOUT` Version 1.4.1, die letzten Änderungen und `BY StoiberRules`.
+Level 1 zeigt eine hoch platzierte Pixeltafel für Laufen, Springen und das Ziel, die Tür zu erreichen. Sie liegt außerhalb der Sprunghöhe und bleibt im mobilen Kamerafenster sichtbar. Levelnamen erscheinen beim Start eines Raums nicht mehr als Popup. Todesnachrichten unterscheiden die konkrete Ursache; die Tür löst die Figur in dieselben groben Pixelpartikel wie die Todesanimation auf. Die fünf Auswahlkategorien heißen `STACHELN`, `BEWEGUNG`, `PORTALE`, `KNÖPFE` und `FINALE`. Auf Computern und Tablets im Querformat ist der Trackingmodus automatisch deaktiviert und wird als `OFF` angezeigt; auf unterstützten Mobilgeräten lässt er sich zwischen `ON` und `OFF` umschalten. Unter den Optionen zeigt `ABOUT` Version 1.5.0, die letzten Änderungen und `BY StoiberRules`.
 
 Für Nixpacks liegt eine `nixpacks.toml` bei. Der Startbefehl ist `node tools/serve.cjs`; der Server bindet sich an `0.0.0.0` und übernimmt die vom Host gesetzte Variable `PORT`.
 

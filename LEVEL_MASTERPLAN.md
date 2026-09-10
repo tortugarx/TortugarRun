@@ -1,4 +1,4 @@
-# Verbindlicher Masterplan für 50 Level
+# Tortuga Trials – verbindlicher Masterplan für 50 Level
 
 Status: **Gesamtabgleich nach dem Spielerfeedback vom 10. September 2026 technisch, spielmechanisch und visuell abgenommen.** Die Schwierigkeit steigt über den linearen Levelwert und zunehmend kombinierte Mechaniken. Für Level 50 sind ungefähr sieben Minuten einschließlich echter Fehlversuche das Spieler-Testziel; automatische Bestzeiten werden nicht als menschliche Spielzeit ausgegeben. Dieser Plan ersetzt frühere grobe Szenenlisten.
 

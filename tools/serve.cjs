@@ -8,4 +8,4 @@ http.createServer((req,res)=>{
   const type=file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html';
   res.writeHead(200,{'Content-Type':type+'; charset=utf-8','Cache-Control':'no-store'});
   fs.createReadStream(path.join(root,file)).pipe(res);
-}).listen(port,'0.0.0.0',()=>console.log(`Level Devil on port ${port}`));
+}).listen(port,'0.0.0.0',()=>console.log(`Tortuga Trials on port ${port}`));

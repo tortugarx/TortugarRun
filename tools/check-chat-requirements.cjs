@@ -34,7 +34,7 @@ assert.equal(finale.targetMinutes,7);assert.equal(finale.spikes.length,12);
 assert.equal(finale.motions.length,2);assert.equal(finale.portals.length,2);assert.equal(finale.requiredButtons.length,4);
 
 const nixpacks=read('nixpacks.toml'),server=read('tools/serve.cjs');
-assert(html.includes('VERSION 1.4.1')&&html.includes('BY StoiberRules')&&html.includes('NEU:'),'settings about section missing');
+assert(html.includes('<title>Tortuga Trials</title>')&&html.includes('VERSION 1.5.0')&&html.includes('BY StoiberRules')&&html.includes('NEU:'),'title or settings about section missing');
 assert(html.includes('id="deathMessage"')&&game.includes('world.deathCause')&&game.includes('button-trap'),'cause-specific death messages missing');
 assert(nixpacks.includes('nodejs_22')&&nixpacks.includes('node tools/serve.cjs'),'Nixpacks start configuration missing');
 assert(server.includes('process.env.PORT')&&server.includes("'0.0.0.0'"),'host port binding missing');
