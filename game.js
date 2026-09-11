@@ -469,15 +469,18 @@
       focusY = portalAnim.from.y + (portalAnim.to.y - portalAnim.from.y) * t;
     }
     if (portrait) {
-      // CSS fills the portrait play area with the 16:9 canvas via object-fit.
-      // Only this centred source slice remains visible, so move the world behind
-      // that slice while keeping its pixels and collision geometry undistorted.
-      const playHeight = Math.max(1, screenH - 86);
-      const viewW = Math.max(210, Math.min(W, H * screenW / playHeight));
+      // The portrait canvas is cropped by CSS. Add a modest real camera zoom so
+      // the turtle stays readable instead of showing the full 540px room height.
+      const playHeight = Math.max(1, screenH - 76);
+      const cropW = Math.max(210, Math.min(W, H * screenW / playHeight));
+      const zoom = 1.42, viewW = cropW / zoom, viewH = H / zoom;
       const targetX = Math.max(0, Math.min(W - viewW, focusX - viewW * .48));
-      if (!camera.ready) { camera.x = targetX; camera.y = 0; camera.ready = true; }
-      else camera.x += (targetX - camera.x) * .16;
-      X.translate(Math.round((W - viewW) / 2 - camera.x), 0);
+      const targetY = Math.max(0, Math.min(H - viewH, focusY - viewH * .68));
+      if (!camera.ready) { camera.x = targetX; camera.y = targetY; camera.ready = true; }
+      else { camera.x += (targetX - camera.x) * .16; camera.y += (targetY - camera.y) * .16; }
+      X.translate(Math.round((W - cropW) / 2), 0);
+      X.scale(zoom, zoom);
+      X.translate(-Math.round(camera.x), -Math.round(camera.y));
       return;
     }
     const zoom = 1.55, viewW = W / zoom, viewH = H / zoom;

@@ -112,7 +112,7 @@ const assert=require('node:assert/strict');
     const canvas=getComputedStyle(document.querySelector('#game'));
     return {width:wrap.width,height:wrap.height,fit:canvas.objectFit};
   });
-  assert.deepEqual(mobileLayout,{width:390,height:758,fit:'cover'});
+  assert.deepEqual(mobileLayout,{width:390,height:768,fit:'cover'});
   for(let id=1;id<=50;id++){
     await mobilePage.locator('#mapBtn').click();
     await mobilePage.locator('.group-tabs button').nth(Math.floor((id-1)/10)).click();
@@ -139,5 +139,5 @@ const assert=require('node:assert/strict');
   await freshContext.close();
   await browser.close();
   if(errors.length)throw Error(errors.join('\n'));
-  console.log('All 50 rooms rendered in Chromium; 390x844 portrait fills 390x758 above controls without distortion; no page errors.');
+  console.log('All 50 rooms rendered in Chromium; 390x844 portrait fills 390x768 above controls with turtle tracking; no page errors.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

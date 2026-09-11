@@ -86,7 +86,7 @@ for(let t=0;t<12;t++)delayed.frame();
 assert(!delayed.$('#deathScreen').classList.contains('hidden'),'dialog appears after completed animation');
 const mobile=boot(390,844);mobile.frame();mobile.select(36);mobile.frame();
 assert(mobile.transforms.some(t=>t[0]==='translate'&&t[2]===0),'portrait camera pan');
-assert(!mobile.transforms.some(t=>t[0]==='scale'&&t[1]===1.55&&t[2]===1.55),'portrait camera preserves geometry');
+assert(mobile.transforms.some(t=>t[0]==='scale'&&t[1]===1.42&&t[2]===1.42),'portrait camera must zoom on the turtle');
 mobile.$('#settingsBtn').onclick();
 assert.equal(mobile.$('#trackingValue').textContent,'ON');
 mobile.$('#trackingSetting').onclick();

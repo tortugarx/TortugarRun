@@ -635,9 +635,19 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   }
   .game-wrap {
     width: 100vw;
-    height: calc(100dvh - 86px);
+    height: calc(100dvh - 76px);
     aspect-ratio: auto;
-    margin: 0 0 86px;
+    margin: 0 0 76px;
+  }
+  .game-wrap::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset: 0 0 auto;
+    height: 41px;
+    background: var(--level-dark, #222);
+    border-bottom: 3px solid var(--level-mid, #777);
+    pointer-events: none;
   }
   canvas {
     width: 100%;
@@ -647,20 +657,56 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   }
   .touch-controls {
     top: 100%;
-    height: 86px;
+    height: 76px;
     align-items: center;
+    inset-inline: 10px;
+    gap: 8px;
   }
+  .touch-controls button { height: 52px; }
   .hud {
-    width: 52%;
-    gap: 5px;
-    grid-template-columns: 1fr 1fr;
+    top: 6px;
+    left: 8px;
+    width: calc(100% - 158px);
+    gap: 7px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  .hud small { font-size: 8px; }
-  .hud strong { font-size: 10px; }
+  .hud .right { text-align: left; }
+  .hud small { overflow: hidden; font-size: 8px; text-overflow: ellipsis; }
+  .hud strong { white-space: nowrap; font-size: 10px; }
+  .game-actions { top: 5px; right: 6px; gap: 4px; }
   .game-actions button {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
+    border-width: 2px;
+    box-shadow: 3px 3px 0 rgba(0,0,0,.72), inset -2px -2px 0 var(--level-mid, #888), inset 2px 2px 0 #fff;
   }
+  .game-actions .shop-action::after { top: -4px; right: -4px; width: 10px; height: 10px; font-size: 7px; }
+  .tutorial-card {
+    top: 46px;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    padding: 5px 6px 6px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-width: 3px 0;
+    box-shadow: 0 5px 0 rgba(0,0,0,.45);
+    font-size: 8px;
+  }
+  .tutorial-card > strong {
+    grid-column: 1/-1;
+    margin-bottom: 4px;
+    padding: 4px;
+    font-size: 9px;
+  }
+  .tutorial-card > div {
+    grid-template-columns: 18px 28px minmax(0,1fr);
+    min-height: 22px;
+    padding: 0 3px;
+  }
+  .tutorial-card i { width: 16px; height: 16px; }
+  .tutorial-card b { font-size: 9px; }
+  .tutorial-card span { white-space: nowrap; }
   .section-banner { top: 78px; min-width: 210px; padding: 10px 14px; }
 }
 @media (max-width: 400px) {
@@ -672,13 +718,13 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   .reward-button { margin-top: 8px; }
   .touch-controls {
     inset-inline: 8px;
-    grid-template-columns: 76px 76px 1fr 94px;
+    grid-template-columns: 1fr 1fr .55fr 1.25fr;
   }
   .touch-controls button {
-    width: 76px;
+    width: 100%;
   }
   .touch-controls .jump {
-    width: 94px;
+    width: 100%;
   }
   .level-grid {
     grid-template-columns: repeat(5, minmax(42px, 1fr));

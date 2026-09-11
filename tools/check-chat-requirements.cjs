@@ -5,10 +5,11 @@ const {PORTAL_DURATION}=require('../world');
 const read=name=>fs.readFileSync(require.resolve('../'+name),'utf8');
 const html=read('index.html'),game=read('game.js'),style=read('style.css');
 const crazy=read('crazygames.js');
+assert(html.includes('<html lang="en" translate="no">')&&html.includes('name="google" content="notranslate"'),'mobile browser translation guard missing');
 
 assert(!html.includes('focusBtn')&&!html.includes('focusMeter')&&!html.includes('id="toast"'),'sonar or level-name toast returned');
 assert(!game.includes('KeyF')&&!game.includes('function focus(')&&!game.includes('toast(L[li]'),'removed reveal mechanic returned');
-assert(game.includes('drawTutorial()')&&html.includes('MOVE')&&html.includes('JUMP')&&html.includes('REACH THE DOOR'),'room-one tutorial missing');
+assert(game.includes('drawTutorial()')&&html.includes('MOVE')&&html.includes('JUMP')&&html.includes('REACH DOOR'),'room-one tutorial missing');
 assert(html.includes('id="tutorialCard"')&&style.includes('.tutorial-card')&&style.includes('--game-font: "Courier New"')&&style.includes('font-family: var(--game-font)'),'shared readable pixel font missing');
 assert(game.includes('doorAnim={')&&game.includes('drawDoorSuction()'),'door pixel suction missing');
 assert(game.includes('size:5')&&game.includes('Math.round(x/5)*5')&&game.includes('pixel.vx*scatter'),'door suction must use a death-style pixel burst');
