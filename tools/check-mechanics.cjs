@@ -93,14 +93,29 @@ advance(smoothCarry,100);assert.equal(smoothCarry.status,'playing');
 assert.equal(smoothCarry.haz[0].y,300);assert(Math.abs(smoothCarry.p.y+smoothCarry.p.h-300)<0.001);
 // Position traps also notice a memorised jump that crosses above the original
 // floor-height box, while ordinary zones keep their authored rectangle.
-const sensor=new World(base);Object.assign(sensor.p,{x:205,y:245});
+const sensor=new World(base);Object.assign(sensor.p,{x:205,y:305});
 assert(sensor.condition({zone:[200,390,16,30],column:true}));
 assert(!sensor.condition({zone:[200,390,16,30]}));
+Object.assign(sensor.p,{x:205,y:245});
+assert(!sensor.condition({zone:[200,390,16,30],column:true}),'a separate upper platform must not trigger a lower spike');
 // Room three's first spike stays raised after its overhead sensor has fired.
-const roomThree=new World(levels[2]);Object.assign(roomThree.p,{x:360,y:250,vx:0,vy:0});
+const roomThree=new World(levels[2]);Object.assign(roomThree.p,{x:360,y:330,vx:0,vy:0});
 roomThree.tick({});assert(roomThree.haz[0].started!=null);
 Object.assign(roomThree.p,{x:levels[2].spawn[0],y:levels[2].spawn[1]-18,vx:0,vy:0});
 advance(roomThree,300);assert.equal(roomThree.haz[0].progress,1);assert.equal(roomThree.haz[0].active,true);
+// Room fifteen's sinking slab cannot carry the turtle safely below the frame.
+const roomFifteen=new World(levels[14]);Object.assign(roomFifteen.p,{x:430,y:412,vx:0,vy:0});
+advance(roomFifteen,240);assert.equal(roomFifteen.status,'dead');assert.equal(roomFifteen.deathCause,'fall');
+// Every positional spike ignores a turtle more than one jump-height above it.
+for(const level of levels)for(const spike of level.spikes){
+  if(!spike.when?.zone||!spike.when.column)continue;
+  const audit=new World(level),zone=spike.when.zone;
+  Object.assign(audit.p,{x:zone[0],y:zone[1]-103,vx:0,vy:0});
+  assert(!audit.condition(spike.when),`room ${level.number} cross-floor spike trigger`);
+}
+const roomEleven=new World(levels[10]),lowerTrap=roomEleven.haz[2];
+Object.assign(roomEleven.p,{x:lowerTrap.when.zone[0],y:252,vx:0,vy:0});
+assert(!roomEleven.condition(lowerTrap.when),'room 11 upper walkway triggered its lower spike');
 console.log('Verified permanent retraction, restart restoration, moving spikes, overhead sensors, harmful buttons and smooth carrier attachment.');
 
 // Walking speed is relative to a grounded moving support, not overwritten by

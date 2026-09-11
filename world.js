@@ -45,10 +45,11 @@
       if (c.zone) {
         const zone = rect(c.zone);
         const inZone = hit(p, zone);
-        // A hidden spike uses its trigger as a vertical sensor as well. This
-        // keeps a memorised full-height jump from silently skipping the trap.
+        // A hidden spike watches one normal jump-height above its zone. A
+        // separate platform farther overhead must not activate another floor.
+        const sensorReach = typeof c.column === "number" ? c.column : 84;
         const crossedAbove = c.column && p.x + p.w > zone.x && p.x < zone.x + zone.w &&
-          p.y + p.h <= zone.y + zone.h && p.y + p.h >= zone.y - 190;
+          p.y + p.h <= zone.y + zone.h && p.y + p.h >= zone.y - sensorReach;
         if (!inZone && !crossedAbove) return false;
       }
       if (c.jump && !this.jumpNow) return false;
@@ -229,7 +230,7 @@
         this.exit = [this.level.exit[0] + b.x - b.originX, this.level.exit[1] + b.y - b.originY];
       }
       // Hazards take priority over a simultaneous door contact.
-      if (p.y > 585) { this.deathCause = "fall"; this.status = "dead"; return; }
+      if (p.y > (this.level.deathY ?? 585)) { this.deathCause = "fall"; this.status = "dead"; return; }
       const lethal = this.haz.find(h => h.progress > 0.25 && hit(p, this.spikeBox(h)));
       if (lethal) {
         this.deathCause = lethal.when?.signal?.startsWith("button:") ? "button-trap" :

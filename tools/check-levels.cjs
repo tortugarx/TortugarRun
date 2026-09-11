@@ -17,10 +17,11 @@ for (const [i,l] of levels.entries()) {
   if(i) assert(l.difficulty>levels[i-1].difficulty,`difficulty must rise every room: ${i+1}`);
   assert.equal(l.group,Math.floor(i/10));
   assert(l.identity?.silhouette&&l.identity?.direction&&l.identity?.trigger&&l.identity?.door,`missing identity matrix row: ${i+1}`);
-  if(i<14) {
+  if(i<10) {
     assert.equal(l.motions.length,0);
     assert(l.spikes.length>=2,`spike world room needs multiple hazards: ${i+1}`);
   }
+  if(i>=10&&i<20) assert(l.motions.length>=1,`moving-wall room needs moving architecture: ${i+1}`);
   if(i<29) assert.equal(l.portals.length,0);
   if(i<39) assert.equal(l.buttons.length,0);
   const world=new World(l);

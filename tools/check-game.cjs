@@ -33,6 +33,11 @@ function boot(innerWidth=960,innerHeight=540,coarse=innerWidth<=760,savedUnlocke
   return {$,frame,key,select,touches,transforms};
 }
 const app=boot();
+assert(app.$('#sectionBanner').classList.contains('hidden'),'first-room tutorial must not be covered by a section banner');
+app.$('#settingsBtn').onclick();app.$('#aboutSetting').onclick();
+assert(!app.$('#aboutScreen').classList.contains('hidden'),'about dialog opens from settings');
+app.$('#closeAboutBtn').onclick();assert(!app.$('#settingsScreen').classList.contains('hidden'),'about dialog returns to settings');
+app.$('#closeSettingsBtn').onclick();
 const fresh=boot(960,540,false,'50',null);fresh.frame();fresh.$('#mapBtn').onclick();
 assert.equal(fresh.$('#levelGrid').children[2].disabled,false,'room one must be available');
 assert.equal(fresh.$('#levelGrid').children[3].disabled,true,'room two must start locked');
@@ -44,6 +49,8 @@ for(const id of [1,6,15,24,30,38,40,43,50]) {
   assert(current?.innerHTML.includes('CURRENT'),`current room marker ${id}`);
   app.$('#closeLevelsBtn').onclick();
 }
+const chapter=boot();chapter.frame();chapter.select(11);chapter.frame();
+assert.equal(chapter.$('#sectionBanner strong').textContent,'MOVING WALLS');
 // Every recorded route also passes through the production update/draw adapter.
 const replays=require('./replays.json');
 for(const id of Array.from({length:50},(_,i)=>i+1)) {

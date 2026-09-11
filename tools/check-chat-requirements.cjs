@@ -17,7 +17,7 @@ assert(game.includes('Math.floor(r.x)')&&game.includes('stoneEdges(r)'),'seam-sa
 assert(game.includes('X.fillStyle = c[3]')&&game.includes('X.fillRect(32,96,896,H-96)'),'dark shake overscan missing');
 
 assert.equal(groups.length,5,'level menu must have five equal acts');
-assert.deepEqual(groups,['SPIKES','MOTION','PORTALS','BUTTONS','FINAL']);
+assert.deepEqual(groups,['SPIKES','MOVING WALLS','PORTALS','BUTTONS','FINAL TRIALS']);
 assert.equal(levels.length,50);assert(levels.every(level=>/^[\x20-\x7E]+$/.test(level.name+level.story)),'all runtime level copy must be English ASCII');
 assert.deepEqual(groups.map((_,group)=>levels.filter(level=>level.group===group).length),[10,10,10,10,10]);
 assert(style.includes('grid-template-columns: repeat(5, minmax(48px, 1fr))'),'desktop 5x2 grid missing');
@@ -25,7 +25,7 @@ assert(style.includes('.group-tabs { grid-template-columns: repeat(5, 1fr)'),'mo
 assert(levels.every((level,index)=>!index||level.difficulty>levels[index-1].difficulty),'difficulty is not strictly increasing');
 for(const level of levels)for(const spike of level.spikes)if(spike.when?.zone)assert.equal(spike.when.column,true,`overhead spike sensor missing in room ${level.number}`);
 
-assert(levels[9].blocks.length>=12&&levels[9].spikes.length===3,'room 10 no longer uses the full C route');
+assert(levels[9].blocks.length>=7&&levels[9].spikes.length===4,'room 10 no longer uses its full ascending route');
 assert.equal(levels[2].spikes[0].duration,undefined,'room 3 first spike must remain extended');
 assert.equal(levels[3].spikes.length,3,'room 4 needs three spikes');
 assert(levels[3].spikes[0].when?.zone&&!levels[3].spikes.some(spike=>spike.when?.jump),'room 4 spike must use a position trigger, not jump input');
@@ -39,8 +39,9 @@ assert.equal(finale.targetMinutes,7);assert.equal(finale.spikes.length,12);
 assert.equal(finale.motions.length,2);assert.equal(finale.portals.length,2);assert.equal(finale.requiredButtons.length,4);
 
 const nixpacks=read('nixpacks.toml'),server=read('tools/serve.cjs');
-assert(html.includes('<title>Tortuga Trials</title>')&&html.includes('VERSION 1.6.1')&&html.includes('by StoiberRules')&&html.includes('NEW:'),'title or settings about section missing');
-assert(style.includes('border-radius: 6px'),'buttons must have slightly rounded corners');
+assert(html.includes('<title>Tortuga Trials</title>')&&html.includes('VERSION 1.0')&&html.includes('by StoiberRules')&&!html.includes('NEW:'),'clean version 1.0 about dialog missing');
+assert(html.includes('id="aboutSetting"')&&html.includes('id="aboutScreen"')&&game.includes('showSection('),'about dialog or section arrival missing');
+assert(style.includes('border-radius: 0'),'buttons must use square pixel corners');
 assert(game.includes('tortuga-trials-progress')&&game.includes('localStorage.setItem("level-devil-unlocked","1")'),'level progression migration missing');
 assert(html.includes('id="deathMessage"')&&game.includes('world.deathCause')&&game.includes('button-trap'),'cause-specific death messages missing');
 assert(game.includes('THE VOID SAYS HI.')&&game.includes('THE BUTTON PRESSED BACK.')&&game.includes('THE CEILING BIT BACK.'),'funny English death-message variants missing');

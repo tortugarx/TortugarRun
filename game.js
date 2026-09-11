@@ -42,6 +42,8 @@
     audio,
     levelReturnState = "menu",
     settingsReturnState = "menu",
+    announcedGroup = -1,
+    bannerTimer = 0,
     portalAnim = null,
     doorAnim = null,
     camera = { x: 0, y: 0, ready: false },
@@ -61,7 +63,7 @@
     camera.ready = false;
     accumulator = 0;
     clock = 0;
-    for (const id of ["#levelScreen", "#settingsScreen"]) $(id).classList.add("hidden");
+    for (const id of ["#levelScreen", "#settingsScreen", "#aboutScreen"]) $(id).classList.add("hidden");
     state = "playing";
     $("#deathScreen").classList.add("hidden");
     const colors = palette();
@@ -69,6 +71,18 @@
     document.documentElement.style.setProperty("--level-mid", colors[2]);
     document.documentElement.style.setProperty("--level-dark", colors[3]);
     UI.level.textContent = String(li + 1).padStart(2,"0") + " / " + L.length;
+    if (L[li].group !== announcedGroup) {
+      if (announcedGroup < 0 && L[li].group === 0) announcedGroup = 0;
+      else showSection(L[li].group);
+    }
+  }
+  function showSection(group) {
+    announcedGroup = group;
+    const banner = $("#sectionBanner");
+    $("#sectionBanner strong").textContent = GROUPS[group];
+    banner.classList.remove("hidden");
+    clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(() => banner.classList.add("hidden"), 1800);
   }
   function start() {
     li = 0;
@@ -544,6 +558,14 @@
     if (state !== "menu") reset(false);
   };
   $("#settingsBtn").onclick = openSettings;
+  $("#aboutSetting").onclick = () => {
+    $("#settingsScreen").classList.add("hidden");
+    $("#aboutScreen").classList.remove("hidden");
+  };
+  $("#closeAboutBtn").onclick = () => {
+    $("#aboutScreen").classList.add("hidden");
+    $("#settingsScreen").classList.remove("hidden");
+  };
   $("#closeSettingsBtn").onclick = () => {
     $("#settingsScreen").classList.add("hidden");
     state = settingsReturnState;
