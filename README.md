@@ -15,7 +15,7 @@ Port 4173. Der Server liefert ausschließlich Spielassets aus und deaktiviert Br
 
 A/D oder Pfeile: laufen. W/↑/Leertaste: springen. R: Neustart. M: Ton. Neue Spielstände beginnen mit Raum 1 und schalten jeden weiteren Raum der Reihe nach frei. Touch-Tasten stehen unter der Spielfläche. Der frühere Fokus-/Sonarbutton wurde entfernt.
 
-Auf Handys nutzt das Spielfeld im Hochformat die gesamte Bildschirmhöhe oberhalb der Touch-Tasten. Die unverzerrte Folge-Kamera zeigt einen schmaleren Raumausschnitt und folgt der Schildkröte sowie während eines Portalflugs dessen Pixelspur. Im Querformat arbeitet weiterhin die 1,55-fache Folge-Kamera.
+Auf Handys nutzt das Spielfeld im Hochformat die gesamte Bildschirmhöhe oberhalb der Touch-Tasten. Mit Tracking `ON` zeigt die unverzerrte Folge-Kamera einen schmaleren Raumausschnitt und folgt der Schildkröte sowie während eines Portalflugs dessen Pixelspur. Mit Tracking `OFF` wird das vollständige 16:9-Level ohne Beschnitt oder Verzerrung eingepasst. Ein hochauflösender, an die Pixeldichte des Displays angepasster Canvas hält die Folgeansicht scharf. Im Querformat arbeitet weiterhin die 1,55-fache Folge-Kamera.
 
 ## Regeln
 

@@ -91,6 +91,7 @@ mobile.$('#settingsBtn').onclick();
 assert.equal(mobile.$('#trackingValue').textContent,'ON');
 mobile.$('#trackingSetting').onclick();
 assert.equal(mobile.$('#trackingValue').textContent,'OFF');
+assert.equal(mobile.$('#trackingSetting').disabled,false);
 mobile.transforms.length=0;mobile.frame();
 assert(!mobile.transforms.some(t=>t[0]==='translate'&&t[2]===0),'disabled tracking leaves the full room fixed');
 const tablet=boot(1024,768,true);tablet.frame();tablet.$('#settingsBtn').onclick();

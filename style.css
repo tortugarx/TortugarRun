@@ -656,10 +656,24 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
     pointer-events: none;
   }
   canvas {
-    width: 100%;
+    position: absolute;
+    image-rendering: pixelated;
+  }
+  /* Tracking ON fills the tall play area and moves the cropped 16:9 room with
+     the turtle. Tracking OFF fits the complete room without distortion. */
+  html[data-tracking="on"] canvas {
+    top: 0;
+    left: 50%;
+    width: auto;
     height: 100%;
-    object-fit: cover;
-    object-position: center;
+    transform: translateX(-50%);
+  }
+  html[data-tracking="off"] canvas {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: auto;
+    transform: translateY(-50%);
   }
   .touch-controls {
     top: 100%;

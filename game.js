@@ -5,6 +5,16 @@
     W = 960,
     H = 540,
     $ = (s) => document.querySelector(s);
+  // Render the logical 960x540 room into a denser backing buffer. The canvas is
+  // enlarged considerably in the portrait tracking view, so a 1x buffer made
+  // the followed view visibly softer than the fixed overview.
+  const renderScale = Math.max(1, Math.min(2.5, Number(globalThis.devicePixelRatio) || 1));
+  function resizeCanvas() {
+    const width = Math.round(W * renderScale), height = Math.round(H * renderScale);
+    if (C.width !== width) C.width = width;
+    if (C.height !== height) C.height = height;
+  }
+  resizeCanvas();
   const UI = {
     start: $("#startScreen"),
     win: $("#winScreen"),
@@ -476,8 +486,9 @@
     X.restore();
   }
   function applyCamera() {
-    const screenW = globalThis.innerWidth ?? W;
-    const screenH = globalThis.innerHeight ?? H;
+    const bounds = C.parentElement?.getBoundingClientRect?.();
+    const screenW = bounds?.width || globalThis.innerWidth || W;
+    const screenH = bounds?.height || globalThis.innerHeight || H;
     const mobile = globalThis.matchMedia?.("(pointer: coarse)").matches ?? screenW <= 760;
     const portrait = mobile && screenH > screenW;
     if (!tracking || !P) { camera.x = camera.y = 0; camera.ready = false; return; }
@@ -488,10 +499,10 @@
       focusY = portalAnim.from.y + (portalAnim.to.y - portalAnim.from.y) * t;
     }
     if (portrait) {
-      // The portrait canvas is cropped by CSS. Add a modest real camera zoom so
-      // the turtle stays readable instead of showing the full 540px room height.
-      const playHeight = Math.max(1, screenH - 76);
-      const cropW = Math.max(210, Math.min(W, H * screenW / playHeight));
+      // The portrait canvas keeps its 16:9 ratio and is cropped horizontally.
+      // Mirror that exact visible slice here so the camera follows the turtle
+      // rather than the centre of the room.
+      const cropW = Math.max(210, Math.min(W, H * screenW / Math.max(1, screenH)));
       const zoom = 1.42, viewW = cropW / zoom, viewH = H / zoom;
       const targetX = Math.max(0, Math.min(W - viewW, focusX - viewW * .48));
       const targetY = Math.max(0, Math.min(H - viewH, focusY - viewH * .68));
@@ -511,6 +522,7 @@
     X.translate(-Math.round(camera.x), -Math.round(camera.y));
   }
   function draw() {
+    X.setTransform(renderScale, 0, 0, renderScale, 0, 0);
     X.save();
     X.imageSmoothingEnabled = false;
     const c = palette();
@@ -632,6 +644,7 @@
     $("#soundValue").textContent = muted ? "OFF" : "ON";
     $("#autoRestartValue").textContent = autoRestart ? "ON" : "OFF";
     if(!trackingOverride)tracking=defaultTracking();
+    document.documentElement.dataset.tracking = tracking ? "on" : "off";
     $("#trackingSetting").disabled = false;
     $("#trackingSetting").setAttribute?.("aria-disabled", "false");
     $("#trackingValue").textContent = tracking ? "ON" : "OFF";
@@ -826,7 +839,7 @@
     for(const timer of Object.values(touchReleaseTimer))clearTimeout(timer);
     for(const starts of Object.values(touchStarted))starts.clear();
   });
-  addEventListener("resize", updateSettings);
+  addEventListener("resize", () => { resizeCanvas(); updateSettings(); camera.ready = false; });
   CG.onSettings?.(()=>updateSettings());
   updateCurrency();
   updateSettings();
