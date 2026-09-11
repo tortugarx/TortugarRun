@@ -37,12 +37,12 @@
   let unlocked=Math.max(1,Math.min(DevilLevels.levels.length,Number(SAVE.getItem("level-devil-unlocked"))||1));
   const savedTracking=SAVE.getItem("level-devil-tracking");
   const SKINS = [
-    {id:"classic", name:"CLASSIC", cost:0, shell:"#263c29", accent:"#66855f", body:"#66855f", eye:"#e6eee4"},
-    {id:"ember", name:"EMBER", cost:100, shell:"#542920", accent:"#df7547", body:"#a9432d", eye:"#ffe3b3"},
-    {id:"lagoon", name:"LAGOON", cost:150, shell:"#153c55", accent:"#4bbbd0", body:"#398aa2", eye:"#e1fbff"},
-    {id:"orchid", name:"ORCHID", cost:200, shell:"#46234f", accent:"#b963bd", body:"#82528e", eye:"#f5dcff"},
-    {id:"gold", name:"GOLD", cost:300, shell:"#60440d", accent:"#f0bd36", body:"#bd8121", eye:"#fff5c2"},
-    {id:"ghost", name:"GHOST", cost:500, shell:"#394650", accent:"#d4f7f5", body:"#91bcbc", eye:"#ffffff"},
+    {id:"classic", name:"TRAILBLAZER", cost:0, shell:"#263c29", accent:"#66855f", body:"#66855f", eye:"#e6eee4", mark:"#b8ccb3", trim:"#263c29", style:"trail"},
+    {id:"ember", name:"BUCCANEER", cost:100, shell:"#401c18", accent:"#c64432", body:"#8f5b38", eye:"#fff1c7", mark:"#f1d37a", trim:"#171313", style:"pirate"},
+    {id:"lagoon", name:"TOXIC BYTE", cost:150, shell:"#113b38", accent:"#29e67e", body:"#51ad83", eye:"#eaff6a", mark:"#baff35", trim:"#102925", style:"toxic"},
+    {id:"orchid", name:"STAR SHELL", cost:200, shell:"#211739", accent:"#744fac", body:"#9a6fc2", eye:"#f8e9ff", mark:"#ff81d8", trim:"#bfe8ff", style:"stars"},
+    {id:"gold", name:"SHELL ROYAL", cost:300, shell:"#553609", accent:"#e8a91e", body:"#b6771c", eye:"#fff7c5", mark:"#fff091", trim:"#6d270e", style:"royal"},
+    {id:"ghost", name:"SPECTER", cost:500, shell:"#19242d", accent:"#9be4df", body:"#87aaa9", eye:"#ffffff", mark:"#d8ffff", trim:"#405761", style:"ghost"},
   ];
   let shells=Math.max(0,Number(SAVE.getItem("tortuga-shells"))||0);
   let ownedSkins;
@@ -206,7 +206,7 @@
     const pool=messages[world.deathCause]||["NOT THIS TIME."];
     $("#deathMessage").textContent=pool[(deaths-1)%pool.length];
     shake = 4;
-    burst(P.x + 12, P.y + 9, "#333", 6);
+    burst(P.x + 12, P.y + 9, currentSkin().shell, 6);
     beep(75, 0.24, "sawtooth");
     const deathRun = runId;
     setTimeout(async () => {
@@ -227,10 +227,11 @@
     if (state !== "playing") return;
     state = "transition";
     stopGameplay();
+    const skin=currentSkin(),heroTones=[skin.eye,skin.body,skin.accent,skin.shell];
     const pixels=[
       [-8,-5,-24,-18,2],[0,-5,8,-28,2],[8,-3,28,-15,3],[-8,2,-30,4,3],
       [0,2,10,18,3],[8,3,30,10,2],[-5,7,-18,26,3],[5,7,22,24,3],
-    ].map(([x,y,vx,vy,tone])=>({x,y,vx,vy,size:5,color:palette()[tone]}));
+    ].map(([x,y,vx,vy,tone])=>({x,y,vx,vy,size:5,color:heroTones[tone]}));
     doorAnim={start:clock,duration:.82,fromX:P.x+P.w/2,fromY:P.y+P.h/2,toX:R.exit[0]+23,toY:R.exit[1]+48,pixels};
     beep(620, 0.12, "sine");
     unlocked = Math.max(unlocked, Math.min(L.length, li + 2));
@@ -415,6 +416,21 @@
     X.fillRect(2, 5 + b, 4, 3);
     X.fillStyle = skin.eye;
     X.fillRect(10, -2 + b, 1, 1);
+    X.fillStyle = skin.mark;
+    if(skin.style==="trail"){ X.fillRect(-6,-3+b,3,3); X.fillRect(-1,0+b,3,3); }
+    if(skin.style==="pirate"){
+      X.fillRect(-6,-4+b,4,3); X.fillRect(7,-4+b,5,2);
+      X.fillStyle=skin.trim; X.fillRect(9,-2+b,3,3); X.fillRect(7,-5+b,1,4);
+    }
+    if(skin.style==="toxic"){ X.fillRect(-7,-4+b,3,3); X.fillRect(-2,0+b,3,3); X.fillRect(2,-5+b,2,2); }
+    if(skin.style==="stars"){ X.fillRect(-6,-4+b,2,2); X.fillRect(-1,1+b,2,2); X.fillStyle=skin.trim; X.fillRect(1,-5+b,2,2); }
+    if(skin.style==="royal"){
+      X.fillRect(-6,-4+b,3,3); X.fillRect(0,0+b,3,3);
+      X.fillStyle=skin.mark; X.fillRect(-6,-11+b,3,4); X.fillRect(-2,-13+b,3,6); X.fillRect(2,-11+b,3,4); X.fillRect(-6,-8+b,11,2);
+    }
+    if(skin.style==="ghost"){
+      X.fillRect(-8,-5+b,2,8); X.fillRect(2,-5+b,2,8); X.fillStyle=skin.trim; X.fillRect(-5,-2+b,2,2); X.fillRect(0,1+b,2,2);
+    }
     X.restore();
   }
   function drawTutorial() {
@@ -601,7 +617,15 @@
     $("#settingsScreen").classList.remove("hidden");
   }
   function skinPreview(skin){
-    return `<svg class="skin-preview" viewBox="0 0 58 38" style="--skin-shell:${skin.shell};--skin-accent:${skin.accent};--skin-body:${skin.body};--skin-eye:${skin.eye}" aria-hidden="true"><path class="shell" d="M7 11h29v5h5v14H4V16h3z"/><path class="accent" d="M11 6h21v5H11zm5 10h9v8h-9z"/><path class="body" d="M41 16h13v11H41zM7 30h8v6H7zm25 0h8v6h-8z"/><path class="eye" d="M50 19h3v3h-3z"/></svg>`;
+    const extras={
+      trail:`<path class="mark" d="M12 17h5v5h-5zm10 5h5v5h-5z"/>`,
+      pirate:`<path class="mark" d="M13 17h8v5h-8z"/><path class="trim" d="M41 17h13v3H41zm7 3h5v5h-5z"/>`,
+      toxic:`<path class="mark" d="M11 16h6v6h-6zm10 8h5v5h-5zm7-9h4v4h-4z"/>`,
+      stars:`<path class="mark" d="M11 16h4v4h-4zm10 8h4v4h-4z"/><path class="trim" d="M28 15h4v4h-4z"/>`,
+      royal:`<path class="mark" d="M13 17h6v5h-6zm11 7h5v5h-5zM12 3h5v7h4V1h5v9h4V3h5v10H12z"/>`,
+      ghost:`<path class="mark" d="M8 14h4v14H8zm24 0h4v14h-4z"/><path class="trim" d="M15 18h4v4h-4zm10 6h4v4h-4z"/>`,
+    }[skin.style]||"";
+    return `<svg class="skin-preview" viewBox="0 0 58 38" style="--skin-shell:${skin.shell};--skin-accent:${skin.accent};--skin-body:${skin.body};--skin-eye:${skin.eye};--skin-mark:${skin.mark};--skin-trim:${skin.trim}" aria-hidden="true"><path class="shell" d="M7 11h29v5h5v14H4V16h3z"/><path class="accent" d="M11 6h21v5H11zm5 10h9v8h-9z"/><path class="body" d="M41 16h13v11H41zM7 30h8v6H7zm25 0h8v6h-8z"/><path class="eye" d="M50 19h3v3h-3z"/>${extras}</svg>`;
   }
   function buildShop(){
     const grid=$("#skinGrid");
