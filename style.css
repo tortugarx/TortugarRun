@@ -631,7 +631,7 @@ button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   .touch-controls button { height: 62px; }
 }
 @media (orientation: landscape) and (hover: none) {
-  .tutorial-card { left: -8px; }
+  .tutorial-card { left: 8px; }
 }
 @media (orientation: portrait) and (hover: none),
   (orientation: portrait) and (max-width: 760px) {
