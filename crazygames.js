@@ -50,12 +50,32 @@
     platformMuted = !!settings.muteAudio;
     listeners.forEach(listener => listener(settings));
   }
+  function loadSdk() {
+    if (root.CrazyGames?.SDK) return Promise.resolve(true);
+    if (!root.document?.head) return Promise.resolve(false);
+    return new Promise(resolve => {
+      const script = root.document.createElement("script");
+      let settled = false;
+      const done = loaded => {
+        if (settled) return;
+        settled = true;
+        root.clearTimeout(timer);
+        resolve(loaded && !!root.CrazyGames?.SDK);
+      };
+      const timer = root.setTimeout(() => done(false), 6000);
+      script.src = "https://sdk.crazygames.com/crazygames-sdk-v3.js";
+      script.async = true;
+      script.onload = () => done(true);
+      script.onerror = () => done(false);
+      root.document.head.appendChild(script);
+    });
+  }
   api.ready = (async () => {
     const host = root.location?.hostname || "";
     const localMode = host === "localhost" || host === "127.0.0.1" || new URLSearchParams(root.location?.search || "").has("useLocalSdk");
     const crazyMode = /(^|\.)crazygames\.com$/i.test(host);
     if (!localMode && !crazyMode) return;
-    if (!root.CrazyGames?.SDK) return;
+    if (!await loadSdk()) return;
     try {
       sdk = root.CrazyGames.SDK;
       await sdk.init();

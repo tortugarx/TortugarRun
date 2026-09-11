@@ -557,7 +557,6 @@ kbd {
   background: var(--level-dark, #222);
   border-color: var(--level-light, #eee);
   box-shadow: 4px 4px 0 rgba(0,0,0,.75), inset -3px -3px 0 #111, inset 3px 3px 0 var(--level-mid, #888);
-  margin-right: clamp(5px, .8cqw, 10px);
 }
 .game-actions .shop-action::after {
   content: "+";

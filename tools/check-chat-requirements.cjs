@@ -50,7 +50,7 @@ assert(game.includes('THE VOID SAYS HI.')&&game.includes('THE BUTTON PRESSED BAC
 assert(style.includes('#deathMessage')&&style.includes('font-size: 12px')&&style.includes('text-align: center'),'death message must be larger and centered');
 assert(nixpacks.includes('nodejs_22')&&nixpacks.includes('node tools/serve.cjs'),'Nixpacks start configuration missing');
 assert(server.includes('process.env.PORT')&&server.includes("'0.0.0.0'"),'host port binding missing');
-assert(html.includes('crazygames-sdk-v3.js')&&crazy.includes('await sdk.init()'),'CrazyGames v3 SDK initialization missing');
+assert(crazy.includes('crazygames-sdk-v3.js')&&crazy.includes('await sdk.init()')&&crazy.includes('if (!localMode && !crazyMode) return'),'nonblocking CrazyGames v3 SDK initialization missing');
 assert(game.includes('deaths%10===0')&&game.includes('playAd("midgame")'),'tenth-death midgame ad missing');
 assert(game.includes('shells+=10')&&game.includes('shells+=50')&&html.includes('id="currencyGain"'),'shell rewards or reward animation missing');
 assert(html.includes('id="skinGrid"')&&game.includes('const SKINS = [')&&game.includes('equippedSkin'),'turtle skin shop missing');
