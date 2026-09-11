@@ -198,12 +198,15 @@ canvas {
   min-width: 0;
   padding: 9px 6px;
   color: var(--level-dark, #222);
-  background: color-mix(in srgb, var(--level-light, #eee) 80%, white);
-  border: 3px solid var(--level-mid, #777);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--card-accent, #777) 18%, var(--level-light, #eee)) 0 68%, var(--level-light, #eee) 68% 100%);
+  border: 3px solid var(--card-accent, var(--level-mid, #777));
   box-shadow: 3px 3px 0 var(--level-dark, #222);
 }
 .skin-card.equipped { outline: 3px double var(--level-dark, #222); outline-offset: -7px; }
-.skin-card:disabled { opacity: .55; cursor: not-allowed; }
+.skin-card.locked small { color: var(--level-dark, #222); opacity: .72; }
+.skin-card.denied { animation: card-denied .24s steps(2,end) 2; }
+@keyframes card-denied { 50% { transform: translateX(3px); filter: brightness(.82); } }
 .skin-preview { display: block; width: 58px; height: 38px; margin: 0 auto 6px; image-rendering: pixelated; }
 .skin-preview .shell { fill: var(--skin-shell); }
 .skin-preview .accent { fill: var(--skin-accent); }
@@ -554,6 +557,7 @@ kbd {
   background: var(--level-dark, #222);
   border-color: var(--level-light, #eee);
   box-shadow: 4px 4px 0 rgba(0,0,0,.75), inset -3px -3px 0 #111, inset 3px 3px 0 var(--level-mid, #888);
+  margin-right: clamp(5px, .8cqw, 10px);
 }
 .game-actions .shop-action::after {
   content: "+";

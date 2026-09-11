@@ -40,9 +40,11 @@
     {id:"classic", name:"TRAILBLAZER", cost:0, shell:"#263c29", accent:"#66855f", body:"#66855f", eye:"#e6eee4", mark:"#b8ccb3", trim:"#263c29", style:"trail"},
     {id:"ember", name:"BUCCANEER", cost:100, shell:"#401c18", accent:"#c64432", body:"#8f5b38", eye:"#fff1c7", mark:"#f1d37a", trim:"#171313", style:"pirate"},
     {id:"lagoon", name:"TOXIC BYTE", cost:150, shell:"#113b38", accent:"#29e67e", body:"#51ad83", eye:"#eaff6a", mark:"#baff35", trim:"#102925", style:"toxic"},
-    {id:"orchid", name:"STAR SHELL", cost:200, shell:"#211739", accent:"#744fac", body:"#9a6fc2", eye:"#f8e9ff", mark:"#ff81d8", trim:"#bfe8ff", style:"stars"},
-    {id:"gold", name:"SHELL ROYAL", cost:300, shell:"#553609", accent:"#e8a91e", body:"#b6771c", eye:"#fff7c5", mark:"#fff091", trim:"#6d270e", style:"royal"},
-    {id:"ghost", name:"SPECTER", cost:500, shell:"#19242d", accent:"#9be4df", body:"#87aaa9", eye:"#ffffff", mark:"#d8ffff", trim:"#405761", style:"ghost"},
+    {id:"ninja", name:"NIGHT NINJA", cost:225, shell:"#151822", accent:"#34394c", body:"#292d3b", eye:"#ff4545", mark:"#bd2639", trim:"#08090e", style:"ninja"},
+    {id:"orchid", name:"STAR SHELL", cost:300, shell:"#211739", accent:"#744fac", body:"#9a6fc2", eye:"#f8e9ff", mark:"#ff81d8", trim:"#bfe8ff", style:"stars"},
+    {id:"gold", name:"SHELL ROYAL", cost:400, shell:"#553609", accent:"#e8a91e", body:"#b6771c", eye:"#fff7c5", mark:"#fff091", trim:"#6d270e", style:"royal"},
+    {id:"mecha", name:"MECHA-01", cost:550, shell:"#27313b", accent:"#8b9bab", body:"#586875", eye:"#66f7ff", mark:"#ff5f45", trim:"#dce8ef", style:"mecha"},
+    {id:"ghost", name:"SPECTER", cost:700, shell:"#19242d", accent:"#9be4df", body:"#87aaa9", eye:"#ffffff", mark:"#d8ffff", trim:"#405761", style:"ghost"},
   ];
   let shells=Math.max(0,Number(SAVE.getItem("tortuga-shells"))||0);
   let ownedSkins;
@@ -405,6 +407,7 @@
     X.scale(P.w / 24, P.h / 18);
     if (P.face < 0) X.scale(-1, 1);
     const b = P.ground && Math.abs(P.vx) ? Math.round(Math.sin(clock * 16)) : 0;
+    if(skin.style==="ghost")X.globalAlpha=.78;
     X.fillStyle = skin.shell;
     X.fillRect(-10, -6 + b, 15, 11);
     X.fillStyle = skin.accent;
@@ -421,15 +424,31 @@
     if(skin.style==="pirate"){
       X.fillRect(-6,-4+b,4,3); X.fillRect(7,-4+b,5,2);
       X.fillStyle=skin.trim; X.fillRect(9,-2+b,3,3); X.fillRect(7,-5+b,1,4);
+      X.fillRect(-10,-12+b,16,3); X.fillRect(-7,-15+b,10,3); X.fillStyle=skin.mark; X.fillRect(-3,-13+b,3,2);
     }
-    if(skin.style==="toxic"){ X.fillRect(-7,-4+b,3,3); X.fillRect(-2,0+b,3,3); X.fillRect(2,-5+b,2,2); }
-    if(skin.style==="stars"){ X.fillRect(-6,-4+b,2,2); X.fillRect(-1,1+b,2,2); X.fillStyle=skin.trim; X.fillRect(1,-5+b,2,2); }
+    if(skin.style==="toxic"){
+      X.fillRect(-7,-4+b,3,3); X.fillRect(-2,0+b,3,3); X.fillRect(2,-5+b,2,2);
+      X.fillRect(-10,-11+Math.round(Math.sin(clock*5)*2),2,2); X.fillRect(1,-14+Math.round(Math.cos(clock*4)*2),3,3);
+    }
+    if(skin.style==="ninja"){
+      X.fillStyle=skin.mark; X.fillRect(5,-5+b,8,3); X.fillRect(-11,-7+b,16,2); X.fillRect(-14,-10+b,5,2); X.fillRect(-16,-13+b,4,2);
+      X.fillStyle=skin.eye; X.fillRect(10,-2+b,2,1);
+    }
+    if(skin.style==="stars"){
+      X.fillRect(-6,-4+b,2,2); X.fillRect(-1,1+b,2,2); X.fillStyle=skin.trim; X.fillRect(1,-5+b,2,2);
+      const twinkle=Math.floor(clock*4)%2; X.fillRect(-13,-11-twinkle,2+twinkle,2+twinkle); X.fillRect(10,-10+twinkle,2,2);
+    }
     if(skin.style==="royal"){
       X.fillRect(-6,-4+b,3,3); X.fillRect(0,0+b,3,3);
       X.fillStyle=skin.mark; X.fillRect(-6,-11+b,3,4); X.fillRect(-2,-13+b,3,6); X.fillRect(2,-11+b,3,4); X.fillRect(-6,-8+b,11,2);
     }
     if(skin.style==="ghost"){
       X.fillRect(-8,-5+b,2,8); X.fillRect(2,-5+b,2,8); X.fillStyle=skin.trim; X.fillRect(-5,-2+b,2,2); X.fillRect(0,1+b,2,2);
+    }
+    if(skin.style==="mecha"){
+      X.fillStyle=skin.trim; X.fillRect(-7,-4+b,5,2); X.fillRect(0,0+b,4,2); X.fillRect(6,-5+b,6,2);
+      X.fillStyle=skin.mark; X.fillRect(-1,-5+b,3,3); X.fillRect(8,-9+b,2,5); X.fillRect(7,-11+b,4,2);
+      X.fillStyle=skin.eye; X.fillRect(10,-2+b,2,2);
     }
     X.restore();
   }
@@ -554,6 +573,8 @@
   });
   const activePointers = { left: new Set(), right: new Set(), jump: new Set() };
   const activeTouches = { left: new Set(), right: new Set(), jump: new Set() };
+  const touchStarted = { left: new Map(), right: new Map(), jump: new Map() };
+  const touchReleaseTimer = { left: 0, right: 0, jump: 0 };
   document.querySelectorAll("[data-key]").forEach((b) => {
     const k = b.dataset.key,
       down = (e) => {
@@ -576,17 +597,28 @@
       "touchstart",
       (e) => {
         e.preventDefault();
-        for (const touch of e.changedTouches)
+        clearTimeout(touchReleaseTimer[k]);
+        for (const touch of e.changedTouches){
           activeTouches[k].add(touch.identifier);
+          touchStarted[k].set(touch.identifier,Date.now());
+        }
         K[k] = 1;
       },
       { passive: false },
     );
     const touchUp = (e) => {
       e.preventDefault();
-      for (const touch of e.changedTouches)
+      let minimumHold=0;
+      for (const touch of e.changedTouches){
         activeTouches[k].delete(touch.identifier);
-      K[k] = activeTouches[k].size || activePointers[k].size ? 1 : 0;
+        minimumHold=Math.max(minimumHold,80-(Date.now()-(touchStarted[k].get(touch.identifier)||0)));
+        touchStarted[k].delete(touch.identifier);
+      }
+      if(activeTouches[k].size||activePointers[k].size)K[k]=1;
+      else if(minimumHold>0){
+        K[k]=1;
+        touchReleaseTimer[k]=setTimeout(()=>{if(!activeTouches[k].size&&!activePointers[k].size)K[k]=0;},minimumHold);
+      } else K[k]=0;
     };
     b.addEventListener("touchend", touchUp, { passive: false });
     b.addEventListener("touchcancel", touchUp, { passive: false });
@@ -622,10 +654,12 @@
   function skinPreview(skin){
     const extras={
       trail:`<path class="mark" d="M12 17h5v5h-5zm10 5h5v5h-5z"/>`,
-      pirate:`<path class="mark" d="M13 17h8v5h-8z"/><path class="trim" d="M41 17h13v3H41zm7 3h5v5h-5z"/>`,
-      toxic:`<path class="mark" d="M11 16h6v6h-6zm10 8h5v5h-5zm7-9h4v4h-4z"/>`,
+      pirate:`<path class="mark" d="M13 17h8v5h-8zM19 2h5v3h-5z"/><path class="trim" d="M41 17h13v3H41zm7 3h5v5h-5zM5 8h34v4H5zm7-5h20v5H12z"/>`,
+      toxic:`<path class="mark" d="M11 16h6v6h-6zm10 8h5v5h-5zm7-9h4v4h-4zM4 4h4v4H4zm34 1h5v5h-5z"/>`,
+      ninja:`<path class="mark" d="M40 16h15v4H40zM5 8h34v3H5zM2 3h9v3H2zm-2-4h7v3H0z"/><path class="eye" d="M49 18h5v2h-5z"/>`,
       stars:`<path class="mark" d="M11 16h4v4h-4zm10 8h4v4h-4z"/><path class="trim" d="M28 15h4v4h-4z"/>`,
       royal:`<path class="mark" d="M13 17h6v5h-6zm11 7h5v5h-5zM12 3h5v7h4V1h5v9h4V3h5v10H12z"/>`,
+      mecha:`<path class="trim" d="M11 16h9v3h-9zm12 7h8v3h-8zM41 16h12v3H41z"/><path class="mark" d="M21 17h5v5h-5zM48 5h3v8h-3zm-2-3h7v3h-7z"/>`,
       ghost:`<path class="mark" d="M8 14h4v14H8zm24 0h4v14h-4z"/><path class="trim" d="M15 18h4v4h-4zm10 6h4v4h-4z"/>`,
     }[skin.style]||"";
     return `<svg class="skin-preview" viewBox="0 0 58 38" style="--skin-shell:${skin.shell};--skin-accent:${skin.accent};--skin-body:${skin.body};--skin-eye:${skin.eye};--skin-mark:${skin.mark};--skin-trim:${skin.trim}" aria-hidden="true"><path class="shell" d="M7 11h29v5h5v14H4V16h3z"/><path class="accent" d="M11 6h21v5H11zm5 10h9v8h-9z"/><path class="body" d="M41 16h13v11H41zM7 30h8v6H7zm25 0h8v6h-8z"/><path class="eye" d="M50 19h3v3h-3z"/>${extras}</svg>`;
@@ -636,12 +670,19 @@
     for(const skin of SKINS){
       const owned=ownedSkins.has(skin.id), equipped=equippedSkin===skin.id;
       const card=document.createElement("button");
-      card.className=`skin-card${equipped?" equipped":""}`;
-      card.disabled=!owned&&shells<skin.cost;
+      card.className=`skin-card${equipped?" equipped":""}${!owned&&shells<skin.cost?" locked":""}`;
+      card.style.setProperty("--card-accent",skin.accent);
+      card.title=`${skin.name} turtle skin`;
       card.innerHTML=`${skinPreview(skin)}<b>${skin.name}</b><small>${equipped?"EQUIPPED":owned?"EQUIP":`${skin.cost} SHELLS`}</small>`;
       card.onclick=()=>{
         if(!ownedSkins.has(skin.id)){
-          if(shells<skin.cost)return;
+          if(shells<skin.cost){
+            const label=card.querySelector("small");
+            label.textContent=`NEED ${skin.cost-shells} MORE`;
+            card.classList.remove("denied"); void card.offsetWidth; card.classList.add("denied");
+            setTimeout(()=>{if(card.isConnected)label.textContent=`${skin.cost} SHELLS`;},1000);
+            return;
+          }
           shells-=skin.cost; ownedSkins.add(skin.id);
           beep(520,.11,"triangle");
         }
@@ -782,6 +823,8 @@
   addEventListener("blur", () => {
     K.left = K.right = K.jump = 0;
     for (const set of [...Object.values(activePointers), ...Object.values(activeTouches)]) set.clear();
+    for(const timer of Object.values(touchReleaseTimer))clearTimeout(timer);
+    for(const starts of Object.values(touchStarted))starts.clear();
   });
   addEventListener("resize", updateSettings);
   CG.onSettings?.(()=>updateSettings());

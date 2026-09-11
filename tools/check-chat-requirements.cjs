@@ -54,7 +54,7 @@ assert(html.includes('crazygames-sdk-v3.js')&&crazy.includes('await sdk.init()')
 assert(game.includes('deaths%10===0')&&game.includes('playAd("midgame")'),'tenth-death midgame ad missing');
 assert(game.includes('shells+=10')&&game.includes('shells+=50')&&html.includes('id="currencyGain"'),'shell rewards or reward animation missing');
 assert(html.includes('id="skinGrid"')&&game.includes('const SKINS = [')&&game.includes('equippedSkin'),'turtle skin shop missing');
-assert(game.includes('const skin=currentSkin()')&&game.includes('skin.style==="pirate"')&&game.includes('skin.style==="royal"'),'fixed-color patterned skins missing');
+assert(game.includes('const skin=currentSkin()')&&game.includes('skin.style==="pirate"')&&game.includes('skin.style==="royal"')&&game.includes('skin.style==="mecha"')&&game.includes('skin.style==="ninja"'),'fixed-color premium skins missing');
 assert(html.includes('id="skipAdBtn"')&&game.includes('skipWithAd')&&game.includes('if(result.finished)skipLevel()'),'success-only rewarded skip missing');
 assert(html.includes('class="setting-row ad-offer"')&&style.includes('.ad-offer:not(:disabled)'),'rewarded ad call-to-action styling missing');
 assert(style.includes('#deathScreen #deathSkipBtn')&&style.includes('width: min(250px, 100%)')&&style.includes('height: 40px'),'compact double-width death skip button missing');
