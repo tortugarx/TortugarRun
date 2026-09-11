@@ -1,7 +1,7 @@
 // Publish only runtime assets, never Git history or project documentation.
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),port=Number(process.env.PORT)||4173;
-const assets={'/':'index.html','/index.html':'index.html','/game.js':'game.js','/world.js':'world.js','/levels.js':'levels.js','/style.css':'style.css'};
+const assets={'/':'index.html','/index.html':'index.html','/game.js':'game.js','/crazygames.js':'crazygames.js','/world.js':'world.js','/levels.js':'levels.js','/style.css':'style.css'};
 http.createServer((req,res)=>{
   const file=assets[new URL(req.url,'http://localhost').pathname];
   if(!file){res.writeHead(404);return res.end('Not found');}

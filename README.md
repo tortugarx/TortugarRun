@@ -11,7 +11,7 @@ Das separate öffentliche Repository `Tortugarr/tortuga-trials` enthält ausschl
 node tools/serve.cjs
 ```
 
-Port 4173. Der Server liefert ausschließlich Spielassets aus und deaktiviert Browsercaching. Keine externen Laufzeitbibliotheken.
+Port 4173. Der Server liefert ausschließlich Spielassets aus und deaktiviert Browsercaching. Auf CrazyGames wird zusätzlich das offizielle SDK v3 geladen; außerhalb von CrazyGames und localhost bleibt die Plattformanbindung deaktiviert.
 
 A/D oder Pfeile: laufen. W/↑/Leertaste: springen. R: Neustart. M: Ton. Neue Spielstände beginnen mit Raum 1 und schalten jeden weiteren Raum der Reihe nach frei. Touch-Tasten stehen unter der Spielfläche. Der frühere Fokus-/Sonarbutton wurde entfernt.
 
@@ -27,6 +27,10 @@ Level 1 zeigt eine scharf gerenderte, bündig am linken Spielfeldrand sitzende H
 
 Für Nixpacks liegt eine `nixpacks.toml` bei. Der Startbefehl ist `node tools/serve.cjs`; der Server bindet sich an `0.0.0.0` und übernimmt die vom Host gesetzte Variable `PORT`.
 
+## CrazyGames
+
+`crazygames.js` initialisiert SDK v3, übernimmt Fortschritt und Einstellungen in CrazyGames Data und meldet Lade-, Gameplay- und Fortschrittsereignisse. Der Turtle Shop bietet sechs Skins. Jeder regulär abgeschlossene Raum vergibt 10 Shells mit sichtbarer Animation; eine freiwillige Rewarded Ad im Shop vergibt 50 Shells. Nach jedem zehnten Tod wird an einer natürlichen Unterbrechung eine Midgame Ad angefragt. Im Todesdialog kann der nächste Raum über eine Rewarded Ad oder alternativ für 100 Shells übersprungen werden; ein Überspringen vergibt keine Abschlussbelohnung. Belohnungen und Skips erfolgen ausschließlich nach `adFinished`, nie bei `adError`. CrazyGames steuert Verfügbarkeit, Häufigkeit und tatsächliche Länge der Anzeigen.
+
 Auf einer Plattform addieren sich ihre Verschiebung und die eigene Laufbewegung. Gegenlaufen reduziert den Weg in Fahrtrichtung, Mitlaufen vergrößert ihn. Auch sinkende Plattformen tragen. Bewegte Wände stoppen nicht am Spieler und schieben ihn weiter; tödlich wird erst die echte Gefahr dahinter. Kurze Portalreisen unterbrechen die übrigen Mechaniken nicht.
 
 ## Prüfen
@@ -38,6 +42,7 @@ node tools/check-mechanics.cjs
 node tools/check-challenge.cjs
 node tools/check-game.cjs
 node tools/check-chat-requirements.cjs
+node tools/check-crazygames.cjs
 ```
 
 50 gespeicherte Gewinnwege, 50 tatsächlich verschiedene Terrain-Silhouetten, späte Fallenfenster, kontinuierliche Wandbewegungen, Start- und Laufzeitkollisionen, Neustart-Determinismus, Trägerphysik, Portaltransport, Körpergröße und alle Wege durch die tatsächliche Spielanbindung werden geprüft. Die Herausforderungsauswertung verwendet ausschließlich gemessene Eigenschaften der echten Gewinnwege; sie erfindet weder Fehlversuche noch Spielzeit. Die Ablaufprüfung löst Mechaniken gleichzeitig und versetzt aus und prüft bei 120 Hz die kompletten 15-Sekunden-Abläufe einschließlich Befestigungen, Objektabständen und Endpunkten.
@@ -46,4 +51,4 @@ node tools/check-chat-requirements.cjs
 
 ## Dateien
 
-`levels.js`: Räume, Fallenideen und Abläufe. `world.js`: Physik mit 120 Hz. `game.js`: Canvas und Eingaben. `style.css`: Darstellung. `tools/`: Prüfungen, Solver und Assetserver.
+`levels.js`: Räume, Fallenideen und Abläufe. `world.js`: Physik mit 120 Hz. `game.js`: Canvas, Eingaben und Ökonomie. `crazygames.js`: isolierte Plattformanbindung. `style.css`: Darstellung. `tools/`: Prüfungen, Solver und Assetserver.

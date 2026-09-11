@@ -12,6 +12,13 @@
     deaths: $("#deathLabel"),
   };
   const K = { left: 0, right: 0, jump: 0 };
+  const CG = globalThis.TortugaCrazy || {
+    available: false, storage: localStorage, platformMuted: false,
+    gameplayStart() {}, gameplayStop() {}, progress() {}, loadingDone() {},
+    requestAd() { return Promise.resolve({ finished: false, error: "unavailable" }); },
+    onSettings() {},
+  };
+  const SAVE = CG.storage || localStorage;
   // One unmistakable visual identity per world; rooms no longer cycle through
   // unrelated palettes and therefore read as four deliberate chapters.
   const PAL = [
@@ -23,18 +30,33 @@
   ];
   const palette = () => PAL[L[Math.min(li, L.length - 1)]?.group || 0];
   const progressVersionKey="tortuga-trials-progress",progressVersion="1";
-  if(localStorage.getItem(progressVersionKey)!==progressVersion){
-    localStorage.setItem("level-devil-unlocked","1");
-    localStorage.setItem(progressVersionKey,progressVersion);
+  if(SAVE.getItem(progressVersionKey)!==progressVersion){
+    SAVE.setItem("level-devil-unlocked","1");
+    SAVE.setItem(progressVersionKey,progressVersion);
   }
-  let unlocked=Math.max(1,Math.min(DevilLevels.levels.length,Number(localStorage.getItem("level-devil-unlocked"))||1));
-  const savedTracking=localStorage.getItem("level-devil-tracking");
+  let unlocked=Math.max(1,Math.min(DevilLevels.levels.length,Number(SAVE.getItem("level-devil-unlocked"))||1));
+  const savedTracking=SAVE.getItem("level-devil-tracking");
+  const SKINS = [
+    {id:"classic", name:"CLASSIC", cost:0, shell:"#263c29", accent:"#66855f", body:"#66855f", eye:"#e6eee4"},
+    {id:"ember", name:"EMBER", cost:100, shell:"#542920", accent:"#df7547", body:"#a9432d", eye:"#ffe3b3"},
+    {id:"lagoon", name:"LAGOON", cost:150, shell:"#153c55", accent:"#4bbbd0", body:"#398aa2", eye:"#e1fbff"},
+    {id:"orchid", name:"ORCHID", cost:200, shell:"#46234f", accent:"#b963bd", body:"#82528e", eye:"#f5dcff"},
+    {id:"gold", name:"GOLD", cost:300, shell:"#60440d", accent:"#f0bd36", body:"#bd8121", eye:"#fff5c2"},
+    {id:"ghost", name:"GHOST", cost:500, shell:"#394650", accent:"#d4f7f5", body:"#91bcbc", eye:"#ffffff"},
+  ];
+  let shells=Math.max(0,Number(SAVE.getItem("tortuga-shells"))||0);
+  let ownedSkins;
+  try { ownedSkins=new Set(JSON.parse(SAVE.getItem("tortuga-skins")||"[\"classic\"]")); }
+  catch { ownedSkins=new Set(["classic"]); }
+  ownedSkins.add("classic");
+  let equippedSkin=SAVE.getItem("tortuga-equipped-skin")||"classic";
+  if(!ownedSkins.has(equippedSkin))equippedSkin="classic";
   let state = "menu",
     li = 0,
     deaths = 0,
     shake = 0,
-    muted = localStorage.getItem("level-devil-sound") === "off",
-    autoRestart = localStorage.getItem("level-devil-auto-restart") === "on",
+    muted = SAVE.getItem("level-devil-sound") === "off",
+    autoRestart = SAVE.getItem("level-devil-auto-restart") === "on",
     tracking = savedTracking==null?defaultTracking():savedTracking==="on",
     trackingOverride = savedTracking!=null,
     last = 0,
@@ -42,6 +64,7 @@
     audio,
     levelReturnState = "menu",
     settingsReturnState = "menu",
+    shopReturnState = "menu",
     announcedGroup = -1,
     bannerTimer = 0,
     portalAnim = null,
@@ -53,6 +76,29 @@
   const L = DevilLevels.levels;
   const GROUPS = DevilLevels.groups;
   let world, accumulator = 0, runId = 0;
+  const clearKeys=()=>{ K.left=K.right=K.jump=0; };
+  const currentSkin=()=>SKINS.find(s=>s.id===equippedSkin)||SKINS[0];
+  function saveEconomy(){
+    SAVE.setItem("tortuga-shells",String(shells));
+    SAVE.setItem("tortuga-skins",JSON.stringify([...ownedSkins]));
+    SAVE.setItem("tortuga-equipped-skin",equippedSkin);
+    updateCurrency();
+  }
+  function updateCurrency(){
+    $("#currencyLabel").textContent=String(shells);
+    $("#shopCurrency").textContent=String(shells);
+  }
+  function showCurrencyGain(amount,label="SHELLS"){
+    const gain=$("#currencyGain");
+    gain.textContent=`+${amount} ${label}`;
+    gain.classList.remove("hidden","pop");
+    void gain.offsetWidth;
+    gain.classList.add("pop");
+    clearTimeout(showCurrencyGain.timer);
+    showCurrencyGain.timer=setTimeout(()=>gain.classList.add("hidden"),1200);
+  }
+  function stopGameplay(){ clearKeys(); CG.gameplayStop(); }
+  function startGameplay(){ CG.gameplayStart({level:String(li+1),skin:equippedSkin,shells:String(shells)}); }
   function reset() {
     runId++;
     li = Math.max(0, Math.min(L.length - 1, li));
@@ -63,7 +109,7 @@
     camera.ready = false;
     accumulator = 0;
     clock = 0;
-    for (const id of ["#levelScreen", "#settingsScreen", "#aboutScreen"]) $(id).classList.add("hidden");
+    for (const id of ["#levelScreen", "#settingsScreen", "#aboutScreen", "#shopScreen", "#skipScreen", "#adBlocker"]) $(id).classList.add("hidden");
     state = "playing";
     $("#deathScreen").classList.add("hidden");
     const colors = palette();
@@ -71,6 +117,8 @@
     document.documentElement.style.setProperty("--level-mid", colors[2]);
     document.documentElement.style.setProperty("--level-dark", colors[3]);
     UI.level.textContent = String(li + 1).padStart(2,"0") + " / " + L.length;
+    $("#deathSkipBtn").classList[li>=L.length-1?"add":"remove"]("hidden");
+    startGameplay();
     if (L[li].group !== announcedGroup) {
       if (announcedGroup < 0 && L[li].group === 0) announcedGroup = 0;
       else showSection(L[li].group);
@@ -134,6 +182,7 @@
   function openLevels() {
     if (state === "dying" || state === "transition") return;
     levelReturnState = state;
+    if(state==="playing")stopGameplay();
     state = "levelmenu";
     buildLevelGrid();
     $("#levelScreen").classList.remove("hidden");
@@ -141,8 +190,10 @@
   function die() {
     if (state !== "playing") return;
     state = "dying";
+    stopGameplay();
     deaths++;
     UI.deaths.textContent = String(deaths).padStart(2, "0");
+    if(deaths%10===0)$("#deathSkipBtn").classList.add("hidden");
     const messages={
       fall:["GRAVITY FILED A COMPLAINT.","THE VOID SAYS HI.","YOU MISSED THE FLOOR.","SHELL WE TRY THAT AGAIN?"],
       "button-trap":["THAT BUTTON HAD TRUST ISSUES.","PRESS HERE, REGRET EVERYWHERE.","THE BUTTON PRESSED BACK.","CURIOUS TURTLE, CLASSIC RESULT."],
@@ -158,8 +209,12 @@
     burst(P.x + 12, P.y + 9, "#333", 6);
     beep(75, 0.24, "sawtooth");
     const deathRun = runId;
-    setTimeout(() => {
+    setTimeout(async () => {
       if (runId !== deathRun || state !== "dying") return;
+      if(deaths%10===0){
+        await playAd("midgame");
+        if(runId!==deathRun||state!=="dying")return;
+      }
       if (autoRestart) {
         reset(false);
         return;
@@ -171,6 +226,7 @@
   function finish() {
     if (state !== "playing") return;
     state = "transition";
+    stopGameplay();
     const pixels=[
       [-8,-5,-24,-18,2],[0,-5,8,-28,2],[8,-3,28,-15,3],[-8,2,-30,4,3],
       [0,2,10,18,3],[8,3,30,10,2],[-5,7,-18,26,3],[5,7,22,24,3],
@@ -178,7 +234,11 @@
     doorAnim={start:clock,duration:.82,fromX:P.x+P.w/2,fromY:P.y+P.h/2,toX:R.exit[0]+23,toY:R.exit[1]+48,pixels};
     beep(620, 0.12, "sine");
     unlocked = Math.max(unlocked, Math.min(L.length, li + 2));
-    localStorage.setItem("level-devil-unlocked", unlocked);
+    SAVE.setItem("level-devil-unlocked", unlocked);
+    shells+=10;
+    saveEconomy();
+    showCurrencyGain(10);
+    CG.progress(((li+1)/L.length)*100);
     const finishRun = runId;
     setTimeout(() => {
       if (runId !== finishRun || state !== "transition") return;
@@ -191,7 +251,7 @@
     }, 900);
   }
   function beep(f, d = 0.06, type = "square") {
-    if (muted) return;
+    if (muted || CG.platformMuted) return;
     audio ||= new (window.AudioContext || window.webkitAudioContext)();
     const o = audio.createOscillator(),
       g = audio.createGain();
@@ -339,19 +399,21 @@
   }
   function drawHero() {
     X.save();
-    const c = palette();
+    const skin=currentSkin();
     X.translate(Math.round(P.x + P.w / 2), Math.round(P.y + P.h / 2));
     X.scale(P.w / 24, P.h / 18);
     if (P.face < 0) X.scale(-1, 1);
     const b = P.ground && Math.abs(P.vx) ? Math.round(Math.sin(clock * 16)) : 0;
-    X.fillStyle = c[3];
+    X.fillStyle = skin.shell;
     X.fillRect(-10, -6 + b, 15, 11);
-    X.fillStyle = c[2];
+    X.fillStyle = skin.accent;
     X.fillRect(-8, -8 + b, 12, 4);
+    X.fillRect(-5, -4 + b, 4, 4);
+    X.fillStyle = skin.body;
     X.fillRect(5, -4 + b, 7, 7);
     X.fillRect(-9, 5 + b, 4, 3);
     X.fillRect(2, 5 + b, 4, 3);
-    X.fillStyle = c[0];
+    X.fillStyle = skin.eye;
     X.fillRect(10, -2 + b, 1, 1);
     X.restore();
   }
@@ -465,7 +527,7 @@
       K[map[e.code]] = 1;
       e.preventDefault();
     }
-    if (e.code === "KeyR" && state !== "menu") reset(false);
+    if (e.code === "KeyR" && (state === "playing" || state === "deathmenu")) reset(false);
     if (e.code === "KeyM") toggle();
   });
   addEventListener("keyup", (e) => {
@@ -512,7 +574,7 @@
   });
   function toggle() {
     muted = !muted;
-    localStorage.setItem("level-devil-sound", muted ? "off" : "on");
+    SAVE.setItem("level-devil-sound", muted ? "off" : "on");
     updateSettings();
   }
   function updateSettings() {
@@ -533,9 +595,100 @@
   function openSettings() {
     if (state === "dying" || state === "transition") return;
     settingsReturnState = state;
+    if(state==="playing")stopGameplay();
     state = "settings";
     updateSettings();
     $("#settingsScreen").classList.remove("hidden");
+  }
+  function skinPreview(skin){
+    return `<svg class="skin-preview" viewBox="0 0 58 38" style="--skin-shell:${skin.shell};--skin-accent:${skin.accent};--skin-body:${skin.body};--skin-eye:${skin.eye}" aria-hidden="true"><path class="shell" d="M7 11h29v5h5v14H4V16h3z"/><path class="accent" d="M11 6h21v5H11zm5 10h9v8h-9z"/><path class="body" d="M41 16h13v11H41zM7 30h8v6H7zm25 0h8v6h-8z"/><path class="eye" d="M50 19h3v3h-3z"/></svg>`;
+  }
+  function buildShop(){
+    const grid=$("#skinGrid");
+    grid.textContent="";
+    for(const skin of SKINS){
+      const owned=ownedSkins.has(skin.id), equipped=equippedSkin===skin.id;
+      const card=document.createElement("button");
+      card.className=`skin-card${equipped?" equipped":""}`;
+      card.disabled=!owned&&shells<skin.cost;
+      card.innerHTML=`${skinPreview(skin)}<b>${skin.name}</b><small>${equipped?"EQUIPPED":owned?"EQUIP":`${skin.cost} SHELLS`}</small>`;
+      card.onclick=()=>{
+        if(!ownedSkins.has(skin.id)){
+          if(shells<skin.cost)return;
+          shells-=skin.cost; ownedSkins.add(skin.id);
+          beep(520,.11,"triangle");
+        }
+        equippedSkin=skin.id; saveEconomy(); buildShop();
+      };
+      grid.appendChild(card);
+    }
+    updateRewardButton();
+  }
+  function openShop(){
+    if(state==="dying"||state==="transition"||state==="ad")return;
+    shopReturnState=state;
+    if(state==="playing")stopGameplay();
+    state="shop"; $("#shopScreen").classList.remove("hidden"); buildShop();
+  }
+  function closeShop(){
+    clearTimeout(updateRewardButton.timer);
+    $("#shopScreen").classList.add("hidden");
+    state=shopReturnState;
+    if(state==="playing")startGameplay();
+  }
+  async function playAd(type){
+    if(!CG.available)return {finished:false,error:"unavailable"};
+    const previous=state;
+    clearKeys(); state="ad";
+    $("#adBlocker").classList.remove("hidden");
+    const result=await CG.requestAd(type);
+    $("#adBlocker").classList.add("hidden");
+    if(state==="ad")state=previous;
+    return result;
+  }
+  function rewardRemaining(){return Math.max(0,(Number(SAVE.getItem("tortuga-reward-cooldown"))||0)-Date.now());}
+  function updateRewardButton(){
+    const b=$("#rewardCurrencyBtn"), strong=b.querySelector("strong"), left=rewardRemaining();
+    clearTimeout(updateRewardButton.timer);
+    b.disabled=!CG.available||left>0;
+    strong.textContent=!CG.available?"CRAZYGAMES ONLY":left>0?`READY IN ${Math.ceil(left/60000)}M` : "+50 SHELLS";
+    if(left>0&&!$("#shopScreen").classList.contains("hidden"))updateRewardButton.timer=setTimeout(updateRewardButton,1000);
+  }
+  async function rewardCurrency(){
+    if(rewardRemaining()>0||!CG.available)return;
+    const result=await playAd("rewarded");
+    if(!result.finished){
+      $("#rewardCurrencyBtn").querySelector("strong").textContent="AD UNAVAILABLE";
+      setTimeout(updateRewardButton,1500);
+      return;
+    }
+    shells+=50;
+    SAVE.setItem("tortuga-reward-cooldown",String(Date.now()+120000));
+    saveEconomy(); showCurrencyGain(50); buildShop();
+  }
+  function openSkip(){
+    if(li>=L.length-1)return;
+    $("#deathScreen").classList.add("hidden");
+    state="skipmenu";
+    $("#skipScreen").classList.remove("hidden");
+    $("#skipAdBtn").disabled=!CG.available;
+    $("#skipAdBtn").querySelector("strong").textContent=CG.available?"SKIP":"CRAZYGAMES ONLY";
+    $("#skipCoinsBtn").disabled=shells<100;
+  }
+  function skipLevel(){
+    unlocked=Math.max(unlocked,Math.min(L.length,li+2));
+    SAVE.setItem("level-devil-unlocked",String(unlocked));
+    li=Math.min(L.length-1,li+1);
+    $("#skipScreen").classList.add("hidden");
+    reset();
+  }
+  async function skipWithAd(){
+    const result=await playAd("rewarded");
+    if(result.finished)skipLevel();
+    else {
+      $("#skipAdBtn").querySelector("strong").textContent="AD UNAVAILABLE";
+      setTimeout(()=>{if(state==="skipmenu")$("#skipAdBtn").querySelector("strong").textContent="SKIP";},1500);
+    }
   }
   if ($("#startBtn")) $("#startBtn").onclick = start;
   if ($("#levelsBtn")) $("#levelsBtn").onclick = openLevels;
@@ -544,6 +697,7 @@
     $("#levelScreen").classList.add("hidden");
     state = levelReturnState;
     if (state === "deathmenu") $("#deathScreen").classList.remove("hidden");
+    if(state==="playing")startGameplay();
   };
   $("#deathRestartBtn").onclick = () => {
     $("#deathScreen").classList.add("hidden");
@@ -558,6 +712,17 @@
     if (state !== "menu") reset(false);
   };
   $("#settingsBtn").onclick = openSettings;
+  $("#shopBtn").onclick = openShop;
+  $("#closeShopBtn").onclick = closeShop;
+  $("#rewardCurrencyBtn").onclick = rewardCurrency;
+  $("#deathSkipBtn").onclick = openSkip;
+  $("#closeSkipBtn").onclick = () => {
+    $("#skipScreen").classList.add("hidden");
+    state="deathmenu";
+    $("#deathScreen").classList.remove("hidden");
+  };
+  $("#skipAdBtn").onclick = skipWithAd;
+  $("#skipCoinsBtn").onclick = () => { if(shells>=100){shells-=100;saveEconomy();skipLevel();} };
   $("#aboutSetting").onclick = () => {
     $("#settingsScreen").classList.add("hidden");
     $("#aboutScreen").classList.remove("hidden");
@@ -569,18 +734,19 @@
   $("#closeSettingsBtn").onclick = () => {
     $("#settingsScreen").classList.add("hidden");
     state = settingsReturnState;
+    if(state==="playing")startGameplay();
   };
   $("#soundSetting").onclick = toggle;
   $("#trackingSetting").onclick = () => {
     tracking = !tracking;
     trackingOverride = true;
     camera.ready = false;
-    localStorage.setItem("level-devil-tracking", tracking ? "on" : "off");
+    SAVE.setItem("level-devil-tracking", tracking ? "on" : "off");
     updateSettings();
   };
   $("#autoRestartSetting").onclick = () => {
     autoRestart = !autoRestart;
-    localStorage.setItem(
+    SAVE.setItem(
       "level-devil-auto-restart",
       autoRestart ? "on" : "off",
     );
@@ -591,7 +757,11 @@
     for (const set of [...Object.values(activePointers), ...Object.values(activeTouches)]) set.clear();
   });
   addEventListener("resize", updateSettings);
+  CG.onSettings?.(()=>updateSettings());
+  updateCurrency();
   updateSettings();
   start();
+  CG.loadingDone();
+  document.documentElement.dataset.gameReady="true";
   requestAnimationFrame(loop);
 })();
