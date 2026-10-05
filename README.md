@@ -2,8 +2,8 @@
 
 50 vollständig neu entworfene Räume. Hohe Abstiege, Aufzüge, bodenverbundene Fähren, Rückwege und Portalräume mit wenigen gezielten Fallen. Referenzanalyse: [REBUILD.md](REBUILD.md); Raumideen: [LEVEL_DESIGN_STICHPUNKTE.md](LEVEL_DESIGN_STICHPUNKTE.md).
 
-Produktionsversion: https://tortugarx.github.io/tortugar-run/
-`tortugarx/tortugar-run` ist das einzige Projekt-Repository und enthält Quellcode, Tests sowie die direkt aus `main` veröffentlichte Browserfassung. Die Historien der früheren Veröffentlichungs-Repositories bleiben in den Archiv-Branches `archive/leveldevil-play` und `archive/tortuga-trials` erhalten.
+Produktionsversion: https://tortugarx.github.io/TortugarRun/
+`tortugarx/TortugarRun` ist das einzige Projekt-Repository und enthält Quellcode, Tests sowie die direkt aus `main` veröffentlichte Browserfassung. Die Historien der früheren Veröffentlichungs-Repositories bleiben in den Archiv-Branches `archive/leveldevil-play` und `archive/tortuga-trials` erhalten.
 
 ## Starten
 
